@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動詞クエスト – Japán Ige Kaland</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Orbitron:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4ff;
+  --bg2: #e4eaff;
+  --card: #ffffff;
+  --card2: #f7f9ff;
+  --border: #c5cef5;
+  --accent: #6366f1;
+  --accent2: #818cf8;
+  --gold: #f59e0b;
+  --gold2: #d97706;
+  --green: #059669;
+  --red: #dc2626;
+  --blue: #2563eb;
+  --cyan: #0891b2;
+  --pink: #db2777;
+  --text: #1e1b4b;
+  --muted: #6b7280;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(99,102,241,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(219,39,119,0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 30%, rgba(245,158,11,0.08) 0%, transparent 40%);
+  pointer-events: none; z-index: 0;
+}
+.screen { display: none; position: relative; z-index: 1; }
+.screen.active { display: block; }
+
+/* ── WELCOME ── */
+#welcomeScreen {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem 1rem; text-align: center;
+}
+.logo-kanji {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+  margin-bottom: 0.5rem;
+}
+@keyframes pulse-glow {
+  from { filter: drop-shadow(0 0 15px rgba(99,102,241,0.3)); }
+  to   { filter: drop-shadow(0 0 30px rgba(219,39,119,0.5)); }
+}
+.logo-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.2rem, 4vw, 2rem); font-weight: 900;
+  letter-spacing: 0.1em; color: var(--accent);
+  text-shadow: 0 2px 12px rgba(99,102,241,0.25); margin-bottom: 0.5rem;
+}
+.logo-sub { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; }
+.section-title {
+  font-size: 0.8rem; letter-spacing: 0.12em; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 0.75rem; font-weight: 800;
+}
+.mode-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+.mode-pill {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 50px; padding: 0.4rem 1rem;
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; color: var(--muted);
+  box-shadow: 0 1px 4px rgba(99,102,241,0.08);
+}
+.mode-pill.active {
+  background: var(--accent); border-color: var(--accent2);
+  color: #fff; box-shadow: 0 0 15px rgba(124,58,237,0.4);
+}
+.difficulty-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 1rem; max-width: 620px; width: 100%; margin-bottom: 2rem;
+}
+.diff-card {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 16px; padding: 1.5rem 1rem;
+  cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(99,102,241,0.08);
+}
+.diff-card::before {
+  content: ''; position: absolute; inset: 0; opacity: 0;
+  transition: opacity 0.25s; border-radius: 14px;
+}
+.diff-card.easy::before   { background: linear-gradient(135deg,rgba(16,185,129,.15),transparent); }
+.diff-card.normal::before { background: linear-gradient(135deg,rgba(59,130,246,.15),transparent); }
+.diff-card.hard::before   { background: linear-gradient(135deg,rgba(239,68,68,.15),transparent); }
+.diff-card:hover::before  { opacity: 1; }
+.diff-card:hover          { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(99,102,241,0.18); }
+.diff-card.easy:hover   { border-color: var(--green); }
+.diff-card.normal:hover { border-color: var(--blue); }
+.diff-card.hard:hover   { border-color: var(--red); }
+.diff-card.selected.easy   { border-color: var(--green); box-shadow: 0 0 20px rgba(16,185,129,0.3); }
+.diff-card.selected.normal { border-color: var(--blue);  box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+.diff-card.selected.hard   { border-color: var(--red);   box-shadow: 0 0 20px rgba(239,68,68,0.3); }
+.diff-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+.diff-name { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
+.diff-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.diff-stars { font-size: 1rem; margin-top: 0.4rem; }
+.btn-start {
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  color: #fff; border: none; border-radius: 50px;
+  padding: 1rem 3rem; font-size: 1.2rem; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; letter-spacing: 0.08em;
+  cursor: pointer; transition: all 0.2s;
+  animation: btn-pulse 2s ease-in-out infinite;
+}
+@keyframes btn-pulse {
+  0%,100% { box-shadow: 0 0 20px rgba(124,58,237,0.4); }
+  50%      { box-shadow: 0 0 40px rgba(236,72,153,0.6); }
+}
+.btn-start:hover { transform: scale(1.05); }
+
+/* ── HUD ── */
+.hud {
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 1.25rem;
+  display: flex; align-items: center; gap: 0.8rem;
+  position: sticky; top: 0; z-index: 100; flex-wrap: wrap;
+  box-shadow: 0 2px 12px rgba(99,102,241,0.1);
+}
+.hud-level { display: flex; align-items: center; gap: 0.5rem; min-width: 0; flex: 1; }
+.level-badge {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #1a1000; font-family: 'Orbitron', sans-serif;
+  font-size: 0.68rem; font-weight: 900;
+  padding: 0.2rem 0.5rem; border-radius: 6px;
+  white-space: nowrap; box-shadow: 0 0 10px rgba(245,158,11,0.4);
+  flex-shrink: 0;
+}
+.xp-bar-wrap { flex: 1; min-width: 60px; }
+.xp-label { font-size: 0.62rem; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 2px; }
+.xp-bar-outer { height: 7px; background: var(--bg2); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+.xp-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  border-radius: 4px; transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 8px rgba(245,158,11,0.5);
+}
+.hud-stats { display: flex; gap: 0.75rem; align-items: center; }
+.hud-stat { display: flex; flex-direction: column; align-items: center; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.hud-stat-val { font-size: 1rem; font-weight: 800; color: var(--text); line-height: 1.1; }
+.streak-pill {
+  display: flex; align-items: center; gap: 0.25rem;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 0.25rem 0.6rem;
+  font-size: 0.85rem; font-weight: 800; flex-shrink: 0; color: var(--text);
+}
+.streak-pill.hot {
+  border-color: var(--gold); background: rgba(245,158,11,0.15);
+  color: var(--gold2); animation: streak-glow 1s ease-in-out infinite alternate;
+}
+@keyframes streak-glow {
+  from { box-shadow: 0 0 5px rgba(245,158,11,0.3); }
+  to   { box-shadow: 0 0 15px rgba(245,158,11,0.6); }
+}
+.timer-ring { position: relative; width: 42px; height: 42px; flex-shrink: 0; }
+.timer-ring svg { transform: rotate(-90deg); }
+.timer-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+.timer-fg { fill: none; stroke: var(--cyan); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 113; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+.timer-fg.warn { stroke: var(--gold); }
+.timer-fg.danger { stroke: var(--red); }
+.timer-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--cyan); }
+.timer-text.warn { color: var(--gold); }
+.timer-text.danger { color: var(--red); animation: blink 0.5s step-end infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+
+/* ── PROGRESS ── */
+.quest-progress {
+  background: rgba(255,255,255,0.8); padding: 0.4rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.quest-bar-outer { flex: 1; height: 9px; background: var(--bg2); border-radius: 5px; overflow: hidden; border: 1px solid var(--border); }
+.quest-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 5px; transition: width 0.4s ease; box-shadow: 0 0 10px rgba(6,182,212,0.4); }
+.quest-label { font-size: 0.72rem; color: var(--muted); white-space: nowrap; font-weight: 700; }
+
+/* ── GAME AREA ── */
+.game-area { max-width: 660px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+.mode-bar { display: flex; gap: 0.4rem; justify-content: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.mode-chip {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 0.25rem 0.8rem;
+  font-size: 0.78rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; color: var(--muted);
+  box-shadow: 0 1px 4px rgba(99,102,241,0.08);
+}
+.mode-chip.active { background: var(--accent); border-color: var(--accent2); color: #fff; box-shadow: 0 0 10px rgba(124,58,237,0.3); }
+
+.question-card {
+  background: var(--card);
+  border: 2px solid var(--border); border-radius: 20px;
+  padding: 1.75rem; position: relative;
+  box-shadow: 0 4px 24px rgba(99,102,241,0.12);
+  animation: card-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes card-in {
+  from { opacity:0; transform: translateY(18px) scale(0.96); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+.q-number {
+  position: absolute; top: -12px; left: 1.5rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; font-family: 'Orbitron', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 0.18rem 0.8rem; border-radius: 20px;
+  box-shadow: 0 0 12px rgba(124,58,237,0.4);
+}
+.verb-display { text-align: center; margin-bottom: 1.25rem; }
+.verb-kanji {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(2.8rem, 9vw, 4.5rem); font-weight: 900; line-height: 1.1;
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.verb-meta { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.4rem; flex-wrap: wrap; }
+.tag { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 20px; border: 1px solid; }
+.tag-group   { border-color: var(--cyan); color: var(--cyan); background: rgba(8,145,178,0.08); }
+.tag-meaning { border-color: var(--muted); color: var(--muted); background: rgba(107,114,128,0.08); }
+
+.question-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 0.85rem 1.1rem; margin-bottom: 1.1rem;
+  font-size: 0.97rem; font-weight: 700; line-height: 1.5; color: var(--text);
+}
+.type-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  color: #fff; font-size: 0.7rem; font-weight: 800;
+  padding: 0.12rem 0.55rem; border-radius: 10px; margin-bottom: 0.35rem;
+}
+.answer-area { display: flex; gap: 0.65rem; align-items: stretch; margin-bottom: 0.75rem; }
+.answer-input {
+  flex: 1; font-size: 1.3rem; font-family: 'Noto Sans JP', sans-serif;
+  background: var(--card2); border: 2px solid var(--border);
+  border-radius: 12px; padding: 0.6rem 0.9rem; color: var(--text);
+  outline: none; transition: all 0.2s; min-width: 0;
+}
+.answer-input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+.answer-input.correct { border-color: var(--green); background: #f0fdf4; box-shadow: 0 0 0 3px rgba(5,150,105,0.15); }
+.answer-input.wrong   { border-color: var(--red);   background: #fff5f5; box-shadow: 0 0 0 3px rgba(220,38,38,0.15); }
+.btn-check {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 12px;
+  padding: 0.6rem 1.25rem; font-size: 0.88rem; font-weight: 800;
+  font-family: 'Nunito', sans-serif; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap; box-shadow: 0 4px 15px rgba(124,58,237,0.3);
+}
+.btn-check:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,58,237,0.5); }
+.btn-check:disabled { opacity: 0.5; cursor: default; }
+.hint-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem; color: var(--muted);
+  cursor: pointer; user-select: none; margin-bottom: 0.4rem;
+}
+.hint-row input { accent-color: var(--accent2); }
+.hint-text { color: var(--gold2); font-style: italic; font-weight: 700; }
+.hint-cost { color: var(--red); font-size: 0.72rem; }
+.feedback-area {
+  min-height: 2.2rem; display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.95rem; font-weight: 800; border-radius: 8px; padding: 0.3rem 0;
+}
+.feedback-area.correct { color: var(--green); }
+.feedback-area.wrong   { color: var(--red); }
+.nav-row { display: flex; gap: 0.65rem; justify-content: flex-end; margin-top: 0.9rem; }
+.btn-skip {
+  background: var(--card2); border: 2px solid var(--border); border-radius: 10px;
+  color: var(--muted); padding: 0.45rem 0.9rem; font-size: 0.82rem; font-weight: 700;
+  font-family: 'Nunito', sans-serif; cursor: pointer; transition: all 0.2s;
+}
+.btn-skip:hover { border-color: var(--muted); color: var(--text); background: var(--bg2); }
+.btn-next {
+  background: linear-gradient(135deg, var(--green), #059669);
+  color: #fff; border: none; border-radius: 10px;
+  padding: 0.45rem 1.4rem; font-size: 0.88rem; font-weight: 800;
+  font-family: 'Nunito', sans-serif; cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(16,185,129,0.3); display: none;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.5); }
+
+/* ── XP POPUP ── */
+.xp-popup {
+  position: fixed; font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem; font-weight: 900; color: var(--gold2);
+  text-shadow: 0 0 20px rgba(251,191,36,0.8);
+  pointer-events: none; z-index: 999;
+  animation: xp-fly 1.2s ease-out forwards;
+}
+@keyframes xp-fly {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+}
+
+/* ── ACHIEVEMENT TOAST ── */
+.achievement-toast {
+  position: fixed; top: 80px; right: 1rem;
+  background: var(--card);
+  border: 2px solid var(--gold); border-radius: 16px;
+  padding: 0.9rem 1.1rem;
+  display: flex; align-items: center; gap: 0.85rem;
+  z-index: 500; box-shadow: 0 8px 30px rgba(245,158,11,0.25);
+  animation: toast-in 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 300px;
+}
+@keyframes toast-in {
+  from { opacity:0; transform: translateX(120%) scale(0.8); }
+  to   { opacity:1; transform: translateX(0) scale(1); }
+}
+.toast-icon { font-size: 1.8rem; flex-shrink: 0; }
+.toast-title { font-size: 0.65rem; color: var(--gold2); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+.toast-name  { font-size: 0.95rem; font-weight: 900; color: var(--text); }
+.toast-desc  { font-size: 0.75rem; color: var(--muted); }
+/* ── RESULT ── */
+#resultScreen {
+  min-height: 100vh; padding: 2rem 1rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.result-container { max-width: 580px; width: 100%; }
+.grade-display { text-align: center; margin-bottom: 1.75rem; }
+.grade-letter {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(5rem, 18vw, 9rem); font-weight: 900; line-height: 1;
+  animation: grade-pop 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes grade-pop {
+  from { transform: scale(0) rotate(-20deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0); opacity: 1; }
+}
+.grade-A { background: linear-gradient(135deg,var(--gold),#fff,var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 30px rgba(245,158,11,0.8)); }
+.grade-B { background: linear-gradient(135deg,var(--green),#a7f3d0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 20px rgba(16,185,129,0.6)); }
+.grade-C { background: linear-gradient(135deg,var(--blue),#93c5fd); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 20px rgba(59,130,246,0.6)); }
+.grade-D { background: linear-gradient(135deg,var(--gold),#fde68a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.grade-F { background: linear-gradient(135deg,var(--red),#fca5a5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.grade-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 0.2rem; }
+.grade-msg   { color: var(--muted); font-size: 0.92rem; }
+
+.pass-banner {
+  border-radius: 14px; padding: 1.1rem; text-align: center;
+  margin-bottom: 1.25rem; font-size: 1rem; font-weight: 800; border: 2px solid;
+}
+.pass-banner.passed { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+.pass-banner.failed { background: rgba(239,68,68,0.1);  border-color: var(--red);   color: var(--red); }
+
+.result-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
+.result-cell {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 1rem 0.5rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+}
+.result-cell-icon { font-size: 1.3rem; margin-bottom: 0.25rem; display: block; }
+.result-cell-val { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700; line-height: 1; margin-bottom: 0.2rem; }
+.result-cell-lbl { font-size: 0.68rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+
+.ach-section {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 0.9rem 1rem; margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+}
+.ach-section h3 { font-size: 0.75rem; color: var(--gold2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; font-weight: 800; }
+.ach-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.ach-badge {
+  background: rgba(245,158,11,0.1); border: 1px solid var(--gold);
+  border-radius: 20px; padding: 0.25rem 0.7rem;
+  font-size: 0.78rem; font-weight: 700; color: var(--gold2);
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.result-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+.btn-menu {
+  background: var(--card2); border: 2px solid var(--border); border-radius: 50px;
+  color: var(--muted); padding: 0.8rem 1.75rem;
+  font-size: 0.95rem; font-weight: 700;
+  font-family: 'Nunito', sans-serif; cursor: pointer; transition: all 0.2s;
+}
+.btn-menu:hover { border-color: var(--accent); color: var(--text); background: var(--bg2); }
+.btn-restart {
+  background: linear-gradient(135deg, var(--accent), var(--pink));
+  color: #fff; border: none; border-radius: 50px;
+  padding: 0.8rem 2.25rem; font-size: 1rem; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; cursor: pointer;
+  box-shadow: 0 0 20px rgba(124,58,237,0.4); transition: all 0.2s;
+  letter-spacing: 0.06em;
+}
+.btn-restart:hover { transform: scale(1.05); }
+
+/* ── FX ── */
+.confetti-piece {
+  position: fixed; pointer-events: none; z-index: 1000;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity:1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity:0; }
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+}
+.shake { animation: shake 0.4s ease; }
+.flash-el {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200;
+  animation: flash-out 0.35s ease forwards;
+}
+@keyframes flash-out { 0%{opacity:1} 100%{opacity:0} }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ WELCOME ══════════════ -->
+<div id="welcomeScreen" class="screen active">
+  <div class="logo-kanji">動</div>
+  <div class="logo-title">DŌSHI QUEST</div>
+  <div class="logo-sub">Japán igeragozás kaland – Futsūkei (普通形)</div>
+
+  <div class="section-title">Válaszd ki a gyakorlandó alakot</div>
+  <div class="mode-pills">
+    <div class="mode-pill active" data-mode="all" onclick="selectMode(this)">🗂 Összes alak</div>
+    <div class="mode-pill" data-mode="present-pos" onclick="selectMode(this)">✅ Jelen állító</div>
+    <div class="mode-pill" data-mode="present-neg" onclick="selectMode(this)">❌ Jelen tagadó</div>
+    <div class="mode-pill" data-mode="past-pos" onclick="selectMode(this)">✅ Múlt állító</div>
+    <div class="mode-pill" data-mode="past-neg" onclick="selectMode(this)">❌ Múlt tagadó</div>
+  </div>
+
+  <div class="section-title">Válassz nehézségi fokot</div>
+  <div class="difficulty-grid">
+    <div class="diff-card easy" onclick="selectDiff('easy',this)">
+      <span class="diff-icon">🌸</span>
+      <div class="diff-name" style="color:var(--green)">Könnyű</div>
+      <div class="diff-desc">Nincs időkorlát · Segítség ingyenes · Kisebb büntetés</div>
+      <div class="diff-stars">⭐</div>
+    </div>
+    <div class="diff-card normal selected" onclick="selectDiff('normal',this)">
+      <span class="diff-icon">⚔️</span>
+      <div class="diff-name" style="color:var(--blue)">Normál</div>
+      <div class="diff-desc">20 mp / kérdés · Segítség: –5 XP · Közepes büntetés</div>
+      <div class="diff-stars">⭐⭐</div>
+    </div>
+    <div class="diff-card hard" onclick="selectDiff('hard',this)">
+      <span class="diff-icon">🔥</span>
+      <div class="diff-name" style="color:var(--red)">Nehéz</div>
+      <div class="diff-desc">10 mp / kérdés · Nincs segítség · Dupla XP jutalom</div>
+      <div class="diff-stars">⭐⭐⭐</div>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startGame()">⚡ JÁTÉK INDÍTÁSA</button>
+</div>
+
+<!-- ══════════════ GAME ══════════════ -->
+<div id="gameScreen" class="screen">
+  <div class="hud">
+    <div class="hud-level">
+      <div class="level-badge" id="levelBadge">LVL 1</div>
+      <div class="xp-bar-wrap">
+        <div class="xp-label"><span>XP</span><span id="xpLabel">0 / 100</span></div>
+        <div class="xp-bar-outer"><div class="xp-bar-inner" id="xpBar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="hud-stats">
+      <div class="hud-stat"><span class="hud-stat-val" id="hudC" style="color:var(--green)">0</span><span>Helyes</span></div>
+      <div class="hud-stat"><span class="hud-stat-val" id="hudW" style="color:var(--red)">0</span><span>Hibás</span></div>
+    </div>
+    <div class="streak-pill" id="streakPill">🔥 <span id="streakNum">0</span></div>
+    <div class="timer-ring">
+      <svg width="42" height="42" viewBox="0 0 42 42">
+        <circle class="timer-bg" cx="21" cy="21" r="17"/>
+        <circle class="timer-fg" id="timerArc" cx="21" cy="21" r="17"/>
+      </svg>
+      <div class="timer-text" id="timerTxt">∞</div>
+    </div>
+  </div>
+
+  <div class="quest-progress">
+    <div class="quest-bar-outer"><div class="quest-bar-inner" id="questBar" style="width:0%"></div></div>
+    <div class="quest-label" id="questLbl">0 / 0</div>
+  </div>
+
+  <div class="game-area">
+    <div class="mode-bar" id="gameModeBar">
+      <div class="mode-chip active" data-mode="all" onclick="changeMode(this)">Összes</div>
+      <div class="mode-chip" data-mode="present-pos" onclick="changeMode(this)">Jelen ✓</div>
+      <div class="mode-chip" data-mode="present-neg" onclick="changeMode(this)">Jelen ✗</div>
+      <div class="mode-chip" data-mode="past-pos" onclick="changeMode(this)">Múlt ✓</div>
+      <div class="mode-chip" data-mode="past-neg" onclick="changeMode(this)">Múlt ✗</div>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <div class="q-number" id="qNum">Q 1</div>
+      <div class="verb-display">
+        <div class="verb-kanji" id="verbKanji">—</div>
+        <div class="verb-meta">
+          <span class="tag tag-group"   id="verbGroup">—</span>
+          <span class="tag tag-meaning" id="verbMeaning">—</span>
+        </div>
+      </div>
+      <div class="question-box">
+        <div class="type-badge" id="typeBadge">—</div><br>
+        <span id="qText">…</span>
+      </div>
+      <div class="answer-area">
+        <input type="text" class="answer-input" id="ansInput"
+               placeholder="漢字またはひらがなで入力…" autocomplete="off" autocorrect="off"
+               onkeydown="onKey(event)">
+        <button class="btn-check" id="checkBtn" onclick="checkAnswer()">Ellenőrzés</button>
+      </div>
+      <label class="hint-row" id="hintRow">
+        <input type="checkbox" id="hintToggle" onchange="toggleHint()">
+        Segítség kérése
+        <span class="hint-cost" id="hintCost"></span>
+        <span class="hint-text" id="hintTxt"></span>
+      </label>
+      <div class="feedback-area" id="feedback"></div>
+      <div class="nav-row">
+        <button class="btn-skip" onclick="skipQ()">⏭ Kihagyás</button>
+        <button class="btn-next" id="nextBtn" onclick="nextQ()">Következő ➜</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RESULT ══════════════ -->
+<div id="resultScreen" class="screen">
+  <div class="result-container">
+    <div class="grade-display">
+      <div class="grade-letter" id="gradeLetter">A</div>
+      <div class="grade-title" id="gradeTitle">Kiváló!</div>
+      <div class="grade-msg"   id="gradeMsg">—</div>
+    </div>
+
+    <div class="pass-banner" id="passBanner">—</div>
+
+    <div class="result-grid">
+      <div class="result-cell">
+        <span class="result-cell-icon">✅</span>
+        <div class="result-cell-val" id="rC" style="color:var(--green)">0</div>
+        <div class="result-cell-lbl">Helyes</div>
+      </div>
+      <div class="result-cell">
+        <span class="result-cell-icon">❌</span>
+        <div class="result-cell-val" id="rW" style="color:var(--red)">0</div>
+        <div class="result-cell-lbl">Hibás</div>
+      </div>
+      <div class="result-cell">
+        <span class="result-cell-icon">📊</span>
+        <div class="result-cell-val" id="rPct" style="color:var(--cyan)">0%</div>
+        <div class="result-cell-lbl">Pontosság</div>
+      </div>
+      <div class="result-cell">
+        <span class="result-cell-icon">⚡</span>
+        <div class="result-cell-val" id="rXP" style="color:var(--gold2)">0</div>
+        <div class="result-cell-lbl">Szerzett XP</div>
+      </div>
+      <div class="result-cell">
+        <span class="result-cell-icon">🔥</span>
+        <div class="result-cell-val" id="rStreak" style="color:var(--pink)">0</div>
+        <div class="result-cell-lbl">Max sorozat</div>
+      </div>
+      <div class="result-cell">
+        <span class="result-cell-icon">⏱️</span>
+        <div class="result-cell-val" id="rTime" style="color:var(--accent2)">—</div>
+        <div class="result-cell-lbl">Átlag idő</div>
+      </div>
+    </div>
+
+    <div class="ach-section" id="achSection" style="display:none">
+      <h3>🏆 Feloldott eredmények</h3>
+      <div class="ach-list" id="achList"></div>
+    </div>
+
+    <div class="result-buttons">
+      <button class="btn-menu" onclick="goMenu()">← Menü</button>
+      <button class="btn-restart" onclick="restartSame()">🔄 ÚJRA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ DATA ═══
+const verbs = [
+  {dict:"買う",    group:"Ⅰ", present_pos:"買う",    present_neg:"買わない",   past_pos:"買った",    past_neg:"買わなかった",   meaning:"venni",
+   h_present_pos:"かう",      h_present_neg:"かわない",    h_past_pos:"かった",     h_past_neg:"かわなかった"},
+  {dict:"行く",    group:"Ⅰ", present_pos:"行く",    present_neg:"行かない",   past_pos:"行った",    past_neg:"行かなかった",   meaning:"menni",
+   h_present_pos:"いく",      h_present_neg:"いかない",    h_past_pos:"いった",     h_past_neg:"いかなかった"},
+  {dict:"話す",    group:"Ⅰ", present_pos:"話す",    present_neg:"話さない",   past_pos:"話した",    past_neg:"話さなかった",   meaning:"beszélni",
+   h_present_pos:"はなす",    h_present_neg:"はなさない",  h_past_pos:"はなした",   h_past_neg:"はなさなかった"},
+  {dict:"待つ",    group:"Ⅰ", present_pos:"待つ",    present_neg:"待たない",   past_pos:"待った",    past_neg:"待たなかった",   meaning:"várni",
+   h_present_pos:"まつ",      h_present_neg:"またない",    h_past_pos:"まった",     h_past_neg:"またなかった"},
+  {dict:"死ぬ",    group:"Ⅰ", present_pos:"死ぬ",    present_neg:"死なない",   past_pos:"死んだ",    past_neg:"死ななかった",   meaning:"meghalni",
+   h_present_pos:"しぬ",      h_present_neg:"しなない",    h_past_pos:"しんだ",     h_past_neg:"しななかった"},
+  {dict:"飲む",    group:"Ⅰ", present_pos:"飲む",    present_neg:"飲まない",   past_pos:"飲んだ",    past_neg:"飲まなかった",   meaning:"inni",
+   h_present_pos:"のむ",      h_present_neg:"のまない",    h_past_pos:"のんだ",     h_past_neg:"のまなかった"},
+  {dict:"帰る",    group:"Ⅰ", present_pos:"帰る",    present_neg:"帰らない",   past_pos:"帰った",    past_neg:"帰らなかった",   meaning:"hazamenni",
+   h_present_pos:"かえる",    h_present_neg:"かえらない",  h_past_pos:"かえった",   h_past_neg:"かえらなかった"},
+  {dict:"書く",    group:"Ⅰ", present_pos:"書く",    present_neg:"書かない",   past_pos:"書いた",    past_neg:"書かなかった",   meaning:"írni",
+   h_present_pos:"かく",      h_present_neg:"かかない",    h_past_pos:"かいた",     h_past_neg:"かかなかった"},
+  {dict:"聞く",    group:"Ⅰ", present_pos:"聞く",    present_neg:"聞かない",   past_pos:"聞いた",    past_neg:"聞かなかった",   meaning:"hallgatni",
+   h_present_pos:"きく",      h_present_neg:"きかない",    h_past_pos:"きいた",     h_past_neg:"きかなかった"},
+  {dict:"泳ぐ",    group:"Ⅰ", present_pos:"泳ぐ",    present_neg:"泳がない",   past_pos:"泳いだ",    past_neg:"泳がなかった",   meaning:"úszni",
+   h_present_pos:"およぐ",    h_present_neg:"およがない",  h_past_pos:"およいだ",   h_past_neg:"およがなかった"},
+  {dict:"急ぐ",    group:"Ⅰ", present_pos:"急ぐ",    present_neg:"急がない",   past_pos:"急いだ",    past_neg:"急がなかった",   meaning:"sietni",
+   h_present_pos:"いそぐ",    h_present_neg:"いそがない",  h_past_pos:"いそいだ",   h_past_neg:"いそがなかった"},
+  {dict:"読む",    group:"Ⅰ", present_pos:"読む",    present_neg:"読まない",   past_pos:"読んだ",    past_neg:"読まなかった",   meaning:"olvasni",
+   h_present_pos:"よむ",      h_present_neg:"よまない",    h_past_pos:"よんだ",     h_past_neg:"よまなかった"},
+  {dict:"遊ぶ",    group:"Ⅰ", present_pos:"遊ぶ",    present_neg:"遊ばない",   past_pos:"遊んだ",    past_neg:"遊ばなかった",   meaning:"játszani",
+   h_present_pos:"あそぶ",    h_present_neg:"あそばない",  h_past_pos:"あそんだ",   h_past_neg:"あそばなかった"},
+  {dict:"わかる",  group:"Ⅰ", present_pos:"わかる",  present_neg:"わからない", past_pos:"わかった",  past_neg:"わからなかった", meaning:"érteni",
+   h_present_pos:"わかる",    h_present_neg:"わからない",  h_past_pos:"わかった",   h_past_neg:"わからなかった"},
+  {dict:"ある",    group:"Ⅰ", present_pos:"ある",    present_neg:"ない",       past_pos:"あった",    past_neg:"なかった",       meaning:"létezni (tárgy)",
+   h_present_pos:"ある",      h_present_neg:"ない",        h_past_pos:"あった",     h_past_neg:"なかった"},
+  {dict:"起きる",  group:"Ⅱ", present_pos:"起きる",  present_neg:"起きない",   past_pos:"起きた",    past_neg:"起きなかった",   meaning:"felkelni",
+   h_present_pos:"おきる",    h_present_neg:"おきない",    h_past_pos:"おきた",     h_past_neg:"おきなかった"},
+  {dict:"食べる",  group:"Ⅱ", present_pos:"食べる",  present_neg:"食べない",   past_pos:"食べた",    past_neg:"食べなかった",   meaning:"enni",
+   h_present_pos:"たべる",    h_present_neg:"たべない",    h_past_pos:"たべた",     h_past_neg:"たべなかった"},
+  {dict:"見る",    group:"Ⅱ", present_pos:"見る",    present_neg:"見ない",     past_pos:"見た",      past_neg:"見なかった",     meaning:"nézni",
+   h_present_pos:"みる",      h_present_neg:"みない",      h_past_pos:"みた",       h_past_neg:"みなかった"},
+  {dict:"着る",    group:"Ⅱ", present_pos:"着る",    present_neg:"着ない",     past_pos:"着た",      past_neg:"着なかった",     meaning:"felvenni (felsőt)",
+   h_present_pos:"きる",      h_present_neg:"きない",      h_past_pos:"きた",       h_past_neg:"きなかった"},
+  {dict:"いる",    group:"Ⅱ", present_pos:"いる",    present_neg:"いない",     past_pos:"いた",      past_neg:"いなかった",     meaning:"létezni (élőlény)",
+   h_present_pos:"いる",      h_present_neg:"いない",      h_past_pos:"いた",       h_past_neg:"いなかった"},
+  {dict:"寝る",    group:"Ⅱ", present_pos:"寝る",    present_neg:"寝ない",     past_pos:"寝た",      past_neg:"寝なかった",     meaning:"aludni",
+   h_present_pos:"ねる",      h_present_neg:"ねない",      h_past_pos:"ねた",       h_past_neg:"ねなかった"},
+  {dict:"出かける",group:"Ⅱ", present_pos:"出かける",present_neg:"出かけない", past_pos:"出かけた",  past_neg:"出かけなかった", meaning:"elmenni hazulról",
+   h_present_pos:"でかける",  h_present_neg:"でかけない",  h_past_pos:"でかけた",   h_past_neg:"でかけなかった"},
+  {dict:"来る",    group:"Ⅲ", present_pos:"来る",    present_neg:"来ない",     past_pos:"来た",      past_neg:"来なかった",     meaning:"jönni",
+   h_present_pos:"くる",      h_present_neg:"こない",      h_past_pos:"きた",       h_past_neg:"こなかった"},
+  {dict:"する",    group:"Ⅲ", present_pos:"する",    present_neg:"しない",     past_pos:"した",      past_neg:"しなかった",     meaning:"csinálni",
+   h_present_pos:"する",      h_present_neg:"しない",      h_past_pos:"した",       h_past_neg:"しなかった"},
+  {dict:"勉強する",group:"Ⅲ", present_pos:"勉強する",present_neg:"勉強しない", past_pos:"勉強した",  past_neg:"勉強しなかった", meaning:"tanulni",
+   h_present_pos:"べんきょうする", h_present_neg:"べんきょうしない", h_past_pos:"べんきょうした", h_past_neg:"べんきょうしなかった"},
+];
+
+const QT = {
+  'present-pos':{key:'present_pos', badge:'✅ Jelen · Állító', label:'jelen idő állító alakja'},
+  'present-neg':{key:'present_neg', badge:'❌ Jelen · Tagadó', label:'jelen idő tagadó alakja'},
+  'past-pos':   {key:'past_pos',    badge:'✅ Múlt · Állító',  label:'múlt idő állító alakja'},
+  'past-neg':   {key:'past_neg',    badge:'❌ Múlt · Tagadó',  label:'múlt idő tagadó alakja'},
+};
+
+const DIFF_CFG = {
+  easy:  {time:0,  xpBase:10, xpBonus:5,  penalty:5,  hintCost:0,  xpMult:1},
+  normal:{time:20, xpBase:15, xpBonus:10, penalty:8,  hintCost:5,  xpMult:1},
+  hard:  {time:10, xpBase:25, xpBonus:20, penalty:15, hintCost:999,xpMult:2},
+};
+
+const ACHIEVEMENTS = [
+  {id:'first',    icon:'🌟', name:'Első helyes!',      desc:'Az első helyes választ megkaptad.',         chk:s=>s.correct>=1},
+  {id:'streak5',  icon:'🔥', name:'5-ös sorozat!',     desc:'5 egymást követő helyes válasz.',            chk:s=>s.maxStreak>=5},
+  {id:'streak10', icon:'🌋', name:'Tüzes!',            desc:'10-es sorozat – lenyűgöző!',                chk:s=>s.maxStreak>=10},
+  {id:'nohint',   icon:'🧠', name:'Segítség nélkül!',  desc:'A teljes játékot segítség nélkül teljesítetted.', chk:s=>s.hintUsed===0&&s.total>=5},
+  {id:'perfect',  icon:'👑', name:'Tökéletes!',        desc:'100% pontosság legalább 10 kérdésnél.',     chk:s=>s.pct===100&&s.total>=10},
+  {id:'speed',    icon:'⚡', name:'Villámgyors',       desc:'Átlag 5 mp alatt válaszoltál.',              chk:s=>s.avgTime>0&&s.avgTime<=5},
+  {id:'grind25',  icon:'📚', name:'Szorgalmas',        desc:'25 kérdést megválaszoltál.',                 chk:s=>s.total>=25},
+  {id:'lvl3',     icon:'🚀', name:'Haladó szint',      desc:'Elérted a 3. szintet.',                     chk:s=>s.level>=3},
+];
+
+const XP_PER_LVL = 100;
+const PASS_PCT   = 60;
+
+// ═══ STATE ═══
+let selMode = 'all';
+let selDiff = 'normal';
+let queue=[], qi=0, answered=false;
+let correct=0, wrong=0, streak=0, maxStreak=0;
+let xp=0, level=1, hintUsed=0;
+let timerInt=null, timeLeft=0;
+let totalTime=0, ansCount=0, qStart=0;
+let sessionAch=[];
+
+// ═══ WELCOME ═══
+function selectMode(el){
+  document.querySelectorAll('.mode-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  selMode = el.dataset.mode;
+}
+
+function selectDiff(d, el){
+  selDiff = d;
+  document.querySelectorAll('.diff-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function startGame(){
+  correct=0;wrong=0;streak=0;maxStreak=0;
+  xp=0;level=1;hintUsed=0;totalTime=0;ansCount=0;sessionAch=[];
+  queue = buildQueue();
+  qi = 0;
+  showScreen('gameScreen');
+  // sync game mode bar
+  document.querySelectorAll('.mode-chip').forEach(c=>{
+    c.classList.toggle('active', c.dataset.mode===selMode);
+  });
+  updateHUD();
+  showQ();
+}
+
+function restartSame(){ startGame(); }
+function goMenu(){ showScreen('welcomeScreen'); }
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function buildQueue(){
+  const types = selMode==='all' ? Object.keys(QT) : [selMode];
+  let items=[];
+  verbs.forEach(v=>types.forEach(t=>items.push({v,t})));
+  for(let i=items.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [items[i],items[j]]=[items[j],items[i]];
+  }
+  return items;
+}
+
+function changeMode(el){
+  document.querySelectorAll('.mode-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  selMode = el.dataset.mode;
+  queue = buildQueue();
+  qi = 0;
+  showQ();
+}
+
+// ═══ TIMER ═══
+function startTimer(){
+  clearInterval(timerInt);
+  const cfg = DIFF_CFG[selDiff];
+  const arc = document.getElementById('timerArc');
+  const txt = document.getElementById('timerTxt');
+  if(!cfg.time){
+    txt.textContent='∞'; txt.className='timer-text';
+    arc.style.strokeDashoffset=0; arc.className='timer-fg';
+    return;
+  }
+  timeLeft = cfg.time;
+  updateTimerUI();
+  timerInt = setInterval(()=>{
+    timeLeft--;
+    updateTimerUI();
+    if(timeLeft<=0){ clearInterval(timerInt); timeExpired(); }
+  },1000);
+}
+
+function updateTimerUI(){
+  const cfg = DIFF_CFG[selDiff];
+  const ratio = timeLeft / (cfg.time||1);
+  const arc = document.getElementById('timerArc');
+  const txt = document.getElementById('timerTxt');
+  arc.style.strokeDashoffset = 107 * (1-ratio);
+  const cls = ratio>0.5?'':'warn';
+  const dangerous = ratio<=0.25;
+  arc.className = 'timer-fg'+(dangerous?' danger':ratio>0.5?'':' warn');
+  txt.className  = 'timer-text'+(dangerous?' danger':ratio>0.5?'':' warn');
+  txt.textContent = timeLeft;
+}
+
+function timeExpired(){
+  if(answered) return;
+  const {v,t} = queue[qi];
+  wrong++; streak=0; updateHUD();
+  flashBg('rgba(220,38,38,0.12)');
+  const inp = document.getElementById('ansInput');
+  inp.classList.add('wrong','shake'); inp.disabled=true;
+  setFeedback('wrong',`⏰ Lejárt! Helyes: <strong>${v[QT[t].key]}</strong>`);
+  document.getElementById('nextBtn').style.display='block';
+  document.getElementById('checkBtn').disabled=true;
+  answered=true;
+  recordTime();
+}
+
+// ═══ QUESTION ═══
+function showQ(){
+  if(qi>=queue.length){ endGame(); return; }
+  answered=false;
+  const {v,t} = queue[qi];
+  const qt = QT[t];
+  document.getElementById('qNum').textContent = `Q ${qi+1} / ${queue.length}`;
+  document.getElementById('verbKanji').textContent  = v.dict;
+  document.getElementById('verbGroup').textContent  = `${v.group}. csoport`;
+  document.getElementById('verbMeaning').textContent= v.meaning;
+  document.getElementById('typeBadge').textContent  = qt.badge;
+  document.getElementById('qText').textContent      = `Mi a(z) 「${v.dict}」 ige ${qt.label}?`;
+  document.getElementById('hintTxt').textContent = '';
+  document.getElementById('hintToggle').checked = false;
+
+  const cfg = DIFF_CFG[selDiff];
+  const hr = document.getElementById('hintRow');
+  hr.style.display = selDiff==='hard' ? 'none' : '';
+  document.getElementById('hintCost').textContent = cfg.hintCost>0 ? `(–${cfg.hintCost} XP)` : '(ingyenes)';
+
+  const inp = document.getElementById('ansInput');
+  inp.value=''; inp.className='answer-input'; inp.disabled=false; inp.focus();
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback-area';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('checkBtn').disabled=false;
+
+  updateProgress();
+  startTimer();
+  qStart = Date.now();
+
+  // re-animate card
+  const card = document.getElementById('questionCard');
+  card.style.animation='none'; card.offsetHeight; card.style.animation='';
+}
+
+function recordTime(){
+  totalTime += (Date.now()-qStart)/1000;
+  ansCount++;
+}
+
+function onKey(e){
+  if(e.key==='Enter'){ if(!answered) checkAnswer(); else nextQ(); }
+}
+
+// ═══ CHECK ═══
+function checkAnswer(){
+  if(answered) return;
+  clearInterval(timerInt);
+  const inp = document.getElementById('ansInput');
+  const ua = inp.value.trim();
+  if(!ua){ inp.focus(); return; }
+
+  const {v,t} = queue[qi];
+  const correctAns = v[QT[t].key];
+  const hKey = 'h_' + t.replace('-', '_');  // 'present-pos' → 'h_present_pos'
+  const hiraganaAns = v[hKey] || '';
+  const cfg = DIFF_CFG[selDiff];
+
+  answered=true; inp.disabled=true;
+  document.getElementById('checkBtn').disabled=true;
+  recordTime();
+
+  const isCorrect = (ua === correctAns) || (hiraganaAns && ua === hiraganaAns);
+
+  if(isCorrect){
+    correct++; streak++; if(streak>maxStreak) maxStreak=streak;
+    const bonus = streak>=3 ? cfg.xpBonus : 0;
+    const gained = (cfg.xpBase + bonus) * cfg.xpMult;
+    addXP(gained, inp);
+    inp.classList.add('correct');
+    setFeedback('correct', streak>=3
+      ? `✓ Helyes! 🔥 ×${streak} sorozat! (+${gained} XP)`
+      : `✓ Helyes! (+${gained} XP)`);
+    flashBg('rgba(16,185,129,0.18)');
+    checkAchievements();
+  } else {
+    wrong++; streak=0;
+    addXP(-cfg.penalty);
+    inp.classList.add('wrong','shake');
+    const hint = hiraganaAns ? ` (ひらがな: ${hiraganaAns})` : '';
+    setFeedback('wrong',`✗ Helytelen — Helyes: <strong>${correctAns}</strong>${hint}`);
+    flashBg('rgba(220,38,38,0.12)');
+  }
+  updateHUD();
+  document.getElementById('nextBtn').style.display='block';
+}
+
+function toggleHint(){
+  const on = document.getElementById('hintToggle').checked;
+  if(!on){ document.getElementById('hintTxt').textContent=''; return; }
+  const {v,t} = queue[qi];
+  const hKey = 'h_' + t.replace('-', '_');
+  const hAns = v[hKey] || v[QT[t].key];
+  document.getElementById('hintTxt').textContent = `→ ${hAns.slice(0,-1)}…`;
+  if(!answered){
+    hintUsed++;
+    const cost = DIFF_CFG[selDiff].hintCost;
+    if(cost>0) addXP(-cost);
+  }
+}
+
+function skipQ(){
+  if(!answered){ wrong++; streak=0; addXP(-DIFF_CFG[selDiff].penalty); updateHUD(); }
+  clearInterval(timerInt); qi++; showQ();
+}
+function nextQ(){ qi++; showQ(); }
+
+// ═══ XP & LEVEL ═══
+function addXP(amount, inputEl){
+  xp = Math.max(0, xp+amount);
+  while(xp>=XP_PER_LVL){ xp-=XP_PER_LVL; level++; showToast('🚀','Szint növekedés!',`Elérted a(z) ${level}. szintet!`); }
+  updateHUD();
+  if(amount>0 && inputEl) spawnXPPopup(amount, inputEl);
+}
+
+function spawnXPPopup(n, el){
+  const rect = el.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className='xp-popup'; pop.textContent=`+${n} XP`;
+  pop.style.left=`${rect.left+rect.width/2-30}px`;
+  pop.style.top =`${rect.top-10}px`;
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),1200);
+}
+
+function updateHUD(){
+  document.getElementById('levelBadge').textContent = `LVL ${level}`;
+  document.getElementById('xpLabel').textContent    = `${xp} / ${XP_PER_LVL}`;
+  document.getElementById('xpBar').style.width      = `${xp/XP_PER_LVL*100}%`;
+  document.getElementById('hudC').textContent = correct;
+  document.getElementById('hudW').textContent = wrong;
+  document.getElementById('streakNum').textContent = streak;
+  const sp = document.getElementById('streakPill');
+  sp.className = streak>=3 ? 'streak-pill hot' : 'streak-pill';
+}
+
+function updateProgress(){
+  const pct = qi/queue.length*100;
+  document.getElementById('questBar').style.width = `${pct}%`;
+  document.getElementById('questLbl').textContent = `${qi} / ${queue.length}`;
+}
+
+// ═══ FEEDBACK ═══
+function setFeedback(type, html){
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback-area ${type}`;
+  fb.innerHTML = html;
+}
+
+function flashBg(color){
+  const el=document.createElement('div');
+  el.className='flash-el'; el.style.background=color;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),400);
+}
+
+// ═══ ACHIEVEMENTS ═══
+function checkAchievements(){
+  const total = correct+wrong;
+  const s={correct,wrong,streak,maxStreak,total,hintUsed,level,
+            pct:total?Math.round(correct/total*100):0,
+            avgTime:ansCount?totalTime/ansCount:0};
+  ACHIEVEMENTS.forEach(a=>{
+    if(!sessionAch.find(x=>x.id===a.id) && a.chk(s)){
+      sessionAch.push(a);
+      setTimeout(()=>showToast(a.icon,a.name,a.desc),300);
+    }
+  });
+}
+
+function showToast(icon,name,desc){
+  const t=document.createElement('div');
+  t.className='achievement-toast';
+  t.innerHTML=`<div class="toast-icon">${icon}</div>
+    <div><div class="toast-title">🏆 Eredmény feloldva!</div>
+    <div class="toast-name">${name}</div>
+    <div class="toast-desc">${desc}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{
+    t.style.transition='opacity .5s,transform .5s';
+    t.style.opacity='0'; t.style.transform='translateX(120%)';
+    setTimeout(()=>t.remove(),500);
+  },2800);
+}
+
+// ═══ END ═══
+function endGame(){
+  clearInterval(timerInt);
+  checkAchievements(); // final check
+  const total=correct+wrong;
+  const pct=total?Math.round(correct/total*100):0;
+  const passed=pct>=PASS_PCT;
+  const avgTime=ansCount?(totalTime/ansCount).toFixed(1):'—';
+  const totalXP=xp+(level-1)*XP_PER_LVL;
+
+  let grade,gtitle,gmsg;
+  if(pct>=90){grade='A';gtitle='Kiváló!';gmsg='Mesteri teljesítmény – fantasztikus!';}
+  else if(pct>=80){grade='B';gtitle='Nagyon jó!';gmsg='Szép munka, csak így tovább!';}
+  else if(pct>=70){grade='C';gtitle='Jó!';gmsg='Megálltad a helyed – érdemes még gyakorolni!';}
+  else if(pct>=60){grade='D';gtitle='Megfelelő';gmsg='Átmentél, de van hova fejlődni.';}
+  else{grade='F';gtitle='Nem sikerült...';gmsg='Ne add fel! Próbáld meg újra!';}
+
+  const gl=document.getElementById('gradeLetter');
+  gl.textContent=grade; gl.className=`grade-letter grade-${grade}`;
+  document.getElementById('gradeTitle').textContent=gtitle;
+  document.getElementById('gradeMsg').textContent=gmsg;
+
+  const pb=document.getElementById('passBanner');
+  if(passed){
+    pb.className='pass-banner passed';
+    pb.innerHTML=`🎉 MEGFELELTÉL! ${pct}% — sikeresen teljesítetted a(z) <strong>${selDiff==='easy'?'Könnyű':selDiff==='normal'?'Normál':'Nehéz'}</strong> módot!`;
+  } else {
+    pb.className='pass-banner failed';
+    pb.innerHTML=`😢 NEM SIKERÜLT — ${pct}% (minimum: ${PASS_PCT}%) — próbáld meg újra!`;
+  }
+
+  document.getElementById('rC').textContent=correct;
+  document.getElementById('rW').textContent=wrong;
+  document.getElementById('rPct').textContent=`${pct}%`;
+  document.getElementById('rXP').textContent=totalXP;
+  document.getElementById('rStreak').textContent=maxStreak;
+  document.getElementById('rTime').textContent=avgTime!=='—'?`${avgTime}mp`:'—';
+
+  const achSec=document.getElementById('achSection');
+  if(sessionAch.length>0){
+    achSec.style.display='';
+    document.getElementById('achList').innerHTML=
+      sessionAch.map(a=>`<div class="ach-badge">${a.icon} ${a.name}</div>`).join('');
+  } else { achSec.style.display='none'; }
+
+  showScreen('resultScreen');
+  if(passed) launchConfetti();
+}
+
+// ═══ CONFETTI ═══
+function launchConfetti(){
+  const colors=['#f59e0b','#a855f7','#10b981','#3b82f6','#ec4899','#fff','#06b6d4'];
+  for(let i=0;i<90;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='confetti-piece';
+      el.style.cssText=`left:${Math.random()*100}vw;top:-20px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
+        border-radius:${Math.random()>.5?'50%':'2px'};
+        animation-duration:${2+Math.random()*3}s;
+        animation-delay:${Math.random()*.4}s;`;
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),5000);
+    },i*25);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字ドリル – Érettségi 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Kaisei+Decol:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c1c2e;
+    --bg: #f8f4ef;
+    --card: #ffffff;
+    --red: #c0392b;
+    --green: #27ae60;
+    --blue: #2980b9;
+    --gold: #e67e22;
+    --muted: #7f8c8d;
+    --border: #e0d8d0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--ink);
+    color: white;
+    padding: 16px 20px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .logo {
+    font-family: 'Kaisei Decol', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .logo span { color: var(--gold); }
+  .source-tag {
+    font-size: 0.7rem;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 10px;
+    border-radius: 20px;
+    color: #aaa;
+  }
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .progress-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .score-pill {
+    background: var(--gold);
+    color: white;
+    font-weight: 800;
+    font-size: 0.8rem;
+    padding: 3px 12px;
+    border-radius: 20px;
+    min-width: 55px;
+    text-align: center;
+  }
+
+  /* Tab bar */
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: none;
+    padding: 11px 18px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab.active { color: var(--ink); border-bottom-color: var(--red); }
+
+  /* Main content */
+  .section { display: none; padding: 20px 16px; max-width: 660px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .section-header {
+    background: var(--ink);
+    color: white;
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+  }
+  .section-header h2 { font-size: 1rem; font-weight: 800; margin-bottom: 2px; }
+  .section-header p { font-size: 0.78rem; color: #aaa; }
+
+  /* Kanji reference cards */
+  .kanji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .kref-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .kref-card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .kref-char {
+    font-size: 2.2rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    display: block;
+    line-height: 1.2;
+  }
+  .kref-read { font-size: 0.72rem; color: var(--blue); margin-top: 3px; }
+  .kref-mean { font-size: 0.78rem; font-weight: 700; color: var(--ink); margin-top: 2px; }
+
+  /* Quiz cards */
+  .quiz-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 16px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .quiz-card.correct { border-color: var(--green); background: #f0fff4; }
+  .quiz-card.wrong { border-color: var(--red); background: #fff5f5; }
+
+  .q-num {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .q-sentence {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.7;
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    background: #f7f5f2;
+    border-radius: 8px;
+    border-left: 3px solid var(--gold);
+  }
+  .q-sentence b {
+    color: var(--red);
+    font-weight: 700;
+  }
+  .q-ask {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .opt {
+    background: #f5f5f5;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px 6px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .opt:hover:not(:disabled) { background: #eef3ff; border-color: var(--blue); }
+  .opt.sel { background: var(--blue); color: white; border-color: var(--blue); }
+  .opt.ok { background: var(--green); color: white; border-color: var(--green); }
+  .opt.ng { background: var(--red); color: white; border-color: var(--red); opacity: 0.75; }
+  .opt:disabled { cursor: not-allowed; }
+
+  /* Fill input */
+  .fill-wrap { display: flex; gap: 8px; align-items: center; }
+  .fill-inp {
+    flex: 1;
+    padding: 10px 14px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    background: #fafafa;
+    transition: border-color 0.2s;
+  }
+  .fill-inp:focus { border-color: var(--blue); background: white; }
+  .fill-inp.ok { border-color: var(--green); background: #f0fff4; }
+  .fill-inp.ng { border-color: var(--red); background: #fff5f5; }
+
+  .check-btn {
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .check-btn:hover { background: #333; }
+  .check-btn.done { background: var(--muted); cursor: not-allowed; }
+
+  /* Feedback */
+  .fb {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    line-height: 1.7;
+  }
+  .fb.show { display: block; }
+  .fb.ok { background: #e8f5e9; color: #1e6b35; }
+  .fb.ng { background: #fdecea; color: #a93226; }
+  .fb .fb-title { font-weight: 800; font-size: 0.88rem; }
+  .fb .exp {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    color: var(--ink);
+    font-size: 0.8rem;
+  }
+  .source-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* Results */
+  .result-summary {
+    background: var(--ink);
+    color: white;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .big-num { font-size: 3.5rem; font-weight: 800; color: var(--gold); line-height: 1; }
+  .big-sub { font-size: 0.85rem; color: #aaa; margin-top: 6px; }
+  .result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .result-item .icon { font-size: 1rem; }
+  .result-item .qlabel { flex: 1; font-family: 'Noto Sans JP', sans-serif; }
+  .result-item .ans { font-weight: 800; color: var(--green); }
+  .result-item.ng .ans { color: var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">漢字<span>ドリル</span></div>
+    <div class="source-tag">📄 Érettségi 2025. október</div>
+  </div>
+  <div class="progress-row">
+    <div class="progress-wrap"><div class="progress-fill" id="prog"></div></div>
+    <div class="score-pill" id="scoreDisp">0 pt</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('ref',this)">📖 漢字一覧</div>
+  <div class="tab" onclick="showTab('read',this)">🔤 読み方</div>
+  <div class="tab" onclick="showTab('mean',this)">💬 意味</div>
+  <div class="tab" onclick="showTab('sent',this)">📝 文中漢字</div>
+  <div class="tab" onclick="showTab('res',this)">📊 結果</div>
+</div>
+
+<!-- ===== TAB 1: 漢字一覧 ===== -->
+<div class="section active" id="sec-ref">
+  <div class="section-header">
+    <h2>📖 漢字一覧 · Kanji szójegyzék</h2>
+    <p>2025. október – Emelt szintű érettségi feladatlapjából</p>
+  </div>
+
+  <div style="font-size:0.8rem;color:var(--muted);margin-bottom:12px">
+    Az alábbi kanjik ふりがな (olvasati segítség) nélkül szerepeltek a vizsgán.
+  </div>
+
+  <div class="kanji-grid">
+    <div class="kref-card"><span class="kref-char">平和</span><div class="kref-read">へいわ</div><div class="kref-mean">béke</div></div>
+    <div class="kref-card"><span class="kref-char">戦争</span><div class="kref-read">せんそう</div><div class="kref-mean">háború</div></div>
+    <div class="kref-card"><span class="kref-char">原爆</span><div class="kref-read">げんばく</div><div class="kref-mean">atombomba</div></div>
+    <div class="kref-card"><span class="kref-char">習慣</span><div class="kref-read">しゅうかん</div><div class="kref-mean">szokás</div></div>
+    <div class="kref-card"><span class="kref-char">観光客</span><div class="kref-read">かんこうきゃく</div><div class="kref-mean">turista</div></div>
+    <div class="kref-card"><span class="kref-char">参加者</span><div class="kref-read">さんかしゃ</div><div class="kref-mean">résztvevő</div></div>
+    <div class="kref-card"><span class="kref-char">紹介</span><div class="kref-read">しょうかい</div><div class="kref-mean">bemutató</div></div>
+    <div class="kref-card"><span class="kref-char">昔話</span><div class="kref-read">むかしばなし</div><div class="kref-mean">régi mese</div></div>
+    <div class="kref-card"><span class="kref-char">洗濯</span><div class="kref-read">せんたく</div><div class="kref-mean">mosás</div></div>
+    <div class="kref-card"><span class="kref-char">最近</span><div class="kref-read">さいきん</div><div class="kref-mean">mostanában</div></div>
+    <div class="kref-card"><span class="kref-char">情報</span><div class="kref-read">じょうほう</div><div class="kref-mean">információ</div></div>
+    <div class="kref-card"><span class="kref-char">完全</span><div class="kref-read">かんぜん</div><div class="kref-mean">tökéletes</div></div>
+    <div class="kref-card"><span class="kref-char">専門</span><div class="kref-read">せんもん</div><div class="kref-mean">szakterület</div></div>
+    <div class="kref-card"><span class="kref-char">卒業</span><div class="kref-read">そつぎょう</div><div class="kref-mean">végzés</div></div>
+    <div class="kref-card"><span class="kref-char">有名</span><div class="kref-read">ゆうめい</div><div class="kref-mean">híres</div></div>
+    <div class="kref-card"><span class="kref-char">目的</span><div class="kref-read">もくてき</div><div class="kref-mean">cél</div></div>
+    <div class="kref-card"><span class="kref-char">水族館</span><div class="kref-read">すいぞくかん</div><div class="kref-mean">akvárium</div></div>
+    <div class="kref-card"><span class="kref-char">環境</span><div class="kref-read">かんきょう</div><div class="kref-mean">környezet</div></div>
+    <div class="kref-card"><span class="kref-char">関係</span><div class="kref-read">かんけい</div><div class="kref-mean">kapcsolat</div></div>
+    <div class="kref-card"><span class="kref-char">歴史</span><div class="kref-read">れきし</div><div class="kref-mean">történelem</div></div>
+    <div class="kref-card"><span class="kref-char">冷蔵庫</span><div class="kref-read">れいぞうこ</div><div class="kref-mean">hűtőszekrény</div></div>
+    <div class="kref-card"><span class="kref-char">材料</span><div class="kref-read">ざいりょう</div><div class="kref-mean">összetevő</div></div>
+    <div class="kref-card"><span class="kref-char">説明</span><div class="kref-read">せつめい</div><div class="kref-mean">magyarázat</div></div>
+    <div class="kref-card"><span class="kref-char">興味</span><div class="kref-read">きょうみ</div><div class="kref-mean">érdeklődés</div></div>
+  </div>
+</div>
+
+<!-- ===== TAB 2: 読み方クイズ ===== -->
+<div class="section" id="sec-read">
+  <div class="section-header">
+    <h2>🔤 読み方クイズ · Olvasat</h2>
+    <p>Válaszd ki a helyes olvasatot! (ひらがな)</p>
+  </div>
+
+  <!-- Q1 -->
+  <div class="quiz-card" id="rq1">
+    <div class="q-num">問題 1 / 8</div>
+    <div class="q-ask">「平和」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq1',this,'ng')">へいか</button>
+      <button class="opt" onclick="mcq('rq1',this,'ok')">へいわ</button>
+      <button class="opt" onclick="mcq('rq1',this,'ng')">たいわ</button>
+      <button class="opt" onclick="mcq('rq1',this,'ng')">へいこ</button>
+    </div>
+    <div class="fb" id="fb-rq1" data-ok="へいわ" data-exp="平和（へいわ）= béke。平 = sík/egyenlő, 和 = harmónia。例：平和な世界 (békés világ)。試験の文章では「ノーベル平和賞」に使われていました。"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-card" id="rq2">
+    <div class="q-num">問題 2 / 8</div>
+    <div class="q-ask">「戦争」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq2',this,'ng')">せんしょう</button>
+      <button class="opt" onclick="mcq('rq2',this,'ng')">たたかい</button>
+      <button class="opt" onclick="mcq('rq2',this,'ok')">せんそう</button>
+      <button class="opt" onclick="mcq('rq2',this,'ng')">せんこう</button>
+    </div>
+    <div class="fb" id="fb-rq2" data-ok="せんそう" data-exp="戦争（せんそう）= háború。戦 = harcolni, 争 = versenyezni/vitázni。反対語：平和（べkke)。"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-card" id="rq3">
+    <div class="q-num">問題 3 / 8</div>
+    <div class="q-ask">「習慣」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq3',this,'ok')">しゅうかん</button>
+      <button class="opt" onclick="mcq('rq3',this,'ng')">しゅうごう</button>
+      <button class="opt" onclick="mcq('rq3',this,'ng')">れんしゅう</button>
+      <button class="opt" onclick="mcq('rq3',this,'ng')">かんしゅう</button>
+    </div>
+    <div class="fb" id="fb-rq3" data-ok="しゅうかん" data-exp="習慣（しゅうかん）= szokás。習 = tanulni/gyakorolni, 慣 = megszokni。例：日本には折り紙でたくさんの鶴を作る習慣があります。（A vizsga szövegéből！）"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-card" id="rq4">
+    <div class="q-num">問題 4 / 8</div>
+    <div class="q-ask">「観光客」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq4',this,'ng')">かんこうし</button>
+      <button class="opt" onclick="mcq('rq4',this,'ok')">かんこうきゃく</button>
+      <button class="opt" onclick="mcq('rq4',this,'ng')">みるひと</button>
+      <button class="opt" onclick="mcq('rq4',this,'ng')">かんこうか</button>
+    </div>
+    <div class="fb" id="fb-rq4" data-ok="かんこうきゃく" data-exp="観光客（かんこうきゃく）= turista。観光 = turizmus, 客 = vendég/ügyfél。客 (きゃく) = vendég ☞ 他にも：お客さん、乗客（じょうきゃく）など。"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-card" id="rq5">
+    <div class="q-num">問題 5 / 8</div>
+    <div class="q-ask">「紹介」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq5',this,'ng')">しょうめい</button>
+      <button class="opt" onclick="mcq('rq5',this,'ng')">せつめい</button>
+      <button class="opt" onclick="mcq('rq5',this,'ok')">しょうかい</button>
+      <button class="opt" onclick="mcq('rq5',this,'ng')">しょうたい</button>
+    </div>
+    <div class="fb" id="fb-rq5" data-ok="しょうかい" data-exp="紹介（しょうかい）= bemutatkozás/bemutatás。よく使う表現：自己紹介（じこしょうかい）= önbemutatkozás。"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="quiz-card" id="rq6">
+    <div class="q-num">問題 6 / 8</div>
+    <div class="q-ask">「卒業」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq6',this,'ng')">しゅうぎょう</button>
+      <button class="opt" onclick="mcq('rq6',this,'ok')">そつぎょう</button>
+      <button class="opt" onclick="mcq('rq6',this,'ng')">そつごう</button>
+      <button class="opt" onclick="mcq('rq6',this,'ng')">かつどう</button>
+    </div>
+    <div class="fb" id="fb-rq6" data-ok="そつぎょう" data-exp="卒業（そつぎょう）= végzés/diplomaszerzés。卒業式（そつぎょうしき）= ballagás/diplomaosztó。さかなクンは大学を卒業していませんが、大学の先生になりました。（試験の文章より）"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="quiz-card" id="rq7">
+    <div class="q-num">問題 7 / 8</div>
+    <div class="q-ask">「環境」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq7',this,'ng')">かんけい</button>
+      <button class="opt" onclick="mcq('rq7',this,'ng')">かんしょう</button>
+      <button class="opt" onclick="mcq('rq7',this,'ok')">かんきょう</button>
+      <button class="opt" onclick="mcq('rq7',this,'ng')">えんきょ</button>
+    </div>
+    <div class="fb" id="fb-rq7" data-ok="かんきょう" data-exp="環境（かんきょう）= környezet。環境問題（かんきょうもんだい）= környezeti problémák。海の環境問題 = a tenger környezeti problémái。（試験の文章より）"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="quiz-card" id="rq8">
+    <div class="q-num">問題 8 / 8</div>
+    <div class="q-ask">「最近」の読み方は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('rq8',this,'ng')">もっとも</button>
+      <button class="opt" onclick="mcq('rq8',this,'ng')">さいしん</button>
+      <button class="opt" onclick="mcq('rq8',this,'ng')">ちかごろ</button>
+      <button class="opt" onclick="mcq('rq8',this,'ok')">さいきん</button>
+    </div>
+    <div class="fb" id="fb-rq8" data-ok="さいきん" data-exp="最近（さいきん）= mostanában/nemrég。最 = leg- (szuperlatívusz), 近 = közel。例：最近日本食が人気です。"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 3: 意味クイズ ===== -->
+<div class="section" id="sec-mean">
+  <div class="section-header">
+    <h2>💬 意味クイズ · Jelentés</h2>
+    <p>Melyik a helyes magyar jelentés?</p>
+  </div>
+
+  <!-- M1 -->
+  <div class="quiz-card" id="mq1">
+    <div class="q-num">問題 1 / 6</div>
+    <div class="q-ask">「情報」の意味は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('mq1',this,'ng')">érzelem</button>
+      <button class="opt" onclick="mcq('mq1',this,'ok')">információ</button>
+      <button class="opt" onclick="mcq('mq1',this,'ng')">kapcsolat</button>
+      <button class="opt" onclick="mcq('mq1',this,'ng')">szokás</button>
+    </div>
+    <div class="fb" id="fb-mq1" data-ok="információ" data-exp="情報（じょうほう）= információ/adat。情 = érzés/állapot, 報 = hír/jelentés。情報技術 = IT (információs technológia)。"></div>
+  </div>
+
+  <!-- M2 -->
+  <div class="quiz-card" id="mq2">
+    <div class="q-num">問題 2 / 6</div>
+    <div class="q-ask">「目的」の意味は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('mq2',this,'ng')">látószerv</button>
+      <button class="opt" onclick="mcq('mq2',this,'ng')">eredmény</button>
+      <button class="opt" onclick="mcq('mq2',this,'ok')">cél</button>
+      <button class="opt" onclick="mcq('mq2',this,'ng')">szempont</button>
+    </div>
+    <div class="fb" id="fb-mq2" data-ok="cél" data-exp="目的（もくてき）= cél。目 = szem/nézni, 的 = -szerű/-ra irányuló。例：目的のために = a célért。（試験の文章：「海の豊かさを守ろう」という目的のために）"></div>
+  </div>
+
+  <!-- M3 -->
+  <div class="quiz-card" id="mq3">
+    <div class="q-num">問題 3 / 6</div>
+    <div class="q-ask">「洗濯」の意味は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('mq3',this,'ng')">takarítás</button>
+      <button class="opt" onclick="mcq('mq3',this,'ok')">mosás (ruha)</button>
+      <button class="opt" onclick="mcq('mq3',this,'ng')">főzés</button>
+      <button class="opt" onclick="mcq('mq3',this,'ng')">bevásárlás</button>
+    </div>
+    <div class="fb" id="fb-mq3" data-ok="mosás (ruha)" data-exp="洗濯（せんたく）= ruhámosás。洗 = mosni, 濯 = öblíteni。洗濯機（せんたくき）= mosógép。（試験の文章：「おばあさんが川で洗濯をしていると」）"></div>
+  </div>
+
+  <!-- M4 -->
+  <div class="quiz-card" id="mq4">
+    <div class="q-num">問題 4 / 6</div>
+    <div class="q-ask">「完全」の意味は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('mq4',this,'ng')">részleges</button>
+      <button class="opt" onclick="mcq('mq4',this,'ng')">egyszerű</button>
+      <button class="opt" onclick="mcq('mq4',this,'ng')">fontos</button>
+      <button class="opt" onclick="mcq('mq4',this,'ok')">tökéletes/teljes</button>
+    </div>
+    <div class="fb" id="fb-mq4" data-ok="tökéletes/teljes" data-exp="完全（かんぜん）= tökéletes/teljes/hiánytalan。例：みんなが持っている情報は完全ではない = Mindenki tudása hiányos。（試験の文章より）"></div>
+  </div>
+
+  <!-- M5 -->
+  <div class="quiz-card" id="mq5">
+    <div class="q-num">問題 5 / 6</div>
+    <div class="q-ask">「水族館」の意味は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('mq5',this,'ok')">akvárium</button>
+      <button class="opt" onclick="mcq('mq5',this,'ng')">uszoda</button>
+      <button class="opt" onclick="mcq('mq5',this,'ng')">strand</button>
+      <button class="opt" onclick="mcq('mq5',this,'ng')">halászat</button>
+    </div>
+    <div class="fb" id="fb-mq5" data-ok="akvárium" data-exp="水族館（すいぞくかん）= akvárium。水 = víz, 族 = törzs/csoport, 館 = épület/intézmény。動物園（どうぶつえん）= állatkert と一緒に覚えよう！"></div>
+  </div>
+
+  <!-- M6 -->
+  <div class="quiz-card" id="mq6">
+    <div class="q-num">問題 6 / 6</div>
+    <div class="q-ask">「歴史」の意味は？</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('mq6',this,'ng')">jövő</button>
+      <button class="opt" onclick="mcq('mq6',this,'ng')">kultúra</button>
+      <button class="opt" onclick="mcq('mq6',this,'ok')">történelem</button>
+      <button class="opt" onclick="mcq('mq6',this,'ng')">hagyomány</button>
+    </div>
+    <div class="fb" id="fb-mq6" data-ok="történelem" data-exp="歴史（れきし）= történelem。例：みそが歴史の中で最初に本の中に出て来たのは８世紀ごろでした。（試験の文章より – みそについての話）"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 4: 文中漢字 ===== -->
+<div class="section" id="sec-sent">
+  <div class="section-header">
+    <h2>📝 文中の漢字 · Kanji mondatban</h2>
+    <p>Írd be a helyes kanjit vagy olvasatot a mondatba! A mondatok a vizsgafeladatlapból valók.</p>
+  </div>
+
+  <!-- S1 -->
+  <div class="quiz-card" id="sq1">
+    <div class="q-num">問題 1 / 5 · Írd be a hiányzó szót!</div>
+    <div class="q-sentence">日本には、折り紙でたくさんの鶴を作る<b>＿＿＿</b>があります。</div>
+    <div class="q-ask">（szokás = ？）</div>
+    <div class="fill-wrap">
+      <input class="fill-inp" id="fi-sq1" placeholder="ひらがな or 漢字" oninput="clearF('fi-sq1')">
+      <button class="check-btn" id="btn-sq1" onclick="fillCheck('sq1',['しゅうかん','習慣'])">確認</button>
+    </div>
+    <div class="fb" id="fb-sq1" data-ok="しゅうかん／習慣" data-exp="習慣（しゅうかん）= szokás。この文章はノーベル平和賞のスピーチから：「病気が治りますようにと願いながら、折り紙でたくさんの鶴を作る習慣があること」。"></div>
+  </div>
+
+  <!-- S2 -->
+  <div class="quiz-card" id="sq2">
+    <div class="q-num">問題 2 / 5 · Írd be a hiányzó szót!</div>
+    <div class="q-sentence">さかなクンは有名な魚の<b>＿＿＿</b>です。</div>
+    <div class="q-ask">（tudós/szakember = ？）</div>
+    <div class="fill-wrap">
+      <input class="fill-inp" id="fi-sq2" placeholder="ひらがな or 漢字" oninput="clearF('fi-sq2')">
+      <button class="check-btn" id="btn-sq2" onclick="fillCheck('sq2',['がくしゃ','学者'])">確認</button>
+    </div>
+    <div class="fb" id="fb-sq2" data-ok="がくしゃ／学者" data-exp="学者（がくしゃ）= tudós/szakember。学 = tanulás, 者 = személy。他にも：医者（いしゃ）= orvos, 記者（きしゃ）= újságíró。"></div>
+  </div>
+
+  <!-- S3 -->
+  <div class="quiz-card" id="sq3">
+    <div class="q-num">問題 3 / 5 · Melyik kanji illik a mondatba?</div>
+    <div class="q-sentence">おばあさんが川で<b>（　）</b>をしていると、川から…</div>
+    <div class="q-ask">（ruhát mosni）</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('sq3',this,'ng')">料理</button>
+      <button class="opt" onclick="mcq('sq3',this,'ok')">洗濯</button>
+      <button class="opt" onclick="mcq('sq3',this,'ng')">買物</button>
+      <button class="opt" onclick="mcq('sq3',this,'ng')">掃除</button>
+    </div>
+    <div class="fb" id="fb-sq3" data-ok="洗濯" data-exp="洗濯（せんたく）= mosás。Ez a Talkingロボット feladatból való mondat: a robot japán mesét mesél, és elfelejtette, mi úszott le a folyón. (Momotaro / ももたろう！)"></div>
+  </div>
+
+  <!-- S4 -->
+  <div class="quiz-card" id="sq4">
+    <div class="q-num">問題 4 / 5 · Írd be a hiányzó szót!</div>
+    <div class="q-sentence">さかなクンは「海の<b>＿＿＿</b>を守ろう」という目的のために話をしています。</div>
+    <div class="q-ask">（gazdagsága = ？ ヒント：ゆた＿＿）</div>
+    <div class="fill-wrap">
+      <input class="fill-inp" id="fi-sq4" placeholder="ひらがな" oninput="clearF('fi-sq4')">
+      <button class="check-btn" id="btn-sq4" onclick="fillCheck('sq4',['ゆたかさ','豊かさ','ゆたか'])">確認</button>
+    </div>
+    <div class="fb" id="fb-sq4" data-ok="ゆたかさ／豊かさ" data-exp="豊かさ（ゆたかさ）= gazdagság/bőség。豊か（ゆたか）な = gazdag/bőséges。「海の豊かさを守ろう」= Védjük a tenger gazdagságát！"></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="quiz-card" id="sq5">
+    <div class="q-num">問題 5 / 5 · Melyik kanji illik a mondatba?</div>
+    <div class="q-sentence">さかなクンは<b>（　）</b>学校を卒業していませんが、大学の先生になりました。</div>
+    <div class="q-ask">（nagy = ？）</div>
+    <div class="opts">
+      <button class="opt" onclick="mcq('sq5',this,'ok')">大</button>
+      <button class="opt" onclick="mcq('sq5',this,'ng')">高</button>
+      <button class="opt" onclick="mcq('sq5',this,'ng')">中</button>
+      <button class="opt" onclick="mcq('sq5',this,'ng')">小</button>
+    </div>
+    <div class="fb" id="fb-sq5" data-ok="大（だい）" data-exp="大学（だいがく）= egyetem。さかなクンは大学を卒業していませんが（Sakaana-kun nem végzett egyetemet）、2006年に大学の先生になることができました。（试験の文章より）"></div>
+  </div>
+</div>
+
+<!-- ===== TAB 5: 結果 ===== -->
+<div class="section" id="sec-res">
+  <div class="section-header">
+    <h2>📊 結果 · Eredmény</h2>
+    <p>Az összes feladat összesítése</p>
+  </div>
+
+  <div class="result-summary">
+    <div class="big-num" id="totalPts">0</div>
+    <div class="big-sub">pont / <span id="totalMax">0</span> lehetségesből</div>
+    <div style="margin-top:10px;font-size:0.85rem;color:#aaa" id="resultMsg">Kezdj el feladatokat megoldani!</div>
+  </div>
+
+  <div id="resList"></div>
+</div>
+
+<script>
+let pts = 0, maxPts = 0;
+const answers = {};
+
+const qLabels = {
+  rq1:'読み: 平和', rq2:'読み: 戦争', rq3:'読み: 習慣', rq4:'読み: 観光客',
+  rq5:'読み: 紹介', rq6:'読み: 卒業', rq7:'読み: 環境', rq8:'読み: 最近',
+  mq1:'意味: 情報', mq2:'意味: 目的', mq3:'意味: 洗濯', mq4:'意味: 完全',
+  mq5:'意味: 水族館', mq6:'意味: 歴史',
+  sq1:'文中: 習慣', sq2:'文中: 学者', sq3:'文中: 洗濯', sq4:'文中: 豊かさ', sq5:'文中: 大学',
+};
+
+function updateScore() {
+  document.getElementById('scoreDisp').textContent = pts + ' pt';
+  const pct = maxPts > 0 ? (pts / maxPts) * 100 : 0;
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('totalPts').textContent = pts;
+  document.getElementById('totalMax').textContent = maxPts;
+  const msgs = ['Rajta! がんばれ！🔥', 'Jól megy！よくできました！👍', 'Nagyszerű！すばらしい！⭐', 'Tökéletes！完璧！🏆'];
+  const idx = Math.min(Math.floor((pts / Math.max(maxPts,1)) * 4), 3);
+  document.getElementById('resultMsg').textContent = maxPts > 0 ? msgs[idx] : 'Kezdj el feladatokat megoldani!';
+}
+
+function showTab(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'res') buildResults();
+}
+
+function mcq(qid, btn, result) {
+  const card = document.getElementById(qid);
+  if (card.classList.contains('correct') || card.classList.contains('wrong')) return;
+  card.querySelectorAll('.opt').forEach(o => o.disabled = true);
+  const fb = document.getElementById('fb-' + qid);
+  maxPts += 10;
+
+  if (result === 'ok') {
+    btn.classList.add('ok');
+    card.classList.add('correct');
+    pts += 10;
+    fb.className = 'fb show ok';
+    fb.innerHTML = `<div class="fb-title">✅ 正解！Helyes！</div><div class="exp">${(fb.dataset.exp||'').replace(/\n/g,'<br>')}</div><div class="source-note">📄 出典：2025年10月 日本語エレット試験</div>`;
+    answers[qid] = { ok: true, ans: btn.textContent.trim() };
+  } else {
+    btn.classList.add('ng');
+    card.classList.add('wrong');
+    card.querySelectorAll('.opt').forEach(o => {
+      if (o.getAttribute('onclick') && o.getAttribute('onclick').includes("'ok'")) o.classList.add('ok');
+    });
+    fb.className = 'fb show ng';
+    fb.innerHTML = `<div class="fb-title">❌ Helyes: <b>${fb.dataset.ok||'→ zöld'}</b></div><div class="exp">${(fb.dataset.exp||'').replace(/\n/g,'<br>')}</div>`;
+    answers[qid] = { ok: false, ans: btn.textContent.trim(), correct: fb.dataset.ok };
+  }
+  updateScore();
+}
+
+function clearF(id) {
+  const inp = document.getElementById(id);
+  inp.classList.remove('ok','ng');
+}
+
+function fillCheck(qid, accepted) {
+  const btn = document.getElementById('btn-' + qid);
+  const inp = document.getElementById('fi-' + qid);
+  const fb = document.getElementById('fb-' + qid);
+  const card = document.getElementById(qid);
+  if (btn.classList.contains('done')) return;
+  btn.classList.add('done');
+  inp.disabled = true;
+  maxPts += 10;
+
+  const val = inp.value.trim();
+  const isOk = accepted.some(a => a.trim() === val);
+
+  if (isOk) {
+    inp.classList.add('ok');
+    card.classList.add('correct');
+    pts += 10;
+    fb.className = 'fb show ok';
+    fb.innerHTML = `<div class="fb-title">✅ 正解！</div><div class="exp">${(fb.dataset.exp||'').replace(/\n/g,'<br>')}</div>`;
+    answers[qid] = { ok: true, ans: val };
+  } else {
+    inp.classList.add('ng');
+    card.classList.add('wrong');
+    fb.className = 'fb show ng';
+    fb.innerHTML = `<div class="fb-title">❌ Helyes: <b>${fb.dataset.ok}</b></div><div class="exp">${(fb.dataset.exp||'').replace(/\n/g,'<br>')}</div>`;
+    answers[qid] = { ok: false, ans: val||'(üres)', correct: fb.dataset.ok };
+  }
+  updateScore();
+}
+
+function buildResults() {
+  const list = document.getElementById('resList');
+  list.innerHTML = '';
+  if (!Object.keys(answers).length) {
+    list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;font-size:0.9rem">Még nem oldottál meg feladatot.</div>';
+    return;
+  }
+  Object.keys(answers).forEach(k => {
+    const a = answers[k];
+    const row = document.createElement('div');
+    row.className = 'result-item' + (a.ok ? '' : ' ng');
+    row.innerHTML = `<span class="icon">${a.ok ? '✅' : '❌'}</span><span class="qlabel">${qLabels[k]||k}</span><span class="ans">${a.ans}</span>`;
+    list.appendChild(row);
+  });
+}
+
+updateScore();
+</script>
+</body>
+</html>

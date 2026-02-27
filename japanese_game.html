@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>にします・ので・の 練習ゲーム</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Kaisei+Decol:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6ef;
+    --paper: #f2ead8;
+    --ink: #1a1a2e;
+    --indigo: #2c3e7a;
+    --red-ink: #c0392b;
+    --green-ink: #1a6b3c;
+    --gold: #c9973d;
+    --light-gold: #f0dba8;
+    --muted: #7a6f5e;
+    --border: #d4c9b0;
+    --correct-bg: #e8f5ed;
+    --wrong-bg: #fdecea;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--cream);
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,165,130,0.15) 27px, rgba(180,165,130,0.15) 28px),
+      repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(180,165,130,0.07) 27px, rgba(180,165,130,0.07) 28px);
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+  .page { max-width: 700px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 20px; }
+  .title-jp { font-family: 'Kaisei Decol', serif; font-size: 2rem; color: var(--indigo); letter-spacing: 0.05em; margin-bottom: 6px; }
+  .subtitle { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+  .grammar-tags { display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .grammar-tag { background: var(--indigo); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+
+  .accept-note {
+    text-align: center; font-size: 0.76rem; color: var(--muted); margin-bottom: 16px;
+    background: var(--paper); border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 14px; letter-spacing: 0.03em;
+  }
+  .accept-note strong { color: var(--indigo); }
+
+  .progress-bar-wrap { background: var(--border); border-radius: 8px; height: 8px; margin-bottom: 20px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--indigo), var(--gold)); border-radius: 8px; transition: width 0.5s ease; }
+  .progress-label { text-align: center; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.08em; }
+
+  .card { background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(44,62,122,0.06); }
+  .example-card { background: var(--paper); border-color: var(--light-gold); }
+  .example-label { font-size: 0.72rem; letter-spacing: 0.15em; color: var(--gold); font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+
+  .vocab-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+  .vocab-chip { display: inline-flex; align-items: center; gap: 4px; background: var(--cream); border: 1.5px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 0.88rem; }
+  .vocab-num { font-size: 0.68rem; color: var(--gold); font-weight: 700; background: var(--light-gold); border-radius: 3px; padding: 1px 4px; }
+
+  .dialogue { display: flex; flex-direction: column; gap: 10px; }
+  .dialogue-line { display: flex; align-items: baseline; gap: 8px; line-height: 2.1; font-size: 0.97rem; flex-wrap: wrap; }
+  .speaker { font-weight: 700; min-width: 26px; color: var(--indigo); font-size: 0.88rem; flex-shrink: 0; }
+  .line-content { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px; flex: 1; }
+  .underlined { text-decoration: underline; text-decoration-color: var(--indigo); text-underline-offset: 3px; }
+
+  .ans-input {
+    display: inline-block; border: none; border-bottom: 2px solid var(--indigo);
+    background: transparent; font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.93rem; color: var(--ink); outline: none; padding: 2px 4px;
+    min-width: 70px; max-width: 240px; text-align: center;
+    transition: border-color 0.2s, background 0.2s; border-radius: 4px 4px 0 0;
+  }
+  .ans-input::placeholder { color: #bbb; font-size: 0.73rem; }
+  .ans-input:focus { border-bottom-color: var(--gold); background: rgba(201,151,61,0.05); }
+  .ans-input.correct { border-bottom-color: var(--green-ink); background: var(--correct-bg); color: var(--green-ink); }
+  .ans-input.wrong { border-bottom-color: var(--red-ink); background: var(--wrong-bg); color: var(--red-ink); animation: shake 0.3s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+  .exercise-num { font-family: 'Kaisei Decol', serif; font-size: 1.2rem; color: var(--indigo); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .exercise-num::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .btn-row { display: flex; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+  .btn { font-family: 'Noto Sans JP', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 10px 22px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.18s; letter-spacing: 0.05em; }
+  .btn-primary { background: var(--indigo); color: white; border-color: var(--indigo); }
+  .btn-primary:hover { background: #1e2b5e; }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: var(--indigo); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--indigo); background: rgba(44,62,122,0.04); }
+  .btn-gold { background: var(--gold); color: white; border-color: var(--gold); }
+  .btn-gold:hover { background: #b5872e; }
+
+  .hint-row { margin-top: 12px; padding: 10px 14px; background: var(--paper); border-radius: 8px; font-size: 0.82rem; color: var(--muted); display: none; line-height: 1.8; }
+  .hint-row.visible { display: block; }
+  .hint-correct { color: var(--green-ink); font-weight: 700; }
+
+  .all-correct-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--correct-bg); border: 1.5px solid var(--green-ink); color: var(--green-ink); border-radius: 20px; padding: 4px 14px; font-size: 0.82rem; font-weight: 700; margin-top: 12px; opacity: 0; transition: opacity 0.3s; }
+  .all-correct-badge.show { opacity: 1; }
+
+  .score-screen { display: none; text-align: center; padding: 40px 20px; }
+  .score-screen.visible { display: block; }
+  .score-big { font-family: 'Kaisei Decol', serif; font-size: 4rem; color: var(--indigo); font-weight: 700; line-height: 1; margin-bottom: 8px; }
+  .score-label { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+  .score-message { font-size: 1.2rem; font-weight: 700; color: var(--indigo); margin-bottom: 6px; }
+  .score-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 32px; }
+  .stamp { font-size: 4rem; display: block; margin-bottom: 8px; }
+  .exercises-panel.hidden { display: none; }
+
+  /* ── Character popup ─────────────────────────────────────────────────── */
+  #charPopup {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: scale(0.3) translateY(40px);
+    transition: none;
+  }
+  #charPopup.show {
+    animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  #charPopup.hide {
+    animation: popOut 0.3s ease-in forwards;
+  }
+  @keyframes popIn {
+    0%   { opacity:0; transform: scale(0.3) translateY(40px); }
+    60%  { opacity:1; transform: scale(1.12) translateY(-6px); }
+    100% { opacity:1; transform: scale(1) translateY(0); }
+  }
+  @keyframes popOut {
+    0%   { opacity:1; transform: scale(1) translateY(0); }
+    100% { opacity:0; transform: scale(0.5) translateY(20px); }
+  }
+
+  .char-svg { width: 90px; height: 90px; }
+  .char-label {
+    margin-top: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+  .char-label.good  { background: #c8f0d4; color: #1a6b3c; }
+  .char-label.bad   { background: #fdd; color: #a02020; }
+
+  /* wobble on wrong */
+  @keyframes wobble {
+    0%,100%{transform:rotate(0deg)}
+    20%{transform:rotate(-12deg)}
+    40%{transform:rotate(10deg)}
+    60%{transform:rotate(-8deg)}
+    80%{transform:rotate(6deg)}
+  }
+  #charPopup.wobble .char-svg { animation: wobble 0.5s ease; }
+
+  /* bounce on correct */
+  @keyframes bounce {
+    0%,100%{transform:translateY(0)}
+    40%{transform:translateY(-14px)}
+    70%{transform:translateY(-6px)}
+  }
+  #charPopup.bounce .char-svg { animation: bounce 0.55s ease; }
+</style>
+</head>
+<body>
+
+<!-- Character popup -->
+<div id="charPopup">
+  <svg id="charSvg" class="char-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"></svg>
+  <div id="charLabel" class="char-label good">せいかい！</div>
+</div>
+
+<div class="page">
+  <header>
+    <div class="title-jp">練習ゲーム</div>
+    <div class="subtitle">Japanese Grammar Practice</div>
+    <div class="grammar-tags">
+      <span class="grammar-tag">〜にします</span>
+      <span class="grammar-tag">〜ので</span>
+      <span class="grammar-tag">〜の</span>
+    </div>
+  </header>
+
+  <div class="accept-note">
+    💡 入力形式は何でもOK：<strong>ひらがな</strong>・<strong>漢字</strong>・<strong>ローマ字</strong>　すべて受け付けます
+  </div>
+
+  <div class="card example-card">
+    <div class="example-label">▶ れい（例）— パターンを見てください</div>
+    <div class="vocab-row">
+      <span class="vocab-chip"><span class="vocab-num">①</span>のどがかわきました</span>
+      <span class="vocab-chip"><span class="vocab-num">②</span>コーヒー</span>
+      <span class="vocab-chip"><span class="vocab-num">③</span>つめたい</span>
+      <span class="vocab-chip"><span class="vocab-num">④</span>あつい</span>
+    </div>
+    <div class="dialogue">
+      <div class="dialogue-line"><span class="speaker">A：</span><span class="line-content">何にしますか。</span></div>
+      <div class="dialogue-line"><span class="speaker">B：</span><span class="line-content"><span class="underlined">①のどがかわいた</span>ので、<span class="underlined">②コーヒー</span>にします。</span></div>
+      <div class="dialogue-line"><span class="speaker">A：</span><span class="line-content"><span class="underlined">③つめたい</span>のと　<span class="underlined">④あつい</span>のがありますよ。</span></div>
+      <div class="dialogue-line"><span class="speaker">B：</span><span class="line-content">じゃあ、<span class="underlined">③つめたい</span>のにします。</span></div>
+    </div>
+  </div>
+
+  <div class="exercises-panel" id="exercisesPanel">
+    <div class="progress-label" id="progressLabel">練習 1 / 8</div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <div id="exerciseCard" class="card"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="showHint()">💡 ヒント</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextExercise()" disabled>次へ →</button>
+    </div>
+    <div class="hint-row" id="hintRow"></div>
+  </div>
+
+  <div class="score-screen" id="scoreScreen">
+    <span class="stamp" id="scoreStamp">🌸</span>
+    <div class="score-big" id="scoreNum">0/4</div>
+    <div class="score-label">正解数</div>
+    <div class="score-message" id="scoreMsg"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="btn-row"><button class="btn btn-gold" onclick="restartGame()">もう一度！</button></div>
+  </div>
+</div>
+
+<script>
+// ── Romaji → Hiragana ────────────────────────────────────────────────────────
+const ROMAJI_TABLE = [
+  ["kkya","っきゃ"],["kkyu","っきゅ"],["kkyo","っきょ"],
+  ["sshu","っしゅ"],["sshi","っし"],["ssha","っしゃ"],["ssho","っしょ"],
+  ["ttchi","っち"],["ttsu","っつ"],["ttya","っちゃ"],["ttyu","っちゅ"],["ttyo","っちょ"],
+  ["ppya","っぴゃ"],["ppyu","っぴゅ"],["ppyo","っぴょ"],
+  ["rrya","っりゃ"],["rryu","っりゅ"],["rryo","っりょ"],
+  ["kya","きゃ"],["kyu","きゅ"],["kyo","きょ"],
+  ["sha","しゃ"],["shi","し"],["shu","しゅ"],["she","しぇ"],["sho","しょ"],
+  ["sya","しゃ"],["syu","しゅ"],["syo","しょ"],
+  ["chi","ち"],["cha","ちゃ"],["chu","ちゅ"],["che","ちぇ"],["cho","ちょ"],
+  ["tchi","っち"],["tchi","っち"],
+  ["tsu","つ"],["tya","ちゃ"],["tyu","ちゅ"],["tyo","ちょ"],
+  ["nya","にゃ"],["nyu","にゅ"],["nyo","にょ"],
+  ["hya","ひゃ"],["hyu","ひゅ"],["hyo","ひょ"],
+  ["mya","みゃ"],["myu","みゅ"],["myo","みょ"],
+  ["rya","りゃ"],["ryu","りゅ"],["ryo","りょ"],
+  ["gya","ぎゃ"],["gyu","ぎゅ"],["gyo","ぎょ"],
+  ["ja","じゃ"],["ji","じ"],["ju","じゅ"],["je","じぇ"],["jo","じょ"],
+  ["zya","じゃ"],["zyu","じゅ"],["zyo","じょ"],
+  ["bya","びゃ"],["byu","びゅ"],["byo","びょ"],
+  ["pya","ぴゃ"],["pyu","ぴゅ"],["pyo","ぴょ"],
+  ["dzi","ぢ"],["dzu","づ"],
+  ["fa","ふぁ"],["fi","ふぃ"],["fu","ふ"],["fe","ふぇ"],["fo","ふぉ"],
+  ["ka","か"],["ki","き"],["ku","く"],["ke","け"],["ko","こ"],
+  ["sa","さ"],["si","し"],["su","す"],["se","せ"],["so","そ"],
+  ["ta","た"],["ti","ち"],["tu","つ"],["te","て"],["to","と"],
+  ["na","な"],["ni","に"],["nu","ぬ"],["ne","ね"],["no","の"],
+  ["ha","は"],["hi","ひ"],["hu","ふ"],["he","へ"],["ho","ほ"],
+  ["ma","ま"],["mi","み"],["mu","む"],["me","め"],["mo","も"],
+  ["ya","や"],["yu","ゆ"],["yo","よ"],
+  ["ra","ら"],["ri","り"],["ru","る"],["re","れ"],["ro","ろ"],
+  ["wa","わ"],["wi","ゐ"],["we","ゑ"],["wo","を"],
+  ["ga","が"],["gi","ぎ"],["gu","ぐ"],["ge","げ"],["go","ご"],
+  ["za","ざ"],["zi","じ"],["zu","ず"],["ze","ぜ"],["zo","ぞ"],
+  ["da","だ"],["di","ぢ"],["du","づ"],["de","で"],["do","ど"],
+  ["ba","ば"],["bi","び"],["bu","ぶ"],["be","べ"],["bo","ぼ"],
+  ["pa","ぱ"],["pi","ぴ"],["pu","ぷ"],["pe","ぺ"],["po","ぽ"],
+  ["a","あ"],["i","い"],["u","う"],["e","え"],["o","お"],
+  ["nn","ん"],["n'","ん"],
+  ["-","ー"],["~","ー"],
+];
+
+function romajiToHiragana(str) {
+  // handle double consonant (kk→っk, ss→っs, etc.) before main parse
+  let s = str.toLowerCase();
+  let result = '';
+  let i = 0;
+  while (i < s.length) {
+    // special: double consonant shorthand
+    if (i+1 < s.length && s[i] === s[i+1] && 'kstnhmrygzdbp'.includes(s[i])) {
+      result += 'っ';
+      i++;
+      continue;
+    }
+    // special: n before consonant or end → ん
+    if (s[i] === 'n' && (i+1 >= s.length || (s[i+1] !== 'a' && s[i+1] !== 'i' && s[i+1] !== 'u' && s[i+1] !== 'e' && s[i+1] !== 'o' && s[i+1] !== 'y' && s[i+1] !== 'n'))) {
+      result += 'ん';
+      i++;
+      continue;
+    }
+    let matched = false;
+    for (const [rom, hira] of ROMAJI_TABLE) {
+      if (s.startsWith(rom, i)) {
+        result += hira;
+        i += rom.length;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) { result += s[i]; i++; }
+  }
+  return result;
+}
+
+function katakanaToHiragana(str) {
+  return str.replace(/[\u30A1-\u30F6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+}
+
+// Kanji readings for normalization
+const KANJI_MAP = {
+  "何":"なに","母":"はは","妹":"いもうと",
+  "大きい":"おおきい","小さい":"ちいさい",
+  "白い":"しろい","茶色い":"ちゃいろい",
+  "食べたい":"たべたい","甘い":"あまい",
+  "辛い":"からい","熱い":"あつい","冷たい":"つめたい",
+  "暑い":"あつい","温かい":"あたたかい","厚い":"あつい","薄い":"うすい",
+  "赤い":"あかい","青い":"あおい","長い":"ながい","短い":"みじかい",
+  "飲み物":"のみもの","物":"もの","傘":"かさ",
+  "友だち":"ともだち","誕生日":"たんじょうび",
+  "外":"そと","雨":"あめ","降っている":"ふっている","降っています":"ふっています",
+  "宿題":"しゅくだい",
+  "は":"は","が":"が","を":"を","の":"の",
+};
+
+function applyKanjiMap(s) {
+  // Sort by length desc to replace longer strings first
+  const keys = Object.keys(KANJI_MAP).sort((a,b) => b.length - a.length);
+  for (const k of keys) s = s.replaceAll(k, KANJI_MAP[k]);
+  return s;
+}
+
+function normalize(raw) {
+  if (!raw) return '';
+  // full-width to half-width ascii
+  let s = raw.trim()
+    .replace(/\s+/g,'').replace(/　/g,'')
+    .replace(/[ａ-ｚＡ-Ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0)-0xFEE0))
+    .toLowerCase();
+  // kanji → hiragana
+  s = applyKanjiMap(s);
+  // katakana → hiragana
+  s = katakanaToHiragana(s);
+  // if contains mostly ascii, try romaji conversion
+  const asciiCount = (s.match(/[a-z\-]/g)||[]).length;
+  if (asciiCount > 0 && asciiCount / (s.length||1) > 0.3) {
+    s = romajiToHiragana(s);
+  }
+  return s;
+}
+
+function matches(input, acceptedList) {
+  const n = normalize(input);
+  return acceptedList.some(a => n === normalize(a));
+}
+
+// ── Exercises ────────────────────────────────────────────────────────────────
+const exercises = [
+  {
+    num: 1,
+    vocab: [
+      {n:"①", text:"あまい物が食べたいです"},
+      {n:"②", text:"ケーキ"},
+      {n:"③", text:"いちご"},
+      {n:"④", text:"もも"},
+    ],
+    // answers: arrays of accepted forms per field
+    answers: {
+      b1r: ["あまいものがたべたい","あまい物が食べたい","甘いものが食べたい"],
+      b1c: ["ケーキ","けーき","ke-ki","keeki"],
+      a1:  ["いちご","ichigo"],
+      a2:  ["もも","momo"],
+      b2:  ["いちご","ichigo"],
+    },
+    display: {b1r:"あまいものがたべたい", b1c:"ケーキ", a1:"いちご", a2:"もも", b2:"いちご"},
+    hints: [
+      "①「〜たいです」→ ので の前は「〜たい」（です を取るだけ！）",
+      "　例：食べたいです　→　食べたい",
+      "②　ケーキ",
+      "③④　いちごのと ももの…　どちらを選ぶ？",
+    ]
+  },
+  {
+    num: 2,
+    vocab: [
+      {n:"①", text:"おなかがすきました"},
+      {n:"②", text:"カレー"},
+      {n:"③", text:"からい"},
+      {n:"④", text:"からくない"},
+    ],
+    answers: {
+      b1r: ["おなかがすいた","onakagasuita","おなかがすきました"],
+      b1c: ["カレー","かれー","kare-","karee"],
+      a1:  ["からい","karai"],
+      a2:  ["からくない","karakunai"],
+      b2:  ["からい","karai"],
+    },
+    display: {b1r:"おなかがすいた", b1c:"カレー", a1:"からい", a2:"からくない", b2:"からい"},
+    hints: [
+      "①「すきました」→ plain past：すいた",
+      "　（すく → すいた）",
+      "②　カレー",
+      "③④　からいのと からくないの…",
+    ]
+  },
+  {
+    num: 3,
+    vocab: [
+      {n:"①", text:"母はおしゃれです"},
+      {n:"②", text:"スカーフ"},
+      {n:"③", text:"大きい"},
+      {n:"④", text:"小さい"},
+    ],
+    answers: {
+      b1r: ["はははおしゃれな","母はおしゃれな","hahawaosha rena","hahawao share na","hahawaosha-rena"],
+      b1c: ["スカーフ","すかーふ","suka-fu","sukafu"],
+      a1:  ["おおきい","大きい","ookii","ooki","ōkii"],
+      a2:  ["ちいさい","小さい","chiisai","chisai"],
+      b2:  ["おおきい","大きい","ookii"],
+    },
+    display: {b1r:"はははおしゃれな", b1c:"スカーフ", a1:"おおきい", a2:"ちいさい", b2:"おおきい"},
+    hints: [
+      "①　な形容詞「おしゃれです」→ ので の前：「おしゃれな」",
+      "　（〜です → 〜な ＋ ので）",
+      "②　スカーフ",
+      "③④　大きいのと 小さいの…",
+    ]
+  },
+  {
+    num: 4,
+    vocab: [
+      {n:"①", text:"いもうとは小さいです"},
+      {n:"②", text:"ぬいぐるみ"},
+      {n:"③", text:"白い"},
+      {n:"④", text:"茶色い"},
+    ],
+    answers: {
+      b1r: ["いもうとはちいさい","妹は小さい","imoutohachiisai","imoutowachisai","imoutohachiisai"],
+      b1c: ["ぬいぐるみ","nuigurumi"],
+      a1:  ["しろい","白い","shiroi"],
+      a2:  ["ちゃいろい","茶色い","chairoi"],
+      b2:  ["しろい","白い","shiroi"],
+    },
+    display: {b1r:"いもうとはちいさい", b1c:"ぬいぐるみ", a1:"しろい", a2:"ちゃいろい", b2:"しろい"},
+    hints: [
+      "①「小さいです」→ ので の前：「小さい」（です を取るだけ）",
+      "②　ぬいぐるみ",
+      "③④　白いのと 茶色いの…",
+    ]
+  },
+  {
+    num: 5,
+    vocab: [
+      {n:"①", text:"暑（あつ）いです"},
+      {n:"②", text:"飲（の）み物（もの）"},
+      {n:"③", text:"冷（つめ）たい"},
+      {n:"④", text:"温（あたた）かい"},
+    ],
+    answers: {
+      b1r: ["あつい","暑い","atsui"],
+      b1c: ["のみもの","飲み物","nomimono"],
+      a1:  ["つめたい","冷たい","tsumetai"],
+      a2:  ["あたたかい","温かい","atatakai"],
+      b2:  ["つめたい","冷たい","tsumetai"],
+    },
+    display: {b1r:"あつい", b1c:"のみもの", a1:"つめたい", a2:"あたたかい", b2:"つめたい"},
+    hints: [
+      "①「暑いです」→ ので の前：「暑い」（です を取るだけ）",
+      "②　飲み物（のみもの）",
+      "③④　冷たいのと 温かいの…　暑いから？",
+    ]
+  },
+  {
+    num: 6,
+    vocab: [
+      {n:"①", text:"友（とも）だちの誕生日（たんじょうび）です"},
+      {n:"②", text:"プレゼント"},
+      {n:"③", text:"赤（あか）い"},
+      {n:"④", text:"青（あお）い"},
+    ],
+    answers: {
+      b1r: ["ともだちのたんじょうびな","友だちの誕生日な","tomodachinotanjoubina","tomodachinotanjo-bina"],
+      b1c: ["プレゼント","ぷれぜんと","purezento"],
+      a1:  ["あかい","赤い","akai"],
+      a2:  ["あおい","青い","aoi"],
+      b2:  ["あかい","赤い","akai"],
+    },
+    display: {b1r:"ともだちのたんじょうびな", b1c:"プレゼント", a1:"あかい", a2:"あおい", b2:"あかい"},
+    hints: [
+      "①　名詞＋です → ので の前は「名詞＋な」",
+      "　「誕生日です」→「誕生日な」ので",
+      "②　プレゼント",
+      "③④　赤いのと 青いの…",
+    ]
+  },
+  {
+    num: 7,
+    vocab: [
+      {n:"①", text:"外（そと）は雨（あめ）が降（ふ）っています"},
+      {n:"②", text:"傘（かさ）"},
+      {n:"③", text:"長（なが）い"},
+      {n:"④", text:"短（みじか）い"},
+    ],
+    answers: {
+      b1r: ["そとはあめがふっている","外は雨が降っている","sotohaamegatutteiru","sotohaamegatsuteiru","sotohaamegatteiru"],
+      b1c: ["かさ","傘","kasa"],
+      a1:  ["ながい","長い","nagai"],
+      a2:  ["みじかい","短い","mijikai"],
+      b2:  ["ながい","長い","nagai"],
+    },
+    display: {b1r:"そとはあめがふっている", b1c:"かさ", a1:"ながい", a2:"みじかい", b2:"ながい"},
+    hints: [
+      "①「〜ています」→ ので の前はplain form：「ふっている」",
+      "　（〜ています → 〜ている）",
+      "②　傘（かさ）",
+      "③④　長いのと 短いの…　雨だから？",
+    ]
+  },
+  {
+    num: 8,
+    vocab: [
+      {n:"①", text:"宿題（しゅくだい）がたくさんあります"},
+      {n:"②", text:"ノート"},
+      {n:"③", text:"厚（あつ）い"},
+      {n:"④", text:"薄（うす）い"},
+    ],
+    answers: {
+      b1r: ["しゅくだいがたくさんある","宿題がたくさんある","shukudaigatasuksanaru","shukudaigatasanaru","shukudaigatakusanaru"],
+      b1c: ["ノート","のーと","no-to","nooto"],
+      a1:  ["あつい","厚い","atsui"],
+      a2:  ["うすい","薄い","usui"],
+      b2:  ["あつい","厚い","atsui"],
+    },
+    display: {b1r:"しゅくだいがたくさんある", b1c:"ノート", a1:"あつい", a2:"うすい", b2:"あつい"},
+    hints: [
+      "①「あります」→ ので の前はplain form：「ある」",
+      "　（あります → ある）",
+      "②　ノート",
+      "③④　厚いのと 薄いの…　宿題が多いから？",
+    ]
+  },
+];
+
+let current = 0, totalScore = 0, exerciseCorrect = false;
+
+// ── Character SVG builders ────────────────────────────────────────────────
+function flowerSVG() {
+  // Happy smiling flower: petals around a face
+  return `
+    <!-- stem -->
+    <line x1="50" y1="78" x2="50" y2="98" stroke="#4caf50" stroke-width="4" stroke-linecap="round"/>
+    <line x1="50" y1="90" x2="38" y2="82" stroke="#4caf50" stroke-width="3" stroke-linecap="round"/>
+    <!-- petals -->
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFD54F" transform="rotate(0,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFB74D" transform="rotate(45,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFD54F" transform="rotate(90,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFB74D" transform="rotate(135,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFD54F" transform="rotate(180,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFB74D" transform="rotate(225,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFD54F" transform="rotate(270,50,50)"/>
+    <ellipse cx="50" cy="24" rx="9" ry="14" fill="#FFB74D" transform="rotate(315,50,50)"/>
+    <!-- face circle -->
+    <circle cx="50" cy="50" r="20" fill="#FFF176" stroke="#F9A825" stroke-width="2"/>
+    <!-- sparkle eyes -->
+    <circle cx="43" cy="45" r="3.5" fill="#3e2723"/>
+    <circle cx="57" cy="45" r="3.5" fill="#3e2723"/>
+    <circle cx="44.2" cy="43.8" r="1.2" fill="white"/>
+    <circle cx="58.2" cy="43.8" r="1.2" fill="white"/>
+    <!-- big smile -->
+    <path d="M42 53 Q50 62 58 53" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- rosy cheeks -->
+    <circle cx="40" cy="52" r="4" fill="#ffab91" opacity="0.6"/>
+    <circle cx="60" cy="52" r="4" fill="#ffab91" opacity="0.6"/>
+    <!-- sparkles -->
+    <text x="72" y="32" font-size="12" fill="#FFC107">✦</text>
+    <text x="16" y="30" font-size="10" fill="#66BB6A">✦</text>
+  `;
+}
+
+function tanukiSVG() {
+  // Sad red-faced tanuki
+  return `
+    <!-- body -->
+    <ellipse cx="50" cy="72" rx="22" ry="18" fill="#6d4c41"/>
+    <!-- tail ring -->
+    <ellipse cx="50" cy="88" rx="14" ry="7" fill="#bcaaa4"/>
+    <ellipse cx="50" cy="88" rx="9" ry="4" fill="#4e342e"/>
+    <!-- ears -->
+    <ellipse cx="30" cy="28" rx="9" ry="11" fill="#4e342e" transform="rotate(-15,30,28)"/>
+    <ellipse cx="70" cy="28" rx="9" ry="11" fill="#4e342e" transform="rotate(15,70,28)"/>
+    <ellipse cx="30" cy="29" rx="5" ry="7" fill="#8d6e63" transform="rotate(-15,30,29)"/>
+    <ellipse cx="70" cy="29" rx="5" ry="7" fill="#8d6e63" transform="rotate(15,70,29)"/>
+    <!-- head -->
+    <circle cx="50" cy="45" r="26" fill="#8d6e63"/>
+    <!-- red blush / flush face -->
+    <circle cx="50" cy="45" r="20" fill="#e57373" opacity="0.55"/>
+    <!-- raccoon eye patches -->
+    <ellipse cx="39" cy="43" rx="9" ry="7" fill="#3e2723" opacity="0.75"/>
+    <ellipse cx="61" cy="43" rx="9" ry="7" fill="#3e2723" opacity="0.75"/>
+    <!-- sad eyes - X marks -->
+    <line x1="36" y1="40" x2="42" y2="46" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="42" y1="40" x2="36" y2="46" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="58" y1="40" x2="64" y2="46" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="64" y1="40" x2="58" y2="46" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- sad mouth -->
+    <path d="M42 56 Q50 51 58 56" stroke="#3e2723" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- nose -->
+    <ellipse cx="50" cy="52" rx="4" ry="2.5" fill="#4e342e"/>
+    <!-- whiskers -->
+    <line x1="25" y1="51" x2="40" y2="53" stroke="#bcaaa4" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="25" y1="55" x2="40" y2="55" stroke="#bcaaa4" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="60" y1="53" x2="75" y2="51" stroke="#bcaaa4" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="60" y1="55" x2="75" y2="55" stroke="#bcaaa4" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- tear drops -->
+    <ellipse cx="35" cy="52" rx="3" ry="4" fill="#90caf9" opacity="0.8"/>
+    <ellipse cx="65" cy="52" rx="3" ry="4" fill="#90caf9" opacity="0.8"/>
+  `;
+}
+
+// ── Popup logic ───────────────────────────────────────────────────────────
+let popupTimer = null;
+
+function showCharacter(inputEl, isCorrect) {
+  const popup = document.getElementById('charPopup');
+  const svg   = document.getElementById('charSvg');
+  const label = document.getElementById('charLabel');
+
+  // Position near the input field
+  const rect = inputEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + window.scrollY;
+
+  popup.style.left = `${cx - 45}px`;
+  popup.style.top  = `${cy - 115}px`;
+
+  svg.innerHTML = isCorrect ? flowerSVG() : tanukiSVG();
+  label.textContent = isCorrect ? 'せいかい！🌸' : 'ざんねん…😢';
+  label.className = 'char-label ' + (isCorrect ? 'good' : 'bad');
+
+  // Reset classes
+  popup.className = '';
+  void popup.offsetWidth; // force reflow
+  popup.classList.add('show', isCorrect ? 'bounce' : 'wobble');
+
+  if (popupTimer) clearTimeout(popupTimer);
+  popupTimer = setTimeout(() => {
+    popup.classList.remove('show','bounce','wobble');
+    popup.classList.add('hide');
+    popupTimer = setTimeout(() => {
+      popup.className = '';
+    }, 320);
+  }, isCorrect ? 1600 : 1200);
+}
+
+function checkField(input) {
+  const ex = exercises[current];
+  const key = input.dataset.key;
+  const val = input.value;
+  if (!val.trim()) { input.classList.remove('correct','wrong'); return; }
+  const ok = matches(val, ex.answers[key]);
+  const wasWrong = input.classList.contains('wrong');
+  const wasCorrect = input.classList.contains('correct');
+  input.classList.toggle('correct', ok);
+  input.classList.toggle('wrong', !ok);
+  // show character only on state change
+  if (ok && !wasCorrect) showCharacter(input, true);
+  else if (!ok && !wasWrong) showCharacter(input, false);
+  checkAllCorrect();
+}
+
+function checkAllCorrect() {
+  const ex = exercises[current];
+  const all = Object.keys(ex.answers).every(key => {
+    const inp = document.querySelector(`[data-key="${key}"]`);
+    return inp && matches(inp.value, ex.answers[key]);
+  });
+  if (all && !exerciseCorrect) {
+    exerciseCorrect = true;
+    totalScore++;
+    document.getElementById('allCorrectBadge').classList.add('show');
+    document.getElementById('btnNext').disabled = false;
+    document.getElementById('hintRow').classList.remove('visible');
+  }
+}
+
+function renderExercise(idx) {
+  const ex = exercises[idx];
+  exerciseCorrect = false;
+  document.getElementById('btnNext').disabled = true;
+  document.getElementById('hintRow').classList.remove('visible');
+  document.getElementById('progressLabel').textContent = `練習 ${idx+1} / ${exercises.length}`;
+  document.getElementById('progressBar').style.width = `${(idx/exercises.length)*100}%`;
+
+  document.getElementById('exerciseCard').innerHTML = `
+    <div class="exercise-num">(${ex.num})</div>
+    <div class="vocab-row">
+      ${ex.vocab.map(v=>`<span class="vocab-chip"><span class="vocab-num">${v.n}</span>${v.text}</span>`).join('')}
+    </div>
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker">A：</span>
+        <span class="line-content">何にしますか。</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker">B：</span>
+        <span class="line-content">
+          <input class="ans-input" data-key="b1r" placeholder="① ので の前…" oninput="checkField(this)" style="min-width:170px">ので、<input class="ans-input" data-key="b1c" placeholder="②…" oninput="checkField(this)" style="min-width:80px">にします。
+        </span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker">A：</span>
+        <span class="line-content">
+          <input class="ans-input" data-key="a1" placeholder="③…" oninput="checkField(this)" style="min-width:90px">のと　<input class="ans-input" data-key="a2" placeholder="④…" oninput="checkField(this)" style="min-width:90px">のがありますよ。
+        </span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker">B：</span>
+        <span class="line-content">
+          じゃあ、<input class="ans-input" data-key="b2" placeholder="③…" oninput="checkField(this)" style="min-width:90px">のにします。
+        </span>
+      </div>
+    </div>
+    <div class="all-correct-badge" id="allCorrectBadge">✓ すばらしい！全部正解！</div>
+  `;
+  setTimeout(() => document.querySelector('[data-key="b1r"]').focus(), 60);
+}
+
+function showHint() {
+  const ex = exercises[current];
+  let html = '<strong>💡 ヒント：</strong><br>' + ex.hints.join('<br>');
+  const labels = {b1r:"①（ので前）", b1c:"②", a1:"③", a2:"④", b2:"③（B最後）"};
+  const wrong = Object.keys(ex.display).filter(k => {
+    const inp = document.querySelector(`[data-key="${k}"]`);
+    return inp && !matches(inp.value, ex.answers[k]);
+  });
+  if (wrong.length) {
+    html += `<br><span class="hint-correct">正解：</span> `;
+    html += wrong.map(k => `<strong>${labels[k]}</strong>→ ${ex.display[k]}`).join('　');
+  }
+  const row = document.getElementById('hintRow');
+  row.innerHTML = html;
+  row.classList.add('visible');
+}
+
+function nextExercise() {
+  current++;
+  if (current >= exercises.length) showScore();
+  else renderExercise(current);
+}
+
+function showScore() {
+  document.getElementById('exercisesPanel').classList.add('hidden');
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('scoreScreen').classList.add('visible');
+  const pct = totalScore / exercises.length;
+  const [stamp,msg,sub] = pct===1 ? ["🌸","完璧です！","全問正解！すばらしい！"]
+    : pct>=0.75 ? ["⭐","よくできました！","もう少しで満点！"]
+    : pct>=0.5  ? ["📝","がんばりました！","もう一度練習してみましょう。"]
+    :             ["💪","練習が必要です！","諦めないで、もう一度！"];
+  document.getElementById('scoreStamp').textContent = stamp;
+  document.getElementById('scoreNum').textContent = `${totalScore}/${exercises.length}`;
+  document.getElementById('scoreMsg').textContent = msg;
+  document.getElementById('scoreSub').textContent = sub;
+}
+
+function restartGame() {
+  current = 0; totalScore = 0; exerciseCorrect = false;
+  document.getElementById('scoreScreen').classList.remove('visible');
+  document.getElementById('exercisesPanel').classList.remove('hidden');
+  renderExercise(0);
+}
+
+renderExercise(0);
+</script>
+</body>
+</html>

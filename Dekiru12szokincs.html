@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日本語 Szókártyák</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #ddeeff 0%, #c5dffa 45%, #d8eeff 100%);
+      font-family: 'Noto Serif JP', Georgia, serif;
+      color: #1a2a3a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    ruby { ruby-align: center; display: inline-flex; flex-direction: column; align-items: center; }
+    rt { text-align: center; display: block; font-size: 0.42em; color: #2a6aaa; font-family: 'Noto Sans JP', sans-serif; line-height: 1; }
+    .cloud1 { position: fixed; top: -40px; left: -60px; width: 300px; height: 180px; background: rgba(255,255,255,0.35); border-radius: 50%; filter: blur(40px); pointer-events: none; z-index: 0; }
+    .cloud2 { position: fixed; top: 80px; right: -80px; width: 260px; height: 160px; background: rgba(180,220,255,0.4); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 0; }
+    .cloud3 { position: fixed; bottom: 60px; left: 20px; width: 200px; height: 120px; background: rgba(200,230,255,0.35); border-radius: 50%; filter: blur(35px); pointer-events: none; z-index: 0; }
+    .content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .header { text-align: center; margin-bottom: 26px; }
+    .header-blossom { font-size: 22px; margin-bottom: 4px; }
+    .header h1 { font-size: 28px; font-weight: 300; letter-spacing: 4px; color: #1a3a6a; }
+    .header-sub { font-size: 12px; letter-spacing: 3px; color: #5a8abf; margin-top: 4px; font-family: sans-serif; }
+    .header-line { width: 50px; height: 3px; background: linear-gradient(90deg, #4a90c4, #8ac0e8); border-radius: 2px; margin: 10px auto 0; }
+    .cat-filters { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; max-width: 700px; margin-bottom: 26px; }
+    .cat-btn { border: none; cursor: pointer; padding: 7px 15px; border-radius: 20px; font-size: 12px; font-family: inherit; transition: all 0.2s; white-space: nowrap; font-weight: 600; background: rgba(255,255,255,0.72); color: #2a5080; box-shadow: 0 2px 8px rgba(42,122,191,0.1); }
+    .cat-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(42,122,191,0.3); }
+    .cat-btn.active { color: #fff; box-shadow: 0 4px 16px rgba(42,122,191,0.4); }
+    .progress-wrap { width: 100%; max-width: 500px; margin-bottom: 14px; }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #5a8abf; margin-bottom: 7px; font-family: sans-serif; font-weight: 600; }
+    .progress-labels .learned-label { color: #3a9a60; }
+    .progress-bar-bg { height: 7px; background: rgba(42,122,191,0.12); border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(42,122,191,0.1); }
+    .progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #2a7abf, #7abce8); transition: width 0.4s ease; }
+    /* Card flip */
+    .flip-card { width: 100%; max-width: 500px; height: 360px; margin-bottom: 22px; perspective: 1400px; }
+    .flip-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.58s cubic-bezier(0.4,0,0.2,1); cursor: pointer; }
+    .flip-inner.flipped { transform: rotateY(180deg); }
+    .flip-inner.animating { opacity: 0; transform: scale(0.95) translateY(6px); transition: opacity 0.2s, transform 0.2s; }
+    .face { backface-visibility: hidden; -webkit-backface-visibility: hidden; position: absolute; width: 100%; height: 100%; border-radius: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 24px 52px; gap: 8px; }
+    .face-back { transform: rotateY(180deg); }
+    .face-front { background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); border: 2px solid rgba(42,122,191,0.2); box-shadow: 0 10px 50px rgba(42,122,191,0.2), 0 2px 10px rgba(42,122,191,0.08); }
+    .face-back-el { backdrop-filter: blur(20px); box-shadow: 0 10px 50px rgba(42,122,191,0.25), 0 2px 10px rgba(42,122,191,0.1); }
+    .cat-tag { border-radius: 20px; padding: 3px 14px; font-size: 11px; font-family: sans-serif; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+    .card-emoji { font-size: 62px; line-height: 1; filter: drop-shadow(0 6px 12px rgba(42,122,191,0.18)); margin-bottom: 4px; }
+    .jp-text { text-align: center; line-height: 2.6; padding: 4px 8px; }
+    .romaji-text { font-size: 13px; color: #7aaacf; font-style: italic; font-family: 'Noto Sans JP', sans-serif; }
+    .flip-hint { position: absolute; bottom: 16px; font-size: 11px; color: #b0cce8; font-family: sans-serif; letter-spacing: 1px; }
+    .learned-badge { position: absolute; top: 16px; right: 16px; background: rgba(60,176,80,0.15); border: 1.5px solid #3ab060; border-radius: 12px; padding: 2px 10px; font-size: 11px; color: #2a7a40; font-family: sans-serif; font-weight: 600; display: none; }
+    .learned-badge.visible { display: block; }
+    .back-label { font-size: 11px; letter-spacing: 3px; font-family: sans-serif; font-weight: 700; text-transform: uppercase; }
+    .back-hu { font-weight: 600; text-align: center; color: #0a2a4a; line-height: 1.4; }
+    .back-jp-small { font-size: 18px; color: #9abfdf; margin-top: 2px; }
+    /* Dots */
+    .dots { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; max-width: 280px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; transition: all 0.25s; cursor: pointer; background: rgba(42,122,191,0.2); }
+    .dot.active { background: #2a7abf; transform: scale(1.4); box-shadow: 0 2px 8px rgba(42,122,191,0.5); }
+    /* Nav */
+    .nav-row { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+    .nav-btn { border: 2px solid rgba(42,122,191,0.3); background: rgba(255,255,255,0.75); color: #1a4a7a; width: 56px; height: 56px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; backdrop-filter: blur(10px); box-shadow: 0 4px 16px rgba(42,122,191,0.15); }
+    .nav-btn:hover { background: rgba(255,255,255,0.95); box-shadow: 0 8px 24px rgba(42,122,191,0.3); transform: scale(1.08); }
+    .action-btn { border: 2px solid rgba(42,122,191,0.2); background: rgba(255,255,255,0.7); color: #1a4a7a; border-radius: 14px; padding: 9px 18px; cursor: pointer; font-size: 13px; font-family: inherit; transition: all 0.2s; font-weight: 600; backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(42,122,191,0.1); }
+    .action-btn:hover { background: rgba(255,255,255,0.95); box-shadow: 0 5px 18px rgba(42,122,191,0.25); transform: translateY(-1px); }
+    .action-btn.learned-on { background: rgba(60,180,80,0.2); border-color: #3ab060; color: #1a6030; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .footer { margin-top: 36px; font-size: 13px; color: #7aaacf; letter-spacing: 3px; font-family: sans-serif; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 18px;
+    padding: 8px 20px;
+    font-size: 0.85rem; font-weight: 600;
+    border: 1.5px solid rgba(42,122,191,0.35);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.7);
+    color: #1a3a6a;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(42,122,191,0.1);
+    font-family: 'Noto Serif JP', sans-serif;
+  }
+  .back-btn:hover {
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 4px 14px rgba(42,122,191,0.2);
+  }
+  </style>
+</head>
+<body>
+  <div class="cloud1"></div>
+  <div class="cloud2"></div>
+  <div class="cloud3"></div>
+
+  <div class="content">
+    <a href="index.html" class="back-btn">← Vissza a főoldalra</a>
+    <div class="header">
+      <div class="header-blossom">🌸</div>
+      <h1>日本語 Szókártyák</h1>
+      <div class="header-sub">Magyar · Japán tanulókártyák</div>
+      <div class="header-line"></div>
+    </div>
+
+    <div class="cat-filters" id="catFilters"></div>
+
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span id="progressLabel">1 / 0 kártya</span>
+        <span class="learned-label" id="learnedLabel">✓ 0 megtanulva</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="flip-card">
+      <div class="flip-inner" id="flipInner" onclick="flipCard()">
+        <div class="face face-front" id="cardFront">
+          <div class="cat-tag" id="frontCatTag"></div>
+          <div class="card-emoji" id="frontEmoji"></div>
+          <div class="jp-text" id="frontJp"></div>
+          <div class="romaji-text" id="frontRomaji"></div>
+          <div class="flip-hint">↻ kattints a fordításért</div>
+          <div class="learned-badge" id="learnedBadge">✓ megtanult</div>
+        </div>
+        <div class="face face-back face-back-el" id="cardBack">
+          <div class="card-emoji" id="backEmoji"></div>
+          <div class="back-label" id="backLabel">Magyar jelentés</div>
+          <div class="back-hu" id="backHu"></div>
+          <div class="romaji-text" id="backRomaji"></div>
+          <div class="back-jp-small" id="backJpSmall"></div>
+          <div class="flip-hint">↻ kattints vissza</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="go(-1)">←</button>
+      <button class="action-btn" id="learnedBtn" onclick="toggleLearned()">☆ Megtanultam</button>
+      <button class="nav-btn" onclick="go(1)">→</button>
+    </div>
+
+    <div class="controls">
+      <button class="action-btn" id="romajiBtn" onclick="toggleRomaji()">🙈 Romaji elrejtése</button>
+      <button class="action-btn" onclick="shuffleDeck()">🔀 Keverés</button>
+      <button class="action-btn" onclick="resetDeck()">↺ Újrakezd</button>
+    </div>
+
+    <div class="footer">🌸 頑張ってください 🌸</div>
+  </div>
+
+<script>
+const ALL_CARDS = [
+  {jp:"ぼうしをかぶります",f:null,r:"bōshi wo kaburimasu",hu:"kalapot / sapkát visel",cat:"Öltözés",e:"🎩"},
+  {jp:"くつをはきます",f:null,r:"kutsu wo hakimasu",hu:"cipőt húz fel",cat:"Öltözés",e:"👟"},
+  {jp:"スカートをはきます",f:null,r:"sukāto wo hakimasu",hu:"szoknyát visel",cat:"Öltözés",e:"👗"},
+  {jp:"ふくをきています",f:[{t:"ふくを"},{t:"き",k:"着"},{t:"ています"}],r:"fuku wo kite imasu",hu:"ruhát visel",cat:"Öltözés",e:"👕"},
+  {jp:"うわぎをきています",f:[{t:"うわぎ",k:"上着"},{t:"を"},{t:"き",k:"着"},{t:"ています"}],r:"uwagi wo kite imasu",hu:"kabátot visel",cat:"Öltözés",e:"🧥"},
+  {jp:"ネックレスをつけます",f:null,r:"nekkuresu wo tsukemasu",hu:"nyakláncot vesz fel",cat:"Öltözés",e:"📿"},
+  {jp:"めがねをかけます",f:[{t:"めがね",k:"眼鏡"},{t:"をかけます"}],r:"megane wo kakemasu",hu:"szemüveget visel",cat:"Öltözés",e:"👓"},
+  {jp:"ピアスをみつけます",f:[{t:"ピアスを"},{t:"み",k:"見"},{t:"つけます"}],r:"piasu wo mitsukemasu",hu:"fülbevalót talál / választ",cat:"Öltözés",e:"💎"},
+  {jp:"コート",f:null,r:"kōto",hu:"kabát",cat:"Divat",e:"🧥"},
+  {jp:"スーツ",f:null,r:"sūtsu",hu:"öltöny",cat:"Divat",e:"👔"},
+  {jp:"ジンズ",f:null,r:"jinzu",hu:"farmer / farmernadrág",cat:"Divat",e:"👖"},
+  {jp:"ワイシャツ",f:null,r:"waishatsu",hu:"ing (öltönying)",cat:"Divat",e:"👕"},
+  {jp:"マフラー",f:null,r:"mafurā",hu:"sál / nyaksál",cat:"Divat",e:"🧣"},
+  {jp:"サンダル",f:null,r:"sandaru",hu:"szandál",cat:"Divat",e:"👡"},
+  {jp:"ハンドバッグ",f:null,r:"handobaggu",hu:"kézitáska",cat:"Divat",e:"👜"},
+  {jp:"サングラス",f:null,r:"sangurasu",hu:"napszemüveg",cat:"Divat",e:"🕶️"},
+  {jp:"ゆびわ",f:[{t:"ゆびわ",k:"指輪"}],r:"yubiwa",hu:"gyűrű",cat:"Divat",e:"💍"},
+  {jp:"がっこうにかよっています",f:[{t:"がっこう",k:"学校"},{t:"に"},{t:"かよ",k:"通"},{t:"っています"}],r:"gakkō ni kayotte imasu",hu:"iskolába jár",cat:"Mindennapi élet",e:"🏫"},
+  {jp:"かいしゃにつとめます",f:[{t:"かいしゃ",k:"会社"},{t:"に"},{t:"つと",k:"勤"},{t:"めます"}],r:"kaisha ni tsutomemasu",hu:"cégnél dolgozik",cat:"Mindennapi élet",e:"🏢"},
+  {jp:"そうだんします",f:[{t:"そうだん",k:"相談"},{t:"します"}],r:"sōdan shimasu",hu:"tanácsot kér / megbeszél",cat:"Mindennapi élet",e:"💬"},
+  {jp:"びっくりします",f:null,r:"bikkuri shimasu",hu:"meglepődik",cat:"Mindennapi élet",e:"😲"},
+  {jp:"へんじします",f:[{t:"へんじ",k:"返事"},{t:"します"}],r:"henji shimasu",hu:"válaszol",cat:"Mindennapi élet",e:"✉️"},
+  {jp:"いっしゅうかんさんかいうんどうしています",f:[{t:"いっしゅうかん",k:"一週間"},{t:"さんかい",k:"三回"},{t:"うんどう",k:"運動"},{t:"しています"}],r:"isshūkan sankai undō shite imasu",hu:"hetente háromszor sportol",cat:"Mindennapi élet",e:"🏃"},
+  {jp:"にほんごをせんせいにならいます",f:[{t:"にほんご",k:"日本語"},{t:"を"},{t:"せんせい",k:"先生"},{t:"にならいます"}],r:"nihongo wo sensei ni naraimasu",hu:"japánt tanul tanártól",cat:"Mindennapi élet",e:"📚"},
+  {jp:"かみのけ",f:[{t:"かみのけ",k:"髪の毛"}],r:"kaminoke",hu:"haj",cat:"Testrészek",e:"💇"},
+  {jp:"まゆげ",f:[{t:"まゆげ",k:"眉毛"}],r:"mayuge",hu:"szemöldök",cat:"Testrészek",e:"😏"},
+  {jp:"め",f:[{t:"め",k:"目"}],r:"me",hu:"szem",cat:"Testrészek",e:"👁️"},
+  {jp:"くち",f:[{t:"くち",k:"口"}],r:"kuchi",hu:"száj",cat:"Testrészek",e:"👄"},
+  {jp:"は",f:[{t:"は",k:"歯"}],r:"ha",hu:"fog / fogak",cat:"Testrészek",e:"🦷"},
+  {jp:"かお",f:[{t:"かお",k:"顔"}],r:"kao",hu:"arc",cat:"Testrészek",e:"😊"},
+  {jp:"て",f:[{t:"て",k:"手"}],r:"te",hu:"kéz",cat:"Testrészek",e:"✋"},
+  {jp:"ゆび",f:[{t:"ゆび",k:"指"}],r:"yubi",hu:"ujj",cat:"Testrészek",e:"☝️"},
+  {jp:"かた",f:[{t:"かた",k:"肩"}],r:"kata",hu:"váll",cat:"Testrészek",e:"🫱"},
+  {jp:"むね",f:[{t:"むね",k:"胸"}],r:"mune",hu:"mellkas",cat:"Testrészek",e:"🫀"},
+  {jp:"あし",f:[{t:"あし",k:"足"}],r:"ashi",hu:"láb / lábfej",cat:"Testrészek",e:"🦵"},
+  {jp:"おしり",f:null,r:"oshiri",hu:"fenék / ülep",cat:"Testrészek",e:"🍑"},
+  {jp:"せなか",f:[{t:"せなか",k:"背中"}],r:"senaka",hu:"hát",cat:"Testrészek",e:"🔙"},
+  {jp:"くび",f:[{t:"くび",k:"首"}],r:"kubi",hu:"nyak",cat:"Testrészek",e:"🦒"},
+  {jp:"はな",f:[{t:"はな",k:"鼻"}],r:"hana",hu:"orr",cat:"Testrészek",e:"👃"},
+  {jp:"みみ",f:[{t:"みみ",k:"耳"}],r:"mimi",hu:"fül",cat:"Testrészek",e:"👂"},
+  {jp:"きりんはくびがながい",f:[{t:"キリン"},{t:"は"},{t:"くび",k:"首"},{t:"が"},{t:"なが",k:"長"},{t:"い"}],r:"kirin wa kubi ga nagai",hu:"A zsiráfnak hosszú a nyaka",cat:"Állatok",e:"🦒"},
+  {jp:"ぞうははながながい",f:[{t:"ぞう",k:"象"},{t:"は"},{t:"はな",k:"鼻"},{t:"が"},{t:"なが",k:"長"},{t:"い"}],r:"zō wa hana ga nagai",hu:"Az elefántnak hosszú az ormánya",cat:"Állatok",e:"🐘"},
+  {jp:"パンダはみみがくろいです",f:[{t:"パンダは"},{t:"みみ",k:"耳"},{t:"が"},{t:"くろ",k:"黒"},{t:"いです"}],r:"panda wa mimi ga kuroi desu",hu:"A pandának fekete a füle",cat:"Állatok",e:"🐼"},
+  {jp:"かっこういい",f:null,r:"kakkoii",hu:"menő / jóképű",cat:"Melléknevek",e:"😎"},
+  {jp:"かわいい",f:[{t:"かわいい",k:"可愛い"}],r:"kawaii",hu:"aranyos / cuki",cat:"Melléknevek",e:"🥰"},
+  {jp:"きれいな",f:null,r:"kirei na",hu:"szép / tiszta",cat:"Melléknevek",e:"✨"},
+  {jp:"やさしい",f:null,r:"yasashii",hu:"kedves / szelíd",cat:"Melléknevek",e:"🤗"},
+  {jp:"しんせつな",f:[{t:"しんせつ",k:"親切"},{t:"な"}],r:"shinsetsu na",hu:"udvarias / figyelmes",cat:"Melléknevek",e:"🙏"},
+  {jp:"あたまがいい",f:[{t:"あたま",k:"頭"},{t:"がいい"}],r:"atama ga ii",hu:"okos / intelligens",cat:"Melléknevek",e:"🧠"},
+  {jp:"げんきな",f:[{t:"げんき",k:"元気"},{t:"な"}],r:"genki na",hu:"energikus / egészséges",cat:"Melléknevek",e:"💪"},
+  {jp:"おもしろい",f:[{t:"おもしろ",k:"面白"},{t:"い"}],r:"omoshiroi",hu:"érdekes / vicces",cat:"Melléknevek",e:"😄"},
+  {jp:"にぎやかな",f:null,r:"nigiyaka na",hu:"élénk / nyüzsgő",cat:"Melléknevek",e:"🎉"},
+  {jp:"たのしい",f:[{t:"たの",k:"楽"},{t:"しい"}],r:"tanoshii",hu:"szórakoztató / kellemes",cat:"Melléknevek",e:"😊"},
+  {jp:"じょうずな",f:[{t:"じょうず",k:"上手"},{t:"な"}],r:"jōzu na",hu:"ügyes / jártas valamiben",cat:"Melléknevek",e:"🌟"},
+  {jp:"へたな",f:[{t:"へた",k:"下手"},{t:"な"}],r:"heta na",hu:"ügyetlen / nem ért valamihez",cat:"Melléknevek",e:"😅"},
+  {jp:"みじかい",f:[{t:"みじか",k:"短"},{t:"い"}],r:"mijikai",hu:"rövid",cat:"Melléknevek",e:"📏"},
+  {jp:"むずかしい",f:[{t:"むずか",k:"難"},{t:"しい"}],r:"muzukashii",hu:"nehéz",cat:"Melléknevek",e:"😵"},
+  {jp:"たいへんな",f:[{t:"たいへん",k:"大変"},{t:"な"}],r:"taihen na",hu:"nehéz / megterhelő",cat:"Melléknevek",e:"😓"},
+  {jp:"やすい",f:[{t:"やす",k:"安"},{t:"い"}],r:"yasui",hu:"olcsó",cat:"Melléknevek",e:"🏷️"},
+  {jp:"おいしい",f:null,r:"oishii",hu:"finom / ízletes",cat:"Melléknevek",e:"😋"},
+  {jp:"おなじ",f:[{t:"おな",k:"同"},{t:"じ"}],r:"onaji",hu:"ugyanolyan / azonos",cat:"Melléknevek",e:"🔄"},
+  {jp:"かれ",f:[{t:"かれ",k:"彼"}],r:"kare",hu:"ő (férfi) / barátja",cat:"Személyek",e:"👨"},
+  {jp:"かのじょ",f:[{t:"かのじょ",k:"彼女"}],r:"kanojo",hu:"ő (nő) / barátnője",cat:"Személyek",e:"👩"},
+  {jp:"あのひとはせがたかい",f:[{t:"あの"},{t:"ひと",k:"人"},{t:"は"},{t:"せ",k:"背"},{t:"が"},{t:"たか",k:"高"},{t:"い"}],r:"ano hito wa se ga takai",hu:"Az a személy magas",cat:"Személyek",e:"🧍"},
+  {jp:"さいきん",f:[{t:"さいきん",k:"最近"}],r:"saikin",hu:"mostanában / nemrég",cat:"Határozók",e:"🕐"},
+  {jp:"ずっと",f:null,r:"zutto",hu:"végig / folyamatosan",cat:"Határozók",e:"♾️"},
+  {jp:"まわり",f:null,r:"mawari",hu:"környezet / körülötte",cat:"Határozók",e:"🔃"},
+  {jp:"しけん",f:[{t:"しけん",k:"試験"}],r:"shiken",hu:"vizsga / dolgozat",cat:"Egyéb",e:"📝"},
+  {jp:"レポート",f:null,r:"repōto",hu:"dolgozat / jelentés",cat:"Egyéb",e:"📄"},
+  {jp:"はなし",f:[{t:"はなし",k:"話"}],r:"hanashi",hu:"történet / beszélgetés",cat:"Egyéb",e:"💭"},
+  {jp:"ついしん",f:[{t:"ついしん",k:"追伸"}],r:"tsuishin",hu:"U.i. (utóirat)",cat:"Egyéb",e:"✍️"},
+  {jp:"ふとっています",f:[{t:"ふと",k:"太"},{t:"っています"}],r:"futotte imasu",hu:"kövér / túlsúlyos",cat:"Egyéb",e:"🙂"},
+  {jp:"やせています",f:null,r:"yasete imasu",hu:"sovány / vékony",cat:"Egyéb",e:"🧍"},
+];
+
+const CAT_COLORS = {
+  "Öltözés":"#2a7abf","Divat":"#3a6aaf","Mindennapi élet":"#2a8abf",
+  "Testrészek":"#5a60af","Állatok":"#2a9a7a","Melléknevek":"#3a80c0",
+  "Személyek":"#3a6aaa","Határozók":"#2a8aaa","Egyéb":"#4a7aaa"
+};
+
+let deck = [...ALL_CARDS];
+let filtered = [...deck];
+let currentIndex = 0;
+let isFlipped = false;
+let showRomaji = true;
+let learned = new Set();
+let selectedCat = "Összes";
+let animating = false;
+
+function buildFurigana(card, fontSize) {
+  if (!card.f) {
+    return `<span style="font-size:${fontSize}px;line-height:1.3">${card.jp}</span>`;
+  }
+  let html = '<span style="display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:1px">';
+  card.f.forEach(part => {
+    if (part.k) {
+      html += `<ruby style="display:inline-flex;flex-direction:column;align-items:center;font-size:${fontSize}px">${part.k}<rt>${part.t}</rt></ruby>`;
+    } else {
+      html += `<span style="font-size:${fontSize}px">${part.t}</span>`;
+    }
+  });
+  html += '</span>';
+  return html;
+}
+
+function getFontSize(text) {
+  if (!text) return 28;
+  if (text.length > 16) return 16;
+  if (text.length > 10) return 20;
+  if (text.length > 6) return 28;
+  return 38;
+}
+
+function getHuFontSize(text) {
+  if (!text) return 28;
+  if (text.length > 30) return 20;
+  if (text.length > 18) return 24;
+  return 30;
+}
+
+function getColor() {
+  const c = filtered[currentIndex];
+  return c ? (CAT_COLORS[c.cat] || "#2a7abf") : "#2a7abf";
+}
+
+function renderCard() {
+  const c = filtered[currentIndex];
+  if (!c) return;
+  const color = getColor();
+
+  // Front
+  document.getElementById('frontCatTag').textContent = c.cat;
+  document.getElementById('frontCatTag').style.background = color + '18';
+  document.getElementById('frontCatTag').style.border = `1px solid ${color}44`;
+  document.getElementById('frontCatTag').style.color = color;
+  document.getElementById('frontEmoji').textContent = c.e;
+  document.getElementById('frontJp').innerHTML = buildFurigana(c, getFontSize(c.jp));
+  document.getElementById('frontRomaji').textContent = showRomaji ? c.r : '';
+  document.getElementById('frontRomaji').style.display = showRomaji ? '' : 'none';
+
+  const li = deck.indexOf(c);
+  const badge = document.getElementById('learnedBadge');
+  badge.classList.toggle('visible', learned.has(li));
+
+  // Back
+  const back = document.getElementById('cardBack');
+  back.style.background = `linear-gradient(135deg, ${color}15 0%, rgba(255,255,255,0.92) 70%)`;
+  back.style.border = `2px solid ${color}44`;
+  document.getElementById('backEmoji').textContent = c.e;
+  document.getElementById('backLabel').style.color = color;
+  document.getElementById('backHu').textContent = c.hu;
+  document.getElementById('backHu').style.fontSize = getHuFontSize(c.hu) + 'px';
+  document.getElementById('backRomaji').textContent = c.r;
+  document.getElementById('backJpSmall').textContent = c.jp;
+
+  // Learned btn
+  const lb = document.getElementById('learnedBtn');
+  lb.textContent = learned.has(li) ? '✓ Megtanultam!' : '☆ Megtanultam';
+  lb.classList.toggle('learned-on', learned.has(li));
+
+  // Progress
+  const total = filtered.length;
+  document.getElementById('progressLabel').textContent = `${currentIndex + 1} / ${total} kártya`;
+  document.getElementById('learnedLabel').textContent = `✓ ${[...learned].filter(i => filtered.indexOf(deck[i]) !== -1).length} megtanulva`;
+  document.getElementById('progressFill').style.width = `${total > 0 ? ((currentIndex + 1) / total * 100) : 0}%`;
+  document.getElementById('progressFill').style.background = `linear-gradient(90deg, ${color}, #7abce8)`;
+
+  // Dots
+  renderDots();
+}
+
+function renderDots() {
+  const total = filtered.length;
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  const start = Math.max(0, currentIndex - 5);
+  const end = Math.min(total, currentIndex + 6);
+  for (let i = start; i < end; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === currentIndex ? ' active' : '');
+    const color = getColor();
+    if (i === currentIndex) {
+      d.style.background = color;
+      d.style.boxShadow = `0 2px 8px ${color}80`;
+    }
+    const ii = i;
+    d.onclick = () => { currentIndex = ii; isFlipped = false; syncFlip(); renderCard(); };
+    dotsEl.appendChild(d);
+  }
+}
+
+function renderCatFilters() {
+  const cats = ["Összes", ...Object.keys(CAT_COLORS)];
+  const el = document.getElementById('catFilters');
+  el.innerHTML = '';
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (selectedCat === cat ? ' active' : '');
+    btn.textContent = cat;
+    if (selectedCat === cat) {
+      btn.style.background = cat === "Összes" ? "#1a4a8a" : (CAT_COLORS[cat] || "#1a4a8a");
+    }
+    btn.onclick = () => {
+      selectedCat = cat;
+      filtered = deck.filter(c => cat === "Összes" || c.cat === cat);
+      currentIndex = 0;
+      isFlipped = false;
+      syncFlip();
+      renderCatFilters();
+      renderCard();
+    };
+    el.appendChild(btn);
+  });
+}
+
+function syncFlip() {
+  const fi = document.getElementById('flipInner');
+  fi.classList.toggle('flipped', isFlipped);
+}
+
+function flipCard() {
+  if (animating) return;
+  isFlipped = !isFlipped;
+  syncFlip();
+}
+
+function go(dir) {
+  if (animating) return;
+  animating = true;
+  isFlipped = false;
+  const fi = document.getElementById('flipInner');
+  fi.classList.add('animating');
+  setTimeout(() => {
+    const total = filtered.length;
+    currentIndex = ((currentIndex + dir) + total) % total;
+    fi.classList.remove('animating');
+    syncFlip();
+    renderCard();
+    animating = false;
+  }, 220);
+}
+
+function toggleLearned() {
+  const c = filtered[currentIndex];
+  if (!c) return;
+  const ri = deck.indexOf(c);
+  if (learned.has(ri)) learned.delete(ri); else learned.add(ri);
+  renderCard();
+}
+
+function toggleRomaji() {
+  showRomaji = !showRomaji;
+  document.getElementById('romajiBtn').textContent = showRomaji ? '🙈 Romaji elrejtése' : '👁 Romaji mutatása';
+  renderCard();
+}
+
+function shuffleDeck() {
+  deck = [...ALL_CARDS].sort(() => Math.random() - 0.5);
+  filtered = deck.filter(c => selectedCat === "Összes" || c.cat === selectedCat);
+  currentIndex = 0;
+  isFlipped = false;
+  learned.clear();
+  syncFlip();
+  renderCard();
+}
+
+function resetDeck() {
+  deck = [...ALL_CARDS];
+  filtered = deck.filter(c => selectedCat === "Összes" || c.cat === selectedCat);
+  currentIndex = 0;
+  isFlipped = false;
+  learned.clear();
+  syncFlip();
+  renderCatFilters();
+  renderCard();
+}
+
+// Init
+filtered = [...deck];
+renderCatFilters();
+renderCard();
+</script>
+</body>
+</html>

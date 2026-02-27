@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>日本語テスト – 使役形 45–46. fejezet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+ruby{ruby-align:center}
+rt{font-size:.55em;color:#666;line-height:1.1}
+body{font-family:"Noto Sans JP",sans-serif;background:#f4f1eb;min-height:100vh}
+
+/* ── TIMER BAR ── */
+#timer-bar-wrap{position:sticky;top:0;z-index:100;background:#0f1923;padding:10px 24px;
+  display:flex;align-items:center;gap:20px;box-shadow:0 2px 20px rgba(0,0,0,.35)}
+#timer-bar-track{flex:1;height:8px;background:rgba(255,255,255,.1);border-radius:100px;overflow:hidden}
+#timer-bar-fill{height:100%;border-radius:100px;transition:width .9s linear,background .5s;background:#2ecc71}
+#timer-display{font-size:28px;font-weight:900;letter-spacing:2px;min-width:80px;text-align:right;
+  color:#2ecc71;line-height:1;font-variant-numeric:tabular-nums}
+.timer-label{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:2px;white-space:nowrap}
+.student-tag{font-size:12px;color:rgba(255,255,255,.5);white-space:nowrap}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.pulse{animation:pulse .7s ease-in-out infinite}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── INTRO ── */
+#page-intro{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:40px 20px;background:linear-gradient(150deg,#0f1923 0%,#1a2a3a 60%,#0f3460 100%);
+  position:relative;overflow:hidden}
+#page-intro::before{content:"学";position:absolute;font-size:700px;color:rgba(255,255,255,.015);
+  font-family:"Noto Serif JP";top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.intro-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:28px;
+  padding:60px 52px;max-width:540px;width:100%;backdrop-filter:blur(24px);
+  box-shadow:0 50px 100px rgba(0,0,0,.5);text-align:center}
+.intro-badge{display:inline-block;background:linear-gradient(135deg,#e63946,#c1121f);color:white;
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 20px;
+  border-radius:100px;margin-bottom:32px}
+.intro-chapter{font-family:"Noto Serif JP";font-size:14px;color:rgba(255,255,255,.45);
+  letter-spacing:3px;margin-bottom:8px}
+.intro-title{font-family:"DM Serif Display";font-size:56px;color:white;line-height:1;margin-bottom:8px}
+.intro-sub{font-family:"Noto Serif JP";font-size:17px;color:rgba(255,255,255,.55);margin-bottom:40px}
+.intro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:40px}
+.intro-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:16px 10px}
+.intro-stat-num{font-size:22px;font-weight:800;color:white;display:block;margin-bottom:2px}
+.intro-stat-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px}
+#name-field{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);
+  border-radius:14px;padding:16px 20px;color:white;font-size:16px;font-family:"Noto Sans JP";
+  margin-bottom:16px;outline:none;transition:border-color .2s}
+#name-field::placeholder{color:rgba(255,255,255,.3)}
+#name-field:focus{border-color:#e63946}
+#start-btn{width:100%;background:linear-gradient(135deg,#e63946,#c1121f);color:white;border:none;
+  border-radius:14px;padding:18px;font-size:16px;font-weight:700;font-family:"Noto Sans JP";
+  cursor:pointer;transition:transform .15s,box-shadow .15s;letter-spacing:1px}
+#start-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(230,57,70,.45)}
+#start-btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+
+/* ── TEST PAGE ── */
+#page-test{display:none}
+#page-test.active{display:flex;flex-direction:column}
+.test-wrap{display:flex;max-width:1180px;margin:0 auto;padding:24px 16px;gap:22px;align-items:flex-start}
+.sidebar{width:210px;flex-shrink:0;position:sticky;top:72px}
+.sb-nav{background:white;border-radius:18px;padding:12px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.sb-btn{display:flex;justify-content:space-between;align-items:center;width:100%;border:none;
+  background:transparent;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;
+  font-weight:500;color:#555;transition:background .15s;font-family:"Noto Sans JP"}
+.sb-btn:hover{background:#f0f4ff;color:#1a1a2e}
+.sb-btn-pts{font-size:11px;opacity:.55;font-weight:400}
+.sb-submit{width:100%;margin-top:12px;background:linear-gradient(135deg,#e63946,#c1121f);
+  color:white;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;
+  font-family:"Noto Sans JP";cursor:pointer;transition:transform .15s,box-shadow .15s}
+.sb-submit:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(230,57,70,.35)}
+.test-main{flex:1;min-width:0}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:22px;padding:36px 40px;margin-bottom:22px;
+  box-shadow:0 4px 28px rgba(0,0,0,.07)}
+.card-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.card-num{width:46px;height:46px;background:#0f1923;color:white;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0}
+.card-num.bonus{background:linear-gradient(135deg,#8e44ad,#6c3483)}
+.card-title{font-size:17px;font-weight:700;color:#1a1a2e;font-family:"Noto Serif JP"}
+.card-pts{margin-left:auto;background:#f0f4ff;color:#1a1a2e;font-size:12px;font-weight:700;
+  padding:5px 14px;border-radius:100px;white-space:nowrap}
+.card-pts.bonus-pts{background:#f5e6ff;color:#6c3483}
+.divider{height:2px;background:linear-gradient(90deg,#0f1923,transparent);opacity:.08;
+  margin:10px 0 20px;border-radius:2px}
+.instruct{font-size:13px;color:#888;margin-bottom:20px;font-style:italic;line-height:1.7}
+.example-box{background:#f6f7fb;border-left:3px solid #b0b8cc;border-radius:0 10px 10px 0;
+  padding:12px 18px;margin-bottom:22px;font-size:14px;color:#555;line-height:2;
+  font-family:"Noto Serif JP"}
+
+/* ── CONJ GRID ── */
+.conj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.conj-row{display:flex;align-items:center;gap:10px;background:#f6f7fb;border-radius:12px;padding:14px 16px}
+.conj-n{width:28px;height:28px;background:#0f1923;color:white;border-radius:8px;font-size:12px;
+  font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:"Noto Sans JP"}
+.conj-base{font-size:15px;min-width:90px;line-height:2}
+.arr{color:#ccc;font-size:16px;flex-shrink:0}
+.conj-input{flex:1;background:white;border:1.5px solid #e4e8f0;border-radius:9px;padding:8px 12px;
+  font-family:"Noto Serif JP";font-size:15px;color:#1a1a2e;outline:none;transition:border-color .2s;min-width:0}
+.conj-input:focus{border-color:#0f1923}
+.conj-input:disabled{background:#f6f7fb;cursor:not-allowed}
+
+/* ── INPUTS ── */
+.jp-in{background:#f6f7fb;border:1.5px solid #e4e8f0;border-radius:10px;padding:10px 14px;
+  font-family:"Noto Serif JP";font-size:15px;color:#1a1a2e;outline:none;
+  transition:border-color .2s,background .2s;width:100%}
+.jp-in:focus{border-color:#0f1923;background:white}
+.jp-in:disabled{background:#f6f7fb;cursor:not-allowed}
+.ok{border-color:#27ae60!important;background:#f0faf4!important}
+.err{border-color:#e63946!important;background:#fff4f4!important}
+.jp-ta{width:100%;background:#f6f7fb;border:1.5px solid #e4e8f0;border-radius:12px;
+  padding:14px 18px;font-family:"Noto Serif JP";font-size:14px;color:#1a1a2e;resize:vertical;
+  outline:none;line-height:1.9;transition:border-color .2s;min-height:200px}
+.jp-ta:focus{border-color:#0f1923}
+
+/* ── SENT ITEMS ── */
+.sent-item{margin-bottom:22px}
+.sent-q{font-size:15px;color:#333;margin-bottom:10px;line-height:2;font-family:"Noto Serif JP"}
+.num-badge{display:inline-flex;width:26px;height:26px;background:#0f1923;color:white;
+  border-radius:7px;font-size:11px;font-weight:700;align-items:center;justify-content:center;
+  margin-right:8px;vertical-align:middle;font-family:"Noto Sans JP";flex-shrink:0}
+.sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:34px}
+.sent-pre{font-size:15px;color:#555;white-space:nowrap;line-height:2;font-family:"Noto Serif JP"}
+.feedback{margin-left:34px;margin-top:6px;font-size:13px;line-height:1.8;display:none}
+.fb-ok{color:#27ae60}
+.fb-err{color:#e63946}
+.fb-ok ruby,.fb-err ruby{font-family:"Noto Serif JP"}
+
+/* ── VOCAB BOX ── */
+.vocab-box{background:linear-gradient(135deg,#eef2ff,#e8f4fd);border:1.5px solid #c8d4ee;
+  border-radius:14px;padding:16px 24px;margin-bottom:22px;text-align:center;
+  font-size:15px;color:#1a1a2e;line-height:2.2;font-family:"Noto Serif JP"}
+
+/* ── RADIO ── */
+.radio-group{display:flex;gap:10px;flex-wrap:wrap}
+.radio-opt{display:flex;align-items:center;gap:8px;background:#f6f7fb;border:1.5px solid #e4e8f0;
+  border-radius:10px;padding:10px 16px;cursor:pointer;transition:all .15s;
+  font-size:14px;color:#333;user-select:none;font-family:"Noto Serif JP"}
+.radio-opt:hover{border-color:#0f1923;background:#f0f4ff}
+.radio-opt.sel{border-color:#0f1923;background:#0f1923;color:white}
+.radio-opt.ans-ok{border-color:#27ae60;background:#f0faf4;color:#1a6b3a}
+.radio-opt.sel-err{border-color:#e63946;background:#fff4f4;color:#c0392b}
+.radio-opt input[type=radio]{display:none}
+
+/* ── F4 ── */
+.f4-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f4-item{background:#f6f7fb;border-radius:14px;padding:16px}
+.f4-q{font-size:14px;color:#444;margin-bottom:10px;line-height:2;font-family:"Noto Serif JP"}
+.f4-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.f4-lbl{font-size:11px;color:#aaa;white-space:nowrap}
+.f4-in{background:white;border:1.5px solid #e4e8f0;border-radius:8px;padding:7px 10px;
+  font-family:"Noto Serif JP";font-size:14px;color:#1a1a2e;outline:none;transition:border-color .2s}
+.f4-in:focus{border-color:#0f1923}
+.f4-p{width:52px;text-align:center}
+.f4-v{width:160px}
+
+/* ── F5 SENTENCE ── */
+.f5-sentence{margin-bottom:20px;background:#f6f7fb;border-radius:14px;padding:16px 20px}
+.f5-q{font-size:15px;color:#333;margin-bottom:12px;line-height:2;font-family:"Noto Serif JP"}
+
+/* ── RESULT PAGE ── */
+#page-result{display:none}
+#page-result.active{display:block}
+.result-page{min-height:100vh;background:linear-gradient(150deg,#0f1923 0%,#1a2a3a 60%,#0f3460 100%);padding:50px 20px}
+.result-inner{max-width:860px;margin:0 auto}
+.result-head{text-align:center;margin-bottom:40px}
+.result-sub{font-family:"Noto Serif JP";font-size:13px;color:rgba(255,255,255,.4);letter-spacing:3px;margin-bottom:8px}
+.result-title{font-family:"DM Serif Display";font-size:48px;color:white;margin-bottom:6px}
+.result-meta{font-size:14px;color:rgba(255,255,255,.5)}
+.score-row{display:flex;gap:16px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
+.score-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:24px 36px;text-align:center}
+.score-big{font-size:56px;font-weight:900;color:white;line-height:1}
+.score-of{font-size:13px;color:rgba(255,255,255,.4);margin-top:4px}
+.score-lbl{font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:2px}
+.section-result{background:white;border-radius:20px;padding:28px 32px;margin-bottom:20px;
+  box-shadow:0 4px 24px rgba(0,0,0,.12)}
+.sr-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sr-num{width:38px;height:38px;background:#0f1923;color:white;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.sr-num.bonus-num{background:linear-gradient(135deg,#8e44ad,#6c3483)}
+.sr-title{font-size:15px;font-weight:700;color:#1a1a2e;font-family:"Noto Serif JP"}
+.sr-pts{margin-left:auto;padding:4px 14px;border-radius:100px;font-size:13px;font-weight:700}
+.pts-perfect{background:#d4efdf;color:#1a6b3a}
+.pts-partial{background:#fdebd0;color:#935116}
+.pts-zero{background:#fadbd8;color:#922b21}
+.pts-teacher{background:#f5e6ff;color:#6c3483}
+.ans-table{width:100%;border-collapse:separate;border-spacing:0 6px}
+.ans-table th{font-size:11px;color:#aaa;font-weight:600;text-align:left;padding:0 10px 4px;
+  letter-spacing:1px;text-transform:uppercase}
+.ans-table td{padding:10px 14px;font-family:"Noto Serif JP";font-size:14px}
+.ans-table tr td:first-child{border-radius:8px 0 0 8px;width:32px;text-align:center;
+  font-family:"Noto Sans JP";font-size:12px;color:#999}
+.ans-table tr td:last-child{border-radius:0 8px 8px 0}
+.row-ok td{background:#f0faf4}
+.row-err td{background:#fff4f4}
+.row-ok td:nth-child(2){color:#27ae60}
+.row-err td:nth-child(2){color:#e63946;text-decoration:line-through;opacity:.7}
+.row-ok td:nth-child(3){color:#27ae60}
+.row-err td:nth-child(3){color:#27ae60;font-weight:600}
+.timeout-banner{background:linear-gradient(135deg,#e63946,#c1121f);color:white;text-align:center;
+  padding:14px;font-weight:700;font-size:14px;letter-spacing:1px}
+.restart-btn{width:100%;background:linear-gradient(135deg,#e63946,#c1121f);color:white;border:none;
+  border-radius:16px;padding:18px;font-size:16px;font-weight:700;font-family:"Noto Sans JP";
+  cursor:pointer;margin-top:24px;transition:transform .15s,box-shadow .15s}
+.restart-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(230,57,70,.4)}
+.teacher-note{background:rgba(255,255,255,.06);border-radius:16px;padding:20px 28px;margin-bottom:24px;
+  color:rgba(255,255,255,.6);font-size:13px;line-height:1.8}
+.bonus-result-box{background:#f5e6ff;border-radius:12px;padding:14px 18px;font-size:13px;color:#6c3483;line-height:1.8}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:20px;
+  padding:8px 20px;
+  font-size:0.82rem;font-weight:600;
+  border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.7);
+  cursor:pointer;
+  text-decoration:none;
+  transition:background 0.15s,box-shadow 0.15s;
+  font-family:"Noto Sans JP",sans-serif;
+}
+.back-btn:hover{background:rgba(255,255,255,0.16);color:white;}
+
+@media(max-width:768px){
+  .test-wrap{flex-direction:column}
+  .sidebar{width:100%;position:static}
+  .conj-grid,.f4-grid{grid-template-columns:1fr}
+  .card{padding:24px 18px}
+  .intro-grid{grid-template-columns:repeat(2,1fr)}
+  .intro-card{padding:40px 28px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ INTRO ══════════════════════════════════════════════════════ -->
+<div id="page-intro" class="page active">
+  <div class="intro-card">
+    <a href="index.html" class="back-btn">← Vissza a főoldalra</a>
+    <div class="intro-badge">日本語テスト</div>
+    <div class="intro-chapter">45–46. fejezet</div>
+    <div class="intro-title">使役形</div>
+    <div class="intro-sub">Műveltetős szerkezet</div>
+    <div class="intro-grid">
+      <div class="intro-stat"><span class="intro-stat-num">9</span><span class="intro-stat-lbl">FELADAT</span></div>
+      <div class="intro-stat"><span class="intro-stat-num">100</span><span class="intro-stat-lbl">PONT</span></div>
+      <div class="intro-stat"><span class="intro-stat-num">+5</span><span class="intro-stat-lbl">BÓNUSZ</span></div>
+      <div class="intro-stat"><span class="intro-stat-num">45'</span><span class="intro-stat-lbl">IDŐ</span></div>
+    </div>
+    <input id="name-field" type="text" placeholder="Írja be a nevét…" autocomplete="off"/>
+    <button id="start-btn" disabled>テスト開始　→　Dolgozat megkezdése</button>
+  </div>
+</div>
+
+<!-- ══ TIMER BAR (hidden until test) ═══════════════════════════════ -->
+<div id="timer-bar-wrap" style="display:none">
+  <span id="student-tag" class="student-tag"></span>
+  <div class="timer-bar-track"><div id="timer-bar-fill"></div></div>
+  <div id="timer-display">45:00</div>
+  <span class="timer-label">maradt</span>
+</div>
+
+<!-- ══ TEST ════════════════════════════════════════════════════════ -->
+<div id="page-test" class="page">
+  <div class="test-wrap">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-nav">
+        <button class="sb-btn" onclick="scrollTo('f1')">1. Ragozás <span class="sb-btn-pts">20p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f2')">2. Átalakítás <span class="sb-btn-pts">20p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f3')">3. Igekiválasztás <span class="sb-btn-pts">20p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f4')">4. Segédige <span class="sb-btn-pts">10p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f5')">5. Kiválasztás <span class="sb-btn-pts">10p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f6')">6. Kérés <span class="sb-btn-pts">10p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f7')">7. Mondatbefejezés <span class="sb-btn-pts">5p</span></button>
+        <button class="sb-btn" onclick="scrollTo('f8')">8. Párbeszéd <span class="sb-btn-pts">10p</span></button>
+        <button class="sb-btn" onclick="scrollTo('bonus')">★ Bónusz <span class="sb-btn-pts">5p</span></button>
+      </div>
+      <button class="sb-submit" onclick="submitTest()">✓ Beadás / 提出</button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="test-main">
+
+      <!-- ── F1 ── -->
+      <div class="card" id="f1">
+        <div class="card-head">
+          <div class="card-num">1</div>
+          <div class="card-title">Igeragozás – Műveltetős alak képzése</div>
+          <div class="card-pts">20 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Alakítsa a következő igéket műveltetős (させます／せます) alakra!</p>
+        <div class="example-box">例）　<ruby>行<rt>い</rt></ruby>きます　→　<ruby>行<rt>い</rt></ruby>かせます</div>
+        <div class="conj-grid" id="f1-grid"></div>
+        <div id="f1-result" style="display:none;margin-top:18px;background:#f6f7fb;border-radius:14px;padding:16px 20px"></div>
+      </div>
+
+      <!-- ── F2 ── -->
+      <div class="card" id="f2">
+        <div class="card-head">
+          <div class="card-num">2</div>
+          <div class="card-title">Mondatátalakítás</div>
+          <div class="card-pts">20 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Alakítsa át a mondatokat műveltetős szerkezetté a minta alapján!</p>
+        <div class="example-box">
+          例）<ruby>お母<rt>かあ</rt></ruby>さんが<ruby>子<rt>こ</rt></ruby>どもに「<ruby>野菜<rt>やさい</rt></ruby>を<ruby>食<rt>た</rt></ruby>べなさい。」と<ruby>言<rt>い</rt></ruby>いました。<br>
+          　　→ <ruby>お母<rt>かあ</rt></ruby>さんは<ruby>子<rt>こ</rt></ruby>どもに<ruby>野菜<rt>やさい</rt></ruby>を<ruby>食<rt>た</rt></ruby>べさせました。
+        </div>
+        <div id="f2-items"></div>
+      </div>
+
+      <!-- ── F3 ── -->
+      <div class="card" id="f3">
+        <div class="card-head">
+          <div class="card-num">3</div>
+          <div class="card-title">Igekiválasztás – helyes alak beírása</div>
+          <div class="card-pts">20 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Válassza ki a megfelelő igét a keretből, és írja be helyes alakban!</p>
+        <div class="vocab-box">
+          ねます　　かけます　　<ruby>生産<rt>せいさん</rt></ruby>します　　なげます<br>
+          ことわります　　あきらめます　　<ruby>起<rt>お</rt></ruby>きます　　おいこします
+        </div>
+        <div class="example-box">例）<ruby>目<rt>め</rt></ruby>が<ruby>赤<rt>あか</rt></ruby>いですね。 → <ruby>夕<rt>ゆう</rt></ruby>べねようとしたけど、ぜんぜん<ruby>眠<rt>ねむ</rt></ruby>れなかったんです。</div>
+        <div id="f3-items"></div>
+      </div>
+
+      <!-- ── F4 ── -->
+      <div class="card" id="f4">
+        <div class="card-head">
+          <div class="card-num">4</div>
+          <div class="card-title">Segédige beírása és igealak képzése</div>
+          <div class="card-pts">10 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Írja be a megfelelő segédszót [に/を], majd az igét helyes műveltetős alakban!</p>
+        <div class="example-box">例）おじいさんはまご [に] にんじん [を] <ruby>食<rt>た</rt></ruby>べさせました。（<ruby>食<rt>た</rt></ruby>べました）</div>
+        <div class="f4-grid" id="f4-grid"></div>
+      </div>
+
+      <!-- ── F5 ── -->
+      <div class="card" id="f5">
+        <div class="card-head">
+          <div class="card-num">5</div>
+          <div class="card-title">Helyes alak kiválasztása</div>
+          <div class="card-pts">10 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Válassza ki a helyes alakot a zárójelből!</p>
+        <div id="f5-items"></div>
+      </div>
+
+      <!-- ── F6 ── -->
+      <div class="card" id="f6">
+        <div class="card-head">
+          <div class="card-num">6</div>
+          <div class="card-title">Kérés kifejezése</div>
+          <div class="card-pts">10 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Fogalmazza meg a kérést させていただけませんか / させてくれませんか formával!</p>
+        <div class="vocab-box" style="font-size:13px;line-height:1.9">
+          もうしわけありませんが、（<ruby>少<rt>すこ</rt></ruby>し）〜（さ）せていただけませんか。<br>
+          すみませんが、〜（さ）せてくれませんか。　／　<ruby>悪<rt>わる</rt></ruby>いけど、〜させてくれない？
+        </div>
+        <div class="example-box">
+          例）<ruby>来週<rt>らいしゅう</rt></ruby><ruby>日本語<rt>にほんご</rt></ruby>のクラスを<ruby>休<rt>やす</rt></ruby>みたいです。<br>
+          　　→ すみませんが、<ruby>来週<rt>らいしゅう</rt></ruby><ruby>休<rt>やす</rt></ruby>ませていただけませんか。
+        </div>
+        <div id="f6-items"></div>
+      </div>
+
+      <!-- ── F7 ── -->
+      <div class="card" id="f7">
+        <div class="card-head">
+          <div class="card-num">7</div>
+          <div class="card-title">Mondatbefejezés</div>
+          <div class="card-pts">5 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Fejezze be a mondatokat a zárójelben jelzett érzelem alapján (させたい/させたくない)!</p>
+        <div class="example-box">
+          例）どうして<ruby>帰国<rt>きこく</rt></ruby>することをご<ruby>両親<rt>りょうしん</rt></ruby>に<ruby>知<rt>し</rt></ruby>らせないんですか。（びっくりする）<br>
+          　　→ <ruby>両親<rt>りょうしん</rt></ruby>をびっくりさせたいんです。
+        </div>
+        <div id="f7-items"></div>
+      </div>
+
+      <!-- ── F8 ── -->
+      <div class="card" id="f8">
+        <div class="card-head">
+          <div class="card-num">8</div>
+          <div class="card-title">Szabad párbeszéd írása</div>
+          <div class="card-pts">10 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Válasszon egyet a szituációk közül, és írjon 6–8 fordulatos párbeszédet! Használja a tanult szerkezeteket!</p>
+        <div style="background:#f0f4ff;border-radius:14px;padding:16px 20px;margin-bottom:18px;font-size:13px;color:#1a1a2e;line-height:1.9">
+          Ａ　Egy diák engedélyt kér a tanártól, hogy holnap ne kelljen iskolába jönnie.<br>
+          Ｂ　Egy főnök elmondja az új alkalmazottnak, mit kell csinálnia a cégnél.<br>
+          Ｃ　Egy szülő mesél arról, hogyan neveli a gyermekét (mit enged meg, mit nem).
+        </div>
+        <textarea id="f8-input" class="jp-ta" placeholder="Ａ：…&#10;Ｂ：…&#10;Ａ：…&#10;Ｂ：…"></textarea>
+        <div id="f8-fb" style="display:none;margin-top:8px;font-size:13px;color:#e67e22;font-style:italic">⚠ Ezt a feladatot a tanár értékeli személyesen.</div>
+      </div>
+
+      <!-- ── BONUS ── -->
+      <div class="card" id="bonus">
+        <div class="card-head">
+          <div class="card-num bonus">★</div>
+          <div class="card-title">Bónusz – Fordítás és magyarázat</div>
+          <div class="card-pts bonus-pts">+5 pont</div>
+        </div>
+        <div class="divider"></div>
+        <p class="instruct">Fordítsa le magyarra, majd magyarázza el a két mondat közötti különbséget!</p>
+        <div style="margin-bottom:14px">
+          <div style="font-family:'Noto Serif JP';font-size:16px;color:#1a1a2e;margin-bottom:8px">
+            （ａ）　<ruby>先生<rt>せんせい</rt></ruby>は<ruby>学生<rt>がくせい</rt></ruby>を<ruby>立<rt>た</rt></ruby>たせました。
+          </div>
+          <input id="bonus-a" class="jp-in" placeholder="Magyar fordítás…" style="margin-bottom:14px"/>
+          <div style="font-family:'Noto Serif JP';font-size:16px;color:#1a1a2e;margin-bottom:8px">
+            （ｂ）　<ruby>先生<rt>せんせい</rt></ruby>は<ruby>学生<rt>がくせい</rt></ruby>に<ruby>立<rt>た</rt></ruby>たせました。
+          </div>
+          <input id="bonus-b" class="jp-in" placeholder="Magyar fordítás…" style="margin-bottom:14px"/>
+          <div style="font-size:14px;font-weight:700;color:#6c3483;margin-bottom:8px">A különbség magyarázata:</div>
+          <textarea id="bonus-diff" class="jp-ta" rows="4" placeholder="Magyarázza el a を és に különbségét ebben a szerkezetben…" style="min-height:auto"></textarea>
+        </div>
+        <div id="bonus-fb" style="display:none" class="bonus-result-box"></div>
+      </div>
+
+      <!-- BOTTOM SUBMIT -->
+      <div style="text-align:center;padding-bottom:50px">
+        <button class="sb-submit" style="width:300px;font-size:16px;padding:18px" onclick="submitTest()">
+          ✓ Dolgozat beadása / テスト提出
+        </button>
+      </div>
+    </div><!-- /test-main -->
+  </div><!-- /test-wrap -->
+</div><!-- /page-test -->
+
+<!-- ══ RESULT ═══════════════════════════════════════════════════════ -->
+<div id="page-result" class="page">
+  <div id="timeout-banner" style="display:none" class="timeout-banner">⏰ Az idő lejárt! A dolgozat automatikusan be lett adva.</div>
+  <div class="result-page">
+    <div class="result-inner">
+      <div class="result-head">
+        <div class="result-sub">使役形　テスト　結果</div>
+        <div id="res-grade" class="result-title"></div>
+        <div id="res-name" class="result-meta"></div>
+      </div>
+      <div class="score-row">
+        <div class="score-bubble">
+          <div id="res-score" class="score-big"></div>
+          <div class="score-of">/ 85 pont (auto)</div>
+          <div class="score-lbl">összesen</div>
+        </div>
+        <div class="score-bubble">
+          <div id="res-time" class="score-big" style="font-size:40px"></div>
+          <div class="score-of">eltelt idő</div>
+          <div id="res-time-lbl" class="score-lbl"></div>
+        </div>
+        <div class="score-bubble">
+          <div id="res-pct" class="score-big" style="font-size:40px"></div>
+          <div class="score-of">teljesítmény</div>
+          <div class="score-lbl">auto értékelés</div>
+        </div>
+      </div>
+      <div id="res-sections"></div>
+      <div class="teacher-note">
+        ⚠ Az automatikus pontszám <strong style="color:white">85 pontból</strong> lett kiszámolva (a párbeszéd és bónusz feladat nem tartalmazza). A teljes pontszámhoz a tanár értékelése szükséges.
+      </div>
+      <button class="restart-btn" onclick="restartTest()">↺　Újra kezdem</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+const TIME_LIMIT = 45 * 60;
+
+const F1_BASES_HTML = [
+  '<ruby>書<rt>か</rt></ruby>きます','<ruby>話<rt>はな</rt></ruby>します',
+  '<ruby>打<rt>う</rt></ruby>ちます','<ruby>遊<rt>あそ</rt></ruby>びます',
+  '<ruby>読<rt>よ</rt></ruby>みます','<ruby>入<rt>はい</rt></ruby>ります',
+  '<ruby>見<rt>み</rt></ruby>ます','<ruby>食<rt>た</rt></ruby>べます',
+  '<ruby>投<rt>な</rt></ruby>げます','します'
+];
+const F1_ANSWERS = [
+  '書かせます','話させます','打たせます','遊ばせます',
+  '読ませます','入らせます','見させます','食べさせます',
+  '投げさせます','させます'
+];
+const F1_ANSWERS_HTML = [
+  '<ruby>書<rt>か</rt></ruby>かせます','<ruby>話<rt>はな</rt></ruby>させます',
+  '<ruby>打<rt>う</rt></ruby>たせます','<ruby>遊<rt>あそ</rt></ruby>ばせます',
+  '<ruby>読<rt>よ</rt></ruby>ませます','<ruby>入<rt>はい</rt></ruby>らせます',
+  '<ruby>見<rt>み</rt></ruby>させます','<ruby>食<rt>た</rt></ruby>べさせます',
+  '<ruby>投<rt>な</rt></ruby>げさせます','させます'
+];
+
+const F2_DATA = [
+  { q:'<ruby>先生<rt>せんせい</rt></ruby>が<ruby>学生<rt>がくせい</rt></ruby>に「<ruby>立<rt>た</rt></ruby>ちなさい。」と<ruby>言<rt>い</rt></ruby>いました。',
+    pre:'<ruby>先生<rt>せんせい</rt></ruby>は',
+    ans:'<ruby>学生<rt>がくせい</rt></ruby>を<ruby>立<rt>た</rt></ruby>たせました。', ansPlain:'学生を立たせました。' },
+  { q:'けいさつかんが<ruby>前<rt>まえ</rt></ruby>の<ruby>車<rt>くるま</rt></ruby>に「<ruby>止<rt>と</rt></ruby>まりなさい。」と<ruby>言<rt>い</rt></ruby>いました。',
+    pre:'けいさつかんは',
+    ans:'<ruby>前<rt>まえ</rt></ruby>の<ruby>車<rt>くるま</rt></ruby>を<ruby>止<rt>と</rt></ruby>まらせました。', ansPlain:'前の車を止まらせました。' },
+  { q:'<ruby>社長<rt>しゃちょう</rt></ruby>が<ruby>社員<rt>しゃいん</rt></ruby>に「<ruby>社長室<rt>しゃちょうしつ</rt></ruby>に<ruby>来<rt>き</rt></ruby>なさい。」と<ruby>言<rt>い</rt></ruby>いました。',
+    pre:'<ruby>社長<rt>しゃちょう</rt></ruby>は',
+    ans:'<ruby>社員<rt>しゃいん</rt></ruby>を<ruby>社長室<rt>しゃちょうしつ</rt></ruby>に<ruby>来<rt>こ</rt></ruby>させました。', ansPlain:'社員を社長室に来させました。' },
+  { q:'<ruby>父<rt>ちち</rt></ruby>が<ruby>犬<rt>いぬ</rt></ruby>に「<ruby>走<rt>はし</rt></ruby>れ。」と<ruby>言<rt>い</rt></ruby>いました。',
+    pre:'<ruby>父<rt>ちち</rt></ruby>は',
+    ans:'<ruby>犬<rt>いぬ</rt></ruby>を<ruby>走<rt>はし</rt></ruby>らせました。', ansPlain:'犬を走らせました。' },
+  { q:'<ruby>子<rt>こ</rt></ruby>どもが<ruby>帰<rt>かえ</rt></ruby>ってきません。お<ruby>母<rt>かあ</rt></ruby>さんは<ruby>心配<rt>しんぱい</rt></ruby>しました。',
+    pre:'<ruby>子<rt>こ</rt></ruby>どもは',
+    ans:'お<ruby>母<rt>かあ</rt></ruby>さんを<ruby>心配<rt>しんぱい</rt></ruby>させました。', ansPlain:'お母さんを心配させました。' },
+];
+
+const F3_DATA = [
+  { a:'たけしくんはどうして<ruby>先生<rt>せんせい</rt></ruby>におこられているんですか。',
+    bPre:'<ruby>犬<rt>いぬ</rt></ruby>に<ruby>石<rt>いし</rt></ruby>を', bSuf:'んです。', aBlank:false, key:'なげ', ans:'なげさせた' },
+  { a:'<ruby>今<rt>いま</rt></ruby>もべんごしになるための<ruby>勉強<rt>べんきょう</rt></ruby>をつづけているんですか。',
+    bPre:'ええ、<ruby>何度<rt>なんど</rt></ruby>も', bSuf:'んですが、やっぱりまだがんばることにしました。', aBlank:false, key:'あきら', ans:'あきらめさせられた' },
+  { a:'バイクのエンジンを', bPre:'', bSuf:'んですけど、キーが<ruby>回<rt>まわ</rt></ruby>らないんです。', aBlank:true, key:'かけさ', ans:'かけさせた' },
+  { a:'どうしてあの<ruby>会社<rt>かいしゃ</rt></ruby>はこんな<ruby>大<rt>おお</rt></ruby>きな<ruby>土地<rt>とち</rt></ruby>を<ruby>買<rt>か</rt></ruby>うんですか。',
+    bPre:'<ruby>買<rt>か</rt></ruby>った<ruby>土地<rt>とち</rt></ruby>に<ruby>工場<rt>こうじょう</rt></ruby>を<ruby>作<rt>つく</rt></ruby>って、<ruby>安<rt>やす</rt></ruby>くものを', bSuf:'んです。', aBlank:false, key:'生産', ans:'生産させる' },
+  { a:'<ruby>朝<rt>あさ</rt></ruby>の<ruby>海岸<rt>かいがん</rt></ruby>もきれいですね。はじめて<ruby>見<rt>み</rt></ruby>ました。',
+    bPre:'ええ、<ruby>何度<rt>なんど</rt></ruby>も', bSuf:'んですが、なかなか<ruby>起<rt>お</rt></ruby>きられなかったんです。', aBlank:false, key:'起きさ', ans:'起きさせようとした' },
+  { a:'え、あの<ruby>人<rt>ひと</rt></ruby>と<ruby>食事<rt>しょくじ</rt></ruby>に<ruby>行<rt>い</rt></ruby>くんですか。',
+    bPre:'', bSuf:'んですけど、<ruby>何<rt>なん</rt></ruby>と<ruby>言<rt>い</rt></ruby>ったらいいかわからなくて…。', aBlank:false, key:'ことわ', ans:'ことわらせてもらおう' },
+];
+
+const F4_DATA = [
+  { q:'<ruby>王様<rt>おうさま</rt></ruby>は<ruby>家来<rt>けらい</rt></ruby>　[　]　<ruby>二十<rt>にじゅう</rt></ruby>かい<ruby>建<rt>た</rt></ruby>てのとうを', hint:'（<ruby>建<rt>た</rt></ruby>てます）', p:'に', v:'建てさせました' },
+  { q:'きゃくが<ruby>店員<rt>てんいん</rt></ruby>　[　]　はいざら　[　]', hint:'（<ruby>持<rt>も</rt></ruby>って<ruby>来<rt>き</rt></ruby>ました）', p:'に', v:'持って来させました' },
+  { q:'おきゃくさんが<ruby>来<rt>き</rt></ruby>たので、<ruby>父<rt>ちち</rt></ruby>は<ruby>私<rt>わたし</rt></ruby>　[　]　<ruby>駅<rt>えき</rt></ruby>にむかえに', hint:'（<ruby>行<rt>い</rt></ruby>きました）', p:'を', v:'行かせました' },
+  { q:'<ruby>母<rt>はは</rt></ruby>は<ruby>私<rt>わたし</rt></ruby>　[　]　<ruby>毎日<rt>まいにち</rt></ruby>アイロンを', hint:'（かけます）', p:'に', v:'かけさせます' },
+  { q:'ホセさんはみんな　[　]', hint:'（びっくりします）', p:'を', v:'びっくりさせました' },
+  { q:'おしゃべりばかりしたので、<ruby>私<rt>わたし</rt></ruby>たちは<ruby>先生<rt>せんせい</rt></ruby>　[　]', hint:'（おこりました）', p:'に', v:'おこらせました' },
+];
+
+const F5_DATA = [
+  { pre:'<ruby>私<rt>わたし</rt></ruby>は<ruby>絵<rt>え</rt></ruby>が<ruby>好<rt>す</rt></ruby>きだったので、<ruby>母<rt>はは</rt></ruby>は<ruby>絵<rt>え</rt></ruby>を（', opts:['習わせました','習わせてくれました'], ans:1 },
+  { pre:'<ruby>私<rt>わたし</rt></ruby>はあそびたかったのに、<ruby>父<rt>ちち</rt></ruby>は<ruby>仕事<rt>しごと</rt></ruby>を（', opts:['手伝わせました','手伝わせてくれました'], ans:0 },
+  { pre:'<ruby>工場<rt>こうじょう</rt></ruby>の<ruby>中<rt>なか</rt></ruby>を<ruby>見<rt>み</rt></ruby>たかったのに、（', opts:['見学させました','見学させてくれませんでした'], ans:1 },
+  { pre:'<ruby>大好<rt>だいす</rt></ruby>きな<ruby>歌手<rt>かしゅ</rt></ruby>にぐうぜん<ruby>会<rt>あ</rt></ruby>ったので、おねがいしたら（', opts:['サインしてくれました','サインさせてくれました'], ans:1 },
+  { pre:'この<ruby>喫茶店<rt>きっさてん</rt></ruby>では、<ruby>使<rt>つか</rt></ruby>う<ruby>食器<rt>しょっき</rt></ruby>をおきゃくさんに<ruby>自分<rt>じぶん</rt></ruby>で（', opts:['えらんでくれます','えらばせてくれます'], ans:1 },
+];
+
+const F6_DATA = [
+  { q:'<ruby>今日<rt>きょう</rt></ruby>は<ruby>漢字<rt>かんじ</rt></ruby>のテストですが、<ruby>用<rt>よう</rt></ruby>があるので、<ruby>明日<rt>あした</rt></ruby>テストをうけたいです。<ruby>先生<rt>せんせい</rt></ruby>におねがいしてください。', ans:'すみませんが、明日テストを受けさせていただけませんか。' },
+  { q:'あなたは<ruby>今日<rt>きょう</rt></ruby>アルバイトを<ruby>早退<rt>そうたい</rt></ruby>したいです。<ruby>店長<rt>てんちょう</rt></ruby>におねがいしてください。', ans:'もうしわけありませんが、今日少し早退させていただけませんか。' },
+  { q:'あなたのコンピューターの<ruby>調子<rt>ちょうし</rt></ruby>が<ruby>悪<rt>わる</rt></ruby>いので、<ruby>友<rt>とも</rt></ruby>だちのを<ruby>使<rt>つか</rt></ruby>いたいです。<ruby>友<rt>とも</rt></ruby>だちにおねがいしてください。', ans:'すみませんが、ちょっとコンピューターを使わせてくれませんか。' },
+];
+
+const F7_DATA = [
+  { q:'どうしてそんなにがんばるんですか。（<ruby>喜<rt>よろこ</rt></ruby>ぶ）', ans:'<ruby>両親<rt>りょうしん</rt></ruby>を<ruby>喜<rt>よろこ</rt></ruby>ばせたいんです。', ansPlain:'両親を喜ばせたいんです。' },
+  { q:'どうして<ruby>毎週<rt>まいしゅう</rt></ruby><ruby>写真<rt>しゃしん</rt></ruby>をご<ruby>両親<rt>りょうしん</rt></ruby>に<ruby>送<rt>おく</rt></ruby>っているんですか。（<ruby>安心<rt>あんしん</rt></ruby>する）', ans:'<ruby>両親<rt>りょうしん</rt></ruby>を<ruby>安心<rt>あんしん</rt></ruby>させたいんです。', ansPlain:'両親を安心させたいんです。' },
+  { q:'どうして<ruby>試験<rt>しけん</rt></ruby>の<ruby>結果<rt>けっか</rt></ruby>をご<ruby>両親<rt>りょうしん</rt></ruby>に<ruby>知<rt>し</rt></ruby>らせないんですか。（がっかりする）', ans:'<ruby>両親<rt>りょうしん</rt></ruby>をがっかりさせたくないんです。', ansPlain:'両親をがっかりさせたくないんです。' },
+];
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let studentName = '';
+let elapsed = 0;
+let timerInterval = null;
+let submitted = false;
+let autoSubmitted = false;
+
+function norm(s){ return (s||'').trim().replace(/[　 \s]/g,'').replace(/。/g,'').replace(/、/g,''); }
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD DYNAMIC CONTENT
+// ══════════════════════════════════════════════════════════════════
+function buildF1() {
+  const grid = document.getElementById('f1-grid');
+  grid.innerHTML = F1_BASES_HTML.map((b,i) => `
+    <div class="conj-row">
+      <div class="conj-n">${i+1}</div>
+      <div class="conj-base">${b}</div>
+      <div class="arr">→</div>
+      <input class="conj-input" id="f1-${i}" placeholder="…" autocomplete="off"/>
+    </div>`).join('');
+}
+
+function buildF2() {
+  const el = document.getElementById('f2-items');
+  el.innerHTML = F2_DATA.map((d,i) => `
+    <div class="sent-item" id="f2-item-${i}">
+      <div class="sent-q"><span class="num-badge">${i+1}</span>${d.q}</div>
+      <div class="sent-row">
+        <span style="color:#bbb">→</span>
+        <span class="sent-pre">${d.pre}</span>
+        <input class="jp-in" id="f2-${i}" style="flex:1;min-width:180px" placeholder="…" autocomplete="off"/>
+        <span style="font-family:'Noto Serif JP';color:#555">。</span>
+      </div>
+      <div class="feedback" id="f2-fb-${i}"></div>
+    </div>`).join('');
+}
+
+function buildF3() {
+  const el = document.getElementById('f3-items');
+  el.innerHTML = F3_DATA.map((d,i) => {
+    const row = d.aBlank
+      ? `<div class="sent-row">
+           <span style="color:#bbb">Ａ：バイクのエンジンを</span>
+           <input class="jp-in" id="f3-${i}" style="width:200px" placeholder="…" autocomplete="off"/>
+           <span style="font-family:'Noto Serif JP';color:#555">んですけど、キーが<ruby>回<rt>まわ</rt></ruby>らないんです。</span>
+         </div>`
+      : `<div class="sent-row">
+           <span style="color:#bbb">Ｂ：</span>
+           ${d.bPre ? `<span class="sent-pre">${d.bPre}</span>` : ''}
+           <input class="jp-in" id="f3-${i}" style="flex:1;min-width:120px;max-width:220px" placeholder="…" autocomplete="off"/>
+           ${d.bSuf ? `<span style="font-family:'Noto Serif JP';color:#555">${d.bSuf}</span>` : ''}
+         </div>`;
+    return `
+    <div class="sent-item" id="f3-item-${i}">
+      <div class="sent-q"><span class="num-badge">${i+1}</span>Ａ：${d.a}</div>
+      ${row}
+      <div class="feedback" id="f3-fb-${i}"></div>
+    </div>`;
+  }).join('');
+}
+
+function buildF4() {
+  const grid = document.getElementById('f4-grid');
+  grid.innerHTML = F4_DATA.map((d,i) => `
+    <div class="f4-item" id="f4-item-${i}">
+      <div class="f4-q">
+        <span style="display:inline-flex;width:24px;height:24px;background:#0f1923;color:white;border-radius:6px;font-size:11px;font-weight:700;align-items:center;justify-content:center;margin-right:6px;font-family:'Noto Sans JP'">${i+1}</span>
+        ${d.q}
+      </div>
+      <div class="f4-row">
+        <span class="f4-lbl">助詞：</span>
+        <input class="f4-in f4-p" id="f4p-${i}" placeholder="に/を" autocomplete="off"/>
+        <span class="f4-lbl">動詞：</span>
+        <input class="f4-in f4-v" id="f4v-${i}" placeholder="${d.hint}" autocomplete="off"/>
+      </div>
+      <div class="feedback" id="f4-fb-${i}"></div>
+    </div>`).join('');
+}
+
+function buildF5() {
+  const el = document.getElementById('f5-items');
+  el.innerHTML = F5_DATA.map((d,i) => `
+    <div class="f5-sentence" id="f5-item-${i}">
+      <div class="f5-q"><span class="num-badge">${i+1}</span>${d.pre}…）</div>
+      <div class="radio-group" id="f5-rg-${i}">
+        ${d.opts.map((opt,j) => `
+          <label class="radio-opt" id="f5-opt-${i}-${j}" onclick="selectRadio(${i},${j})">
+            <input type="radio" name="f5-${i}" value="${j}"/>
+            ${opt}
+          </label>`).join('')}
+      </div>
+      <div class="feedback" id="f5-fb-${i}"></div>
+    </div>`).join('');
+}
+const f5Selected = Array(5).fill(null);
+function selectRadio(qi, ji) {
+  if (submitted) return;
+  f5Selected[qi] = ji;
+  for (let j = 0; j < 2; j++) {
+    const el = document.getElementById(`f5-opt-${qi}-${j}`);
+    el.className = 'radio-opt' + (j === ji ? ' sel' : '');
+  }
+}
+
+function buildF6() {
+  const el = document.getElementById('f6-items');
+  el.innerHTML = F6_DATA.map((d,i) => `
+    <div class="sent-item" id="f6-item-${i}">
+      <div class="sent-q"><span class="num-badge">${i+1}</span>${d.q}</div>
+      <div class="sent-row">
+        <span style="color:#bbb">→</span>
+        <input class="jp-in" id="f6-${i}" style="flex:1" placeholder="すみませんが、〜させていただけませんか。" autocomplete="off"/>
+      </div>
+      <div class="feedback" id="f6-fb-${i}"></div>
+    </div>`).join('');
+}
+
+function buildF7() {
+  const el = document.getElementById('f7-items');
+  el.innerHTML = F7_DATA.map((d,i) => `
+    <div class="sent-item" id="f7-item-${i}">
+      <div class="sent-q"><span class="num-badge">${i+1}</span>${d.q}</div>
+      <div class="sent-row">
+        <span style="color:#bbb">→</span>
+        <span class="sent-pre"><ruby>両親<rt>りょうしん</rt></ruby>を</span>
+        <input class="jp-in" id="f7-${i}" style="flex:1" placeholder="〜させたいんです。" autocomplete="off"/>
+      </div>
+      <div class="feedback" id="f7-fb-${i}"></div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════════════════════════
+function updateTimer() {
+  elapsed++;
+  const left = Math.max(0, TIME_LIMIT - elapsed);
+  const m = Math.floor(left/60).toString().padStart(2,'0');
+  const s = (left%60).toString().padStart(2,'0');
+  const disp = document.getElementById('timer-display');
+  const fill = document.getElementById('timer-bar-fill');
+  disp.textContent = `${m}:${s}`;
+  const pct = (left/TIME_LIMIT)*100;
+  fill.style.width = pct + '%';
+  const color = left<=300 ? '#e63946' : left<=600 ? '#e67e22' : '#2ecc71';
+  fill.style.background = color;
+  disp.style.color = color;
+  if (left<=60 && left>0) disp.classList.add('pulse');
+  else disp.classList.remove('pulse');
+  if (left===0 && !autoSubmitted) {
+    autoSubmitted = true;
+    submitTest(true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT & START
+// ══════════════════════════════════════════════════════════════════
+document.getElementById('name-field').addEventListener('input', function() {
+  document.getElementById('start-btn').disabled = !this.value.trim();
+});
+document.getElementById('name-field').addEventListener('keydown', function(e) {
+  if (e.key==='Enter' && this.value.trim()) startTest();
+});
+document.getElementById('start-btn').addEventListener('click', startTest);
+
+function startTest() {
+  studentName = document.getElementById('name-field').value.trim();
+  if (!studentName) return;
+  document.getElementById('page-intro').classList.remove('active');
+  document.getElementById('timer-bar-wrap').style.display = 'flex';
+  document.getElementById('page-test').classList.add('active');
+  document.getElementById('student-tag').textContent = '✏ ' + studentName;
+  buildF1(); buildF2(); buildF3(); buildF4(); buildF5(); buildF6(); buildF7();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════════════════
+function submitTest(timeout) {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+
+  // Disable all inputs
+  document.querySelectorAll('#page-test input, #page-test textarea').forEach(el => el.disabled = true);
+
+  // ── F1 ──
+  let f1pts = 0;
+  const f1res = [];
+  F1_ANSWERS.forEach((ans, i) => {
+    const val = document.getElementById('f1-'+i)?.value || '';
+    const ok = norm(val) === norm(ans);
+    if (ok) f1pts += 2;
+    f1res.push({ val, ans, ansHtml: F1_ANSWERS_HTML[i], ok, num:i+1 });
+    const inp = document.getElementById('f1-'+i);
+    if (inp) inp.classList.add(ok ? 'ok' : 'err');
+  });
+  // Show F1 result table
+  const f1resEl = document.getElementById('f1-result');
+  f1resEl.style.display = 'block';
+  f1resEl.innerHTML = '<div style="font-weight:700;color:#0f1923;font-size:13px;margin-bottom:10px">Megoldások:</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px">'
+    + f1res.map(r => `<div style="font-size:13px;line-height:1.8">
+        <span style="color:#aaa;margin-right:4px">${r.num}）</span>
+        ${!r.ok ? `<span style="color:#e63946;text-decoration:line-through;margin-right:6px">${r.val||'（üres）'}</span>` : ''}
+        <span style="color:#27ae60;font-weight:${r.ok?400:700}">${r.ansHtml}</span>
+        <span style="margin-left:4px">${r.ok?'✓':'✗'}</span>
+      </div>`).join('')
+    + '</div>';
+
+  // ── F2 ──
+  let f2pts = 0;
+  F2_DATA.forEach((d,i) => {
+    const val = document.getElementById('f2-'+i)?.value || '';
+    const ok = norm(val) === norm(d.ansPlain);
+    if (ok) f2pts += 4;
+    const inp = document.getElementById('f2-'+i);
+    if (inp) inp.classList.add(ok?'ok':'err');
+    const fb = document.getElementById('f2-fb-'+i);
+    if (fb) {
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (ok?'fb-ok':'fb-err');
+      fb.innerHTML = ok ? '✓ Helyes!'
+        : `✗ Az Ön válasza: <span style="text-decoration:line-through;opacity:.7">${val||'（üres）'}</span>　→　Helyes: <strong>${d.ans}</strong>`;
+    }
+  });
+
+  // ── F3 ──
+  let f3pts = 0;
+  F3_DATA.forEach((d,i) => {
+    const val = document.getElementById('f3-'+i)?.value || '';
+    const ok = norm(val).includes(norm(d.key));
+    if (ok) f3pts += 3;
+    const inp = document.getElementById('f3-'+i);
+    if (inp) inp.classList.add(ok?'ok':'err');
+    const fb = document.getElementById('f3-fb-'+i);
+    if (fb) {
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (ok?'fb-ok':'fb-err');
+      fb.innerHTML = ok ? '✓ Helyes!'
+        : `✗ Az Ön válasza: <span style="text-decoration:line-through;opacity:.7">${val||'（üres）'}</span>　→　Minta megoldás: <strong>${d.ans}</strong>`;
+    }
+  });
+  f3pts = Math.min(f3pts, 20);
+
+  // ── F4 ──
+  let f4raw = 0;
+  F4_DATA.forEach((d,i) => {
+    const pVal = document.getElementById('f4p-'+i)?.value?.trim() || '';
+    const vVal = document.getElementById('f4v-'+i)?.value || '';
+    const pOk = pVal === d.p;
+    const vOk = norm(vVal) === norm(d.v);
+    if (pOk) f4raw++;
+    if (vOk) f4raw++;
+    const pi = document.getElementById('f4p-'+i);
+    const vi = document.getElementById('f4v-'+i);
+    if (pi) pi.classList.add(pOk?'ok':'err');
+    if (vi) vi.classList.add(vOk?'ok':'err');
+    const fb = document.getElementById('f4-fb-'+i);
+    if (fb) {
+      fb.style.display = 'block';
+      if (pOk && vOk) { fb.className='feedback fb-ok'; fb.textContent='✓ Helyes!'; }
+      else {
+        fb.className = 'feedback fb-err';
+        fb.innerHTML = (!pOk?`助詞：Az Ön válasza: <span style="text-decoration:line-through">${pVal||'—'}</span> → Helyes: <strong>${d.p}</strong><br>`:'')
+          + (!vOk?`動詞：Az Ön válasza: <span style="text-decoration:line-through">${vVal||'—'}</span> → Helyes: <strong>${d.v}</strong>`:'');
+      }
+    }
+  });
+  const f4pts = Math.round(f4raw * (10/12));
+
+  // ── F5 ──
+  let f5pts = 0;
+  F5_DATA.forEach((d,i) => {
+    const sel = f5Selected[i];
+    const ok = sel === d.ans;
+    if (ok) f5pts += 2;
+    for (let j=0;j<2;j++) {
+      const el = document.getElementById(`f5-opt-${i}-${j}`);
+      if (!el) continue;
+      el.className = 'radio-opt';
+      if (j === d.ans) el.classList.add('ans-ok');
+      else if (sel === j && !ok) el.classList.add('sel-err');
+      el.style.pointerEvents = 'none';
+    }
+    const fb = document.getElementById('f5-fb-'+i);
+    if (fb && !ok) {
+      fb.style.display = 'block';
+      fb.className = 'feedback fb-err';
+      fb.innerHTML = `✗ Az Ön válasza: <span style="text-decoration:line-through;opacity:.7">${sel===null?'（nem válaszolt）':d.opts[sel]}</span>　→　Helyes: <strong style="color:#27ae60">${d.opts[d.ans]}</strong>`;
+    }
+  });
+
+  // ── F6 ──
+  let f6pts = 0;
+  F6_DATA.forEach((d,i) => {
+    const val = document.getElementById('f6-'+i)?.value || '';
+    const ok = val.length > 5 && (val.includes('させ') || val.includes('せて'));
+    if (ok) f6pts += 3;
+    const inp = document.getElementById('f6-'+i);
+    if (inp) inp.classList.add(ok?'ok':'err');
+    const fb = document.getElementById('f6-fb-'+i);
+    if (fb) {
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (ok?'fb-ok':'fb-err');
+      fb.innerHTML = ok ? '✓ Helyes!'
+        : `✗ Az Ön válasza: <span style="text-decoration:line-through;opacity:.7">${val||'（üres）'}</span><br>　　Minta megoldás: <strong>${d.ans}</strong>`;
+    }
+  });
+  f6pts = Math.min(f6pts, 10);
+
+  // ── F7 ──
+  let f7pts = 0;
+  F7_DATA.forEach((d,i) => {
+    const val = document.getElementById('f7-'+i)?.value || '';
+    const ok = val.length > 3 && val.includes('させ');
+    if (ok) f7pts += 2;
+    const inp = document.getElementById('f7-'+i);
+    if (inp) inp.classList.add(ok?'ok':'err');
+    const fb = document.getElementById('f7-fb-'+i);
+    if (fb) {
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (ok?'fb-ok':'fb-err');
+      fb.innerHTML = ok ? '✓ Helyes!'
+        : `✗ Az Ön válasza: <span style="text-decoration:line-through;opacity:.7">${val||'（üres）'}</span>　→　Helyes: <strong>${d.ansPlain}</strong>`;
+    }
+  });
+  f7pts = Math.min(f7pts, 5);
+
+  // F8 & bonus feedback
+  document.getElementById('f8-fb').style.display = 'block';
+  document.getElementById('bonus-fb').style.display = 'block';
+  document.getElementById('bonus-fb').innerHTML = `
+    <strong>Minta megoldás:</strong><br>
+    （ａ）A tanár felállíttatta a diákot. → を = tárgy, közvetlen kényszer<br>
+    （ｂ）A tanár szólt a diáknak, hogy álljon fel. → に = közvetett utasítás<br>
+    <strong>Különbség:</strong> を erősebb kényszert jelöl (fizikai cselekvés kényszere), に enyhébb utasítást vagy engedélyt fejez ki.`;
+
+  const autoTotal = f1pts + f2pts + f3pts + f4pts + f5pts + f6pts + f7pts;
+  const pct = Math.round((autoTotal/85)*100);
+
+  // ── RESULT PAGE ──
+  document.getElementById('timer-bar-wrap').style.display = 'none';
+  document.getElementById('page-test').classList.remove('active');
+  document.getElementById('page-result').classList.add('active');
+  if (timeout) document.getElementById('timeout-banner').style.display = 'block';
+
+  const em = Math.floor(elapsed/60), es = elapsed%60;
+  const grade = pct>=90?'🏆 Jeles':pct>=70?'🎉 Jó':pct>=50?'👍 Közepes':'📚 Elégtelen';
+  document.getElementById('res-grade').textContent = grade;
+  document.getElementById('res-name').textContent = studentName;
+  document.getElementById('res-score').textContent = autoTotal;
+  document.getElementById('res-time').textContent = `${em}:${es.toString().padStart(2,'0')}`;
+  document.getElementById('res-time-lbl').textContent = timeout?'lejárt':'befejezve';
+  const pctEl = document.getElementById('res-pct');
+  pctEl.textContent = pct + '%';
+  pctEl.style.color = pct>=70?'#2ecc71':pct>=50?'#e67e22':'#e63946';
+
+  // Build section results
+  const sectionsData = [
+    { num:'1', title:'1. Ragozás', pts:f1pts, max:20,
+      cols:['#','Az Ön válasza','Helyes megoldás'],
+      rows: F1_ANSWERS.map((a,i)=>({ num:i+1, student:document.getElementById('f1-'+i)?.defaultValue||document.getElementById('f1-'+i)?.value||'', correct:F1_ANSWERS_HTML[i], ok:norm(document.getElementById('f1-'+i)?.value||'')==norm(a) })) },
+    { num:'2', title:'2. Mondatátalakítás', pts:f2pts, max:20,
+      cols:['#','Az Ön válasza','Helyes megoldás'],
+      rows: F2_DATA.map((d,i)=>{ const val=document.getElementById('f2-'+i)?.value||''; return {num:i+1,student:val,correct:d.ans,ok:norm(val)==norm(d.ansPlain)}; }) },
+    { num:'3', title:'3. Igekiválasztás', pts:f3pts, max:20,
+      cols:['#','Az Ön válasza','Minta megoldás'],
+      rows: F3_DATA.map((d,i)=>{ const val=document.getElementById('f3-'+i)?.value||''; return {num:i+1,student:val,correct:d.ans,ok:norm(val).includes(norm(d.key))}; }) },
+    { num:'4', title:'4. Segédige', pts:f4pts, max:10,
+      cols:['#','助詞 – Az Ön válasza / Helyes','動詞 – Az Ön válasza / Helyes'],
+      rows: F4_DATA.map((d,i)=>{ const pv=document.getElementById('f4p-'+i)?.value?.trim()||''; const vv=document.getElementById('f4v-'+i)?.value||''; return {num:i+1,student:`[${pv||'—'}] / ${vv||'—'}`,correct:`[${d.p}] / ${d.v}`,ok:pv==d.p&&norm(vv)==norm(d.v)}; }) },
+    { num:'5', title:'5. Kiválasztás', pts:f5pts, max:10,
+      cols:['#','Az Ön válasza','Helyes megoldás'],
+      rows: F5_DATA.map((d,i)=>{ const sel=f5Selected[i]; return {num:i+1,student:sel===null?'（nem válaszolt）':d.opts[sel],correct:d.opts[d.ans],ok:sel==d.ans}; }) },
+    { num:'6', title:'6. Kérés', pts:f6pts, max:10,
+      cols:['#','Az Ön válasza','Minta megoldás'],
+      rows: F6_DATA.map((d,i)=>{ const val=document.getElementById('f6-'+i)?.value||''; const ok=val.length>5&&(val.includes('させ')||val.includes('せて')); return {num:i+1,student:val||'（üres）',correct:d.ans,ok}; }) },
+    { num:'7', title:'7. Mondatbefejezés', pts:f7pts, max:5,
+      cols:['#','Az Ön válasza','Helyes megoldás'],
+      rows: F7_DATA.map((d,i)=>{ const val=document.getElementById('f7-'+i)?.value||''; const ok=val.length>3&&val.includes('させ'); return {num:i+1,student:val||'（üres）',correct:d.ansPlain,ok}; }) },
+  ];
+
+  function ptsCls(pts, max) {
+    if (pts===max) return 'pts-perfect';
+    if (pts>0) return 'pts-partial';
+    return 'pts-zero';
+  }
+
+  const f8val = document.getElementById('f8-input')?.value?.trim() || '';
+  let html = sectionsData.map(sec => `
+    <div class="section-result">
+      <div class="sr-head">
+        <div class="sr-num">${sec.num}</div>
+        <div class="sr-title">${sec.title}</div>
+        <div class="sr-pts ${ptsCls(sec.pts,sec.max)}">${sec.pts} / ${sec.max} pont</div>
+      </div>
+      <table class="ans-table">
+        <thead><tr>${sec.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>
+          ${sec.rows.map(r=>`
+            <tr class="${r.ok?'row-ok':'row-err'}">
+              <td>${r.num}</td>
+              <td><span style="margin-right:6px">${r.ok?'✓':'✗'}</span>${r.student}</td>
+              <td>${r.ok?r.correct:`<strong>${r.correct}</strong>`}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`).join('');
+
+  html += `
+    <div class="section-result">
+      <div class="sr-head">
+        <div class="sr-num">8</div>
+        <div class="sr-title">Párbeszéd</div>
+        <div class="sr-pts pts-teacher">tanári értékelés</div>
+      </div>
+      ${f8val ? `<div style="background:#f8f9fc;border-radius:10px;padding:14px 18px;font-family:'Noto Serif JP';font-size:14px;white-space:pre-wrap;line-height:1.9;color:#333">${f8val}</div>`
+        : '<div style="color:#aaa;font-size:13px;font-style:italic">（nem töltötte ki）</div>'}
+    </div>
+    <div class="section-result">
+      <div class="sr-head">
+        <div class="sr-num bonus-num">★</div>
+        <div class="sr-title">Bónusz feladat</div>
+        <div class="sr-pts pts-teacher">tanári értékelés</div>
+      </div>
+      <div class="bonus-result-box">
+        <strong>Minta megoldás:</strong><br>
+        （ａ）A tanár felállíttatta a diákot. → を = tárgy, közvetlen kényszer<br>
+        （ｂ）A tanár szólt a diáknak, hogy álljon fel. → に = közvetett utasítás<br>
+        <strong>Különbség:</strong> を erősebb kényszert jelöl, に enyhébb utasítást vagy engedélyt fejez ki.
+      </div>
+    </div>`;
+
+  document.getElementById('res-sections').innerHTML = html;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RESTART
+// ══════════════════════════════════════════════════════════════════
+function restartTest() {
+  submitted = false; autoSubmitted = false; elapsed = 0;
+  clearInterval(timerInterval);
+  document.getElementById('page-result').classList.remove('active');
+  document.getElementById('page-intro').classList.add('active');
+  document.getElementById('timer-bar-wrap').style.display = 'none';
+  document.getElementById('timeout-banner').style.display = 'none';
+  document.getElementById('name-field').value = '';
+  document.getElementById('start-btn').disabled = true;
+  document.getElementById('timer-display').textContent = '45:00';
+  document.getElementById('timer-bar-fill').style.width = '100%';
+  document.getElementById('timer-bar-fill').style.background = '#2ecc71';
+  window.scrollTo({top:0,behavior:'auto'});
+}
+</script>
+</body>
+</html>

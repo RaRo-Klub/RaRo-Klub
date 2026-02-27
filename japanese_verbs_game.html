@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N5 Japán Igék – Koppints rá!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #fefce8 0%, #fef9c3 50%, #fef3c7 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif;
+    color: #1c1917;
+  }
+
+  .container { text-align: center; width: 100%; max-width: 640px; padding: 20px; }
+
+  h1 { font-size: 1.6rem; margin-bottom: 4px; color: #b45309; letter-spacing: 1px; }
+  .subtitle { color: #78716c; font-size: 0.85rem; margin-bottom: 22px; }
+
+  /* ── HUD ── */
+  .hud {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid #fde68a;
+    border-radius: 14px; padding: 10px 18px;
+    box-shadow: 0 2px 8px rgba(180,120,0,0.08);
+  }
+  .hud-item span { display: block; font-size: 0.65rem; color: #a16207; text-transform: uppercase; letter-spacing: 1px; }
+  .hud-item strong { font-size: 1.3rem; color: #1c1917; }
+  .lives { font-size: 1.3rem; }
+
+  /* ── Mode tabs ── */
+  .mode-tabs {
+    display: flex; gap: 6px; margin-bottom: 14px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid #fde68a;
+    border-radius: 14px; padding: 6px;
+    box-shadow: 0 2px 8px rgba(180,120,0,0.06);
+  }
+  .mode-tab {
+    flex: 1; padding: 9px 4px; border: none; border-radius: 10px;
+    cursor: pointer; font-size: 0.78rem; font-weight: 600;
+    background: transparent; color: #78716c;
+    transition: all 0.18s;
+    line-height: 1.3;
+  }
+  .mode-tab .jp-label { display: block; font-family: 'Noto Sans JP', sans-serif; font-size: 0.85rem; }
+  .mode-tab .hu-label { display: block; font-size: 0.68rem; color: #a8a29e; margin-top: 2px; }
+  .mode-tab.active {
+    background: #b45309; color: #fff;
+    box-shadow: 0 3px 10px rgba(180,83,9,0.3);
+  }
+  .mode-tab.active .hu-label { color: #fde68a; }
+
+  /* ── Card ── */
+  .card {
+    background: rgba(255,255,255,0.82);
+    border: 1px solid #fde68a;
+    border-radius: 20px; padding: 32px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(180,120,0,0.1);
+  }
+
+  .label { font-size: 0.7rem; color: #a16207; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+
+  .hungarian { font-size: 2.1rem; font-weight: 700; color: #92400e; margin-bottom: 4px; min-height: 52px; }
+
+  .romaji { font-size: 0.88rem; color: #a8a29e; margin-bottom: 22px; height: 20px; }
+
+  /* ── Timer bar ── */
+  .timer-bar-wrap {
+    background: #fef3c7; border-radius: 99px; height: 6px;
+    margin-bottom: 38px; overflow: hidden;
+  }
+  .timer-bar {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, #ef4444, #f59e0b);
+    transition: width 0.1s linear;
+  }
+
+  /* ── Verb display + furigana ── */
+  .verb-display {
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 700;
+    min-height: 120px;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 6px;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+    color: #1c1917;
+  }
+  .verb-display.fade { opacity: 0; transform: scale(0.84); }
+
+  .verb-display ruby { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+  .verb-display ruby rt {
+    font-size: 1.0rem; font-weight: 400;
+    color: #2563eb; letter-spacing: 2px; line-height: 1;
+    order: -1;
+  }
+  .verb-display .kanji-text { font-size: 3rem; letter-spacing: 3px; line-height: 1; }
+  .verb-display .kana-only  { font-size: 3rem; letter-spacing: 4px; line-height: 1; padding-top: 36px; }
+
+  /* ── HIT button ── */
+  .hit-btn {
+    width: 100%; padding: 18px;
+    font-size: 1.2rem; font-weight: 700; border: none; border-radius: 14px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #e94560, #c0392b);
+    color: #fff; letter-spacing: 1px;
+    box-shadow: 0 6px 20px rgba(233,69,96,0.3);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-bottom: 14px;
+  }
+  .hit-btn:active { transform: scale(0.96); box-shadow: 0 3px 10px rgba(233,69,96,0.25); }
+  .hit-btn:disabled { background: #d4d4d4; color: #a8a29e; box-shadow: none; cursor: default; }
+
+  /* ── Feedback ── */
+  .feedback { font-size: 1.0rem; font-weight: 700; min-height: 28px; font-family: 'Noto Sans JP', sans-serif; }
+  .feedback.correct { color: #15803d; }
+  .feedback.wrong   { color: #dc2626; }
+  .feedback.missed  { color: #c2410c; }
+
+  .instruction { font-size: 0.78rem; color: #a8a29e; margin-top: 12px; }
+
+  /* ── Overlays ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(28,25,23,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 99; backdrop-filter: blur(4px);
+  }
+  .overlay-card {
+    background: #fffbeb; border: 1px solid #fde68a;
+    border-radius: 24px; padding: 44px 36px;
+    text-align: center; max-width: 420px; width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .overlay-card h2 { font-size: 2rem; margin-bottom: 10px; color: #92400e; }
+  .overlay-card p  { color: #78716c; margin-bottom: 20px; line-height: 1.7; font-size: 0.95rem; }
+  .overlay-card .score-big { font-size: 3rem; font-weight: 700; color: #b45309; margin: 12px 0; }
+  .start-btn {
+    padding: 15px 40px; font-size: 1.1rem; font-weight: 700;
+    border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #e94560, #c0392b);
+    color: #fff; cursor: pointer; letter-spacing: 1px;
+    box-shadow: 0 6px 20px rgba(233,69,96,0.35);
+    transition: transform 0.1s;
+  }
+  .start-btn:hover { transform: scale(1.04); }
+
+  .mode-hint {
+    display: inline-block;
+    background: #fef9c3; border: 1px solid #fde68a;
+    border-radius: 8px; padding: 6px 14px;
+    font-size: 0.8rem; color: #92400e; margin-bottom: 18px;
+  }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 16px;
+    padding: 8px 18px;
+    font-size: 0.85rem; font-weight: 600;
+    border: 1.5px solid #fde68a;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.7);
+    color: #92400e;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(180,120,0,0.07);
+  }
+  .back-btn:hover {
+    background: #fef9c3;
+    box-shadow: 0 4px 12px rgba(180,120,0,0.13);
+  }
+</style>
+</head>
+<body>
+
+<!-- START OVERLAY -->
+<div class="overlay" id="startOverlay">
+  <div class="overlay-card">
+    <h2>🇯🇵 N5 Japán Igék</h2>
+    <p>Válassz ragozási alakot a <strong style="color:#b45309">fülek</strong> segítségével!<br>
+       Megjelenik a <strong style="color:#92400e">magyar alak</strong>, japán igék peregnek – koppints <strong style="color:#e94560">HIT!</strong>-re, amikor a helyes látható!<br><br>
+       A kanji felett <strong style="color:#2563eb">hiragana</strong> olvasat segít. 3 életpont – ne hibázz!</p>
+    <button class="start-btn" onclick="startGame()">Játék indítása!</button>
+  </div>
+</div>
+
+<!-- GAME OVER OVERLAY -->
+<div class="overlay" id="gameoverOverlay" style="display:none">
+  <div class="overlay-card">
+    <h2 id="goTitle">Játék vége!</h2>
+    <p id="goMsg"></p>
+    <div class="score-big" id="goScore"></div>
+    <button class="start-btn" onclick="startGame()">Újra!</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <a href="index.html" class="back-btn">← Vissza a főoldalra</a>
+  <h1>N5 Japán Igék</h1>
+  <div class="subtitle">Udvarias igealakok – ます形</div>
+
+  <div class="hud">
+    <div class="hud-item"><span>Pontszám</span><strong id="score">0</strong></div>
+    <div class="hud-item"><span>Sorozat</span><strong id="streak">0</strong> 🔥</div>
+    <div class="hud-item"><span>Életek</span><div class="lives" id="lives">❤️❤️❤️</div></div>
+    <div class="hud-item"><span>Kérdés</span><strong><span id="qnum">0</span>/20</strong></div>
+  </div>
+
+  <!-- Mode selector -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="setMode('masu')" id="tab-masu">
+      <span class="jp-label">〜ます</span>
+      <span class="hu-label">Udvarias jelen</span>
+    </button>
+    <button class="mode-tab" onclick="setMode('masen')" id="tab-masen">
+      <span class="jp-label">〜ません</span>
+      <span class="hu-label">Jelen tagadás</span>
+    </button>
+    <button class="mode-tab" onclick="setMode('mashita')" id="tab-mashita">
+      <span class="jp-label">〜ました</span>
+      <span class="hu-label">Múlt idő</span>
+    </button>
+    <button class="mode-tab" onclick="setMode('masendeshita')" id="tab-masendeshita">
+      <span class="jp-label">〜ませんでした</span>
+      <span class="hu-label">Múlt tagadás</span>
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="label">Magyar alak</div>
+    <div class="hungarian" id="hungMeaning">–</div>
+    <div class="romaji" id="romajiHint"></div>
+
+    <div class="timer-bar-wrap">
+      <div class="timer-bar" id="timerBar" style="width:100%"></div>
+    </div>
+
+    <div class="verb-display" id="verbDisplay">–</div>
+  </div>
+
+  <button class="hit-btn" id="hitBtn" onclick="onHit()" disabled>🎯 HIT!</button>
+  <div class="feedback" id="feedback"></div>
+  <div class="instruction">Várd meg a helyes igét, majd nyomj HIT-et! Téves koppintás = 1 élet.</div>
+</div>
+
+<script>
+// ─── MODE DEFINITIONS ─────────────────────────────────────────
+const MODES = {
+  masu:         { suffix: "ます",         suffixHi: "ます",         huIdx: 0 },
+  masen:        { suffix: "ません",       suffixHi: "ません",       huIdx: 1 },
+  mashita:      { suffix: "ました",       suffixHi: "ました",       huIdx: 2 },
+  masendeshita: { suffix: "ませんでした", suffixHi: "ませんでした", huIdx: 3 },
+};
+let currentMode = 'masu';
+
+// ─── N5 VERB DATA ─────────────────────────────────────────────
+// stem    = kanji ます語幹 (e.g. 食べ for 食べます)
+// stemHi  = hiragana ます語幹
+// hu[4]   = [jelen, jelen_tagadás, múlt, múlt_tagadás]  – 1. sz. egyes
+const VERBS = [
+  { jp:"食べる",   hi:"たべる",         stem:"食べ",     stemHi:"たべ",
+    hu:["eszem","nem eszem","ettem","nem ettem"] },
+  { jp:"飲む",     hi:"のむ",           stem:"飲み",     stemHi:"のみ",
+    hu:["iszom","nem iszom","ittam","nem ittam"] },
+  { jp:"行く",     hi:"いく",           stem:"行き",     stemHi:"いき",
+    hu:["megyek","nem megyek","mentem","nem mentem"] },
+  { jp:"来る",     hi:"くる",           stem:"来",       stemHi:"き",
+    hu:["jövök","nem jövök","jöttem","nem jöttem"] },
+  { jp:"見る",     hi:"みる",           stem:"見",       stemHi:"み",
+    hu:["nézek","nem nézek","néztem","nem néztem"] },
+  { jp:"聞く",     hi:"きく",           stem:"聞き",     stemHi:"きき",
+    hu:["hallgatok","nem hallgatok","hallgattam","nem hallgattam"] },
+  { jp:"話す",     hi:"はなす",         stem:"話し",     stemHi:"はなし",
+    hu:["beszélek","nem beszélek","beszéltem","nem beszéltem"] },
+  { jp:"読む",     hi:"よむ",           stem:"読み",     stemHi:"よみ",
+    hu:["olvasok","nem olvasok","olvastam","nem olvastam"] },
+  { jp:"書く",     hi:"かく",           stem:"書き",     stemHi:"かき",
+    hu:["írok","nem írok","írtam","nem írtam"] },
+  { jp:"買う",     hi:"かう",           stem:"買い",     stemHi:"かい",
+    hu:["veszek","nem veszek","vettem","nem vettem"] },
+  { jp:"売る",     hi:"うる",           stem:"売り",     stemHi:"うり",
+    hu:["eladok","nem adok el","eladtam","nem adtam el"] },
+  { jp:"帰る",     hi:"かえる",         stem:"帰り",     stemHi:"かえり",
+    hu:["hazamegyek","nem megyek haza","hazamentem","nem mentem haza"] },
+  { jp:"起きる",   hi:"おきる",         stem:"起き",     stemHi:"おき",
+    hu:["felkelek","nem kelek fel","felkeltem","nem keltem fel"] },
+  { jp:"寝る",     hi:"ねる",           stem:"寝",       stemHi:"ね",
+    hu:["alszom","nem alszom","aludtam","nem aludtam"] },
+  { jp:"する",     hi:"する",           stem:"し",       stemHi:"し",
+    hu:["csinálok","nem csinálok","csináltam","nem csináltam"] },
+  { jp:"ある",     hi:"ある",           stem:"あり",     stemHi:"あり",
+    hu:["van","nincs","volt","nem volt"] },
+  { jp:"いる",     hi:"いる",           stem:"い",       stemHi:"い",
+    hu:["vagyok","nem vagyok","voltam","nem voltam"] },
+  { jp:"分かる",   hi:"わかる",         stem:"分かり",   stemHi:"わかり",
+    hu:["megértek","nem értek","megértettem","nem értettem"] },
+  { jp:"作る",     hi:"つくる",         stem:"作り",     stemHi:"つくり",
+    hu:["készítek","nem készítek","készítettem","nem készítettem"] },
+  { jp:"開ける",   hi:"あける",         stem:"開け",     stemHi:"あけ",
+    hu:["kinyitom","nem nyitom ki","kinyitottam","nem nyitottam ki"] },
+  { jp:"閉める",   hi:"しめる",         stem:"閉め",     stemHi:"しめ",
+    hu:["bezárom","nem zárom be","bezártam","nem zártam be"] },
+  { jp:"入る",     hi:"はいる",         stem:"入り",     stemHi:"はいり",
+    hu:["bemegyek","nem megyek be","bementem","nem mentem be"] },
+  { jp:"出る",     hi:"でる",           stem:"出",       stemHi:"で",
+    hu:["kimegyek","nem megyek ki","kimentem","nem mentem ki"] },
+  { jp:"使う",     hi:"つかう",         stem:"使い",     stemHi:"つかい",
+    hu:["használok","nem használok","használtam","nem használtam"] },
+  { jp:"思う",     hi:"おもう",         stem:"思い",     stemHi:"おもい",
+    hu:["gondolok","nem gondolok","gondoltam","nem gondoltam"] },
+  { jp:"持つ",     hi:"もつ",           stem:"持ち",     stemHi:"もち",
+    hu:["hordozok","nem hordozok","hordoztam","nem hordoztam"] },
+  { jp:"知る",     hi:"しる",           stem:"知り",     stemHi:"しり",
+    hu:["tudok","nem tudok","tudtam","nem tudtam"] },
+  { jp:"会う",     hi:"あう",           stem:"会い",     stemHi:"あい",
+    hu:["találkozom","nem találkozom","találkoztam","nem találkoztam"] },
+  { jp:"待つ",     hi:"まつ",           stem:"待ち",     stemHi:"まち",
+    hu:["várok","nem várok","vártam","nem vártam"] },
+  { jp:"乗る",     hi:"のる",           stem:"乗り",     stemHi:"のり",
+    hu:["felszállok","nem szállok fel","felszálltam","nem szálltam fel"] },
+  { jp:"降りる",   hi:"おりる",         stem:"降り",     stemHi:"おり",
+    hu:["leszállok","nem szállok le","leszálltam","nem szálltam le"] },
+  { jp:"勉強する", hi:"べんきょうする", stem:"勉強し",   stemHi:"べんきょうし",
+    hu:["tanulok","nem tanulok","tanultam","nem tanultam"] },
+  { jp:"働く",     hi:"はたらく",       stem:"働き",     stemHi:"はたらき",
+    hu:["dolgozom","nem dolgozom","dolgoztam","nem dolgoztam"] },
+  { jp:"泳ぐ",     hi:"およぐ",         stem:"泳ぎ",     stemHi:"およぎ",
+    hu:["úszom","nem úszom","úsztam","nem úsztam"] },
+  { jp:"走る",     hi:"はしる",         stem:"走り",     stemHi:"はしり",
+    hu:["futok","nem futok","futottam","nem futottam"] },
+  { jp:"座る",     hi:"すわる",         stem:"座り",     stemHi:"すわり",
+    hu:["leülök","nem ülök le","leültem","nem ültem le"] },
+  { jp:"立つ",     hi:"たつ",           stem:"立ち",     stemHi:"たち",
+    hu:["felállok","nem állok fel","felálltam","nem álltam fel"] },
+  { jp:"歩く",     hi:"あるく",         stem:"歩き",     stemHi:"あるき",
+    hu:["sétálok","nem sétálok","sétáltam","nem sétáltam"] },
+  { jp:"止まる",   hi:"とまる",         stem:"止まり",   stemHi:"とまり",
+    hu:["megállok","nem állok meg","megálltam","nem álltam meg"] },
+  { jp:"始める",   hi:"はじめる",       stem:"始め",     stemHi:"はじめ",
+    hu:["elkezdek","nem kezdek el","elkezdtem","nem kezdtem el"] },
+  { jp:"終わる",   hi:"おわる",         stem:"終わり",   stemHi:"おわり",
+    hu:["befejezek","nem fejezek be","befejeztem","nem fejeztem be"] },
+  { jp:"忘れる",   hi:"わすれる",       stem:"忘れ",     stemHi:"わすれ",
+    hu:["elfelejtem","nem felejtem el","elfelejtettem","nem felejtettem el"] },
+  { jp:"覚える",   hi:"おぼえる",       stem:"覚え",     stemHi:"おぼえ",
+    hu:["megjegyzem","nem jegyezm meg","megjegyeztem","nem jegyeztem meg"] },
+  { jp:"出す",     hi:"だす",           stem:"出し",     stemHi:"だし",
+    hu:["kiveszem","nem veszem ki","kivettem","nem vettem ki"] },
+  { jp:"もらう",   hi:"もらう",         stem:"もらい",   stemHi:"もらい",
+    hu:["kapok","nem kapok","kaptam","nem kaptam"] },
+  { jp:"あげる",   hi:"あげる",         stem:"あげ",     stemHi:"あげ",
+    hu:["adok","nem adok","adtam","nem adtam"] },
+  { jp:"くれる",   hi:"くれる",         stem:"くれ",     stemHi:"くれ",
+    hu:["ad nekem","nem ad nekem","adott nekem","nem adott nekem"] },
+  { jp:"貸す",     hi:"かす",           stem:"貸し",     stemHi:"かし",
+    hu:["kölcsönadok","nem adok kölcsön","kölcsönadtam","nem adtam kölcsön"] },
+  { jp:"借りる",   hi:"かりる",         stem:"借り",     stemHi:"かり",
+    hu:["kölcsönkérek","nem kérek kölcsön","kölcsönkértem","nem kértem kölcsön"] },
+  { jp:"急ぐ",     hi:"いそぐ",         stem:"急ぎ",     stemHi:"いそぎ",
+    hu:["sietek","nem sietek","siettem","nem siettem"] },
+];
+
+// ─── HELPERS ──────────────────────────────────────────────────
+function hasKanji(s) { return [...s].some(c => c >= '\u4E00' && c <= '\u9FFF'); }
+
+function getConjugated(verb, mode) {
+  const m = MODES[mode];
+  return {
+    jp: verb.stem + m.suffix,
+    hi: verb.stemHi + m.suffixHi,
+    hu: verb.hu[m.huIdx],
+  };
+}
+
+function buildVerbHTML(jp, hi) {
+  if (!hasKanji(jp)) return `<span class="kana-only">${jp}</span>`;
+  return `<ruby><rt>${hi}</rt><span class="kanji-text">${jp}</span></ruby>`;
+}
+
+// ─── MODE SWITCHING ───────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + mode).classList.add('active');
+}
+
+// ─── GAME STATE ───────────────────────────────────────────────
+const TOTAL_Q = 20, CYCLE_MS = 4500, DISTRACTORS = 4;
+let state = {};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  document.getElementById('startOverlay').style.display    = 'none';
+  document.getElementById('gameoverOverlay').style.display = 'none';
+  state = { score:0, streak:0, lives:3, qnum:0, hitDone:false,
+            cycleTimer:null, currentVerb:null, correctVerb:null,
+            verbQueue:[], verbIdx:0 };
+  updateHUD();
+  nextQuestion();
+}
+
+function nextQuestion() {
+  clearTimers();
+  if (state.qnum >= TOTAL_Q || state.lives <= 0) { endGame(); return; }
+  state.qnum++;
+  state.hitDone = false;
+  document.getElementById('hitBtn').disabled = false;
+  setFeedback('','');
+  document.getElementById('qnum').textContent = state.qnum;
+
+  const shuffled    = shuffle(VERBS);
+  state.correctVerb = shuffled[0];
+  state.verbQueue   = shuffle([state.correctVerb, ...shuffled.slice(1, DISTRACTORS)]);
+
+  // Show Hungarian form for current mode
+  const conj = getConjugated(state.correctVerb, currentMode);
+  document.getElementById('hungMeaning').textContent = conj.hu;
+  document.getElementById('romajiHint').textContent  = '';
+
+  state.verbIdx = 0;
+  showVerb();
+  startTimerBar();
+}
+
+function showVerb() {
+  const display = document.getElementById('verbDisplay');
+  display.classList.add('fade');
+  setTimeout(() => {
+    if (state.verbIdx >= state.verbQueue.length) state.verbIdx = 0;
+    state.currentVerb = state.verbQueue[state.verbIdx++];
+    const c = getConjugated(state.currentVerb, currentMode);
+    display.innerHTML = buildVerbHTML(c.jp, c.hi);
+    display.classList.remove('fade');
+  }, 280);
+  state.cycleTimer = setTimeout(() => { if (!state.hitDone) showVerb(); }, CYCLE_MS);
+}
+
+let barAnim;
+function startTimerBar() {
+  clearInterval(barAnim);
+  const bar = document.getElementById('timerBar');
+  const total = CYCLE_MS * state.verbQueue.length + 2000;
+  const start = Date.now();
+  bar.style.width = '100%';
+  barAnim = setInterval(() => {
+    const pct = Math.max(0, 100 - ((Date.now()-start)/total)*100);
+    bar.style.width = pct + '%';
+    if (pct <= 0) { clearInterval(barAnim); if (!state.hitDone) missedCorrect(); }
+  }, 80);
+}
+
+function clearTimers() { clearTimeout(state.cycleTimer); clearInterval(barAnim); }
+
+function onHit() {
+  if (state.hitDone) return;
+  const cv = state.currentVerb;
+  if (!cv) return;
+  const correct = getConjugated(state.correctVerb, currentMode);
+  const chosen  = getConjugated(cv, currentMode);
+
+  if (cv.jp === state.correctVerb.jp) {
+    state.hitDone = true; clearTimers();
+    const bonus = state.streak >= 3 ? 20 : 10;
+    state.score += bonus; state.streak++;
+    document.getElementById('hitBtn').disabled = true;
+    document.getElementById('romajiHint').textContent = chosen.hi;
+    setFeedback(`✅ Helyes! ${chosen.jp} = ${correct.hu}　+${bonus}pont${bonus>10?' 🔥':''}`, 'correct');
+    updateHUD();
+    setTimeout(nextQuestion, 1800);
+  } else {
+    state.lives--; state.streak = 0;
+    setFeedback(`❌ Téves! ${chosen.jp}（${chosen.hi}）= ${chosen.hu}`, 'wrong');
+    updateHUD();
+    if (state.lives <= 0) {
+      clearTimers(); state.hitDone = true;
+      document.getElementById('hitBtn').disabled = true;
+      setTimeout(endGame, 1400);
+    }
+  }
+}
+
+function missedCorrect() {
+  if (state.hitDone) return;
+  state.hitDone = true; state.lives--; state.streak = 0;
+  document.getElementById('hitBtn').disabled = true;
+  const correct = getConjugated(state.correctVerb, currentMode);
+  document.getElementById('romajiHint').textContent = correct.hi;
+  setFeedback(`⏰ Lemaradt! Helyes: ${correct.jp}（${correct.hi}）`, 'missed');
+  updateHUD();
+  if (state.lives <= 0) setTimeout(endGame, 1600);
+  else setTimeout(nextQuestion, 2100);
+}
+
+function setFeedback(msg, cls) {
+  const el = document.getElementById('feedback');
+  el.textContent = msg; el.className = 'feedback ' + cls;
+}
+
+function updateHUD() {
+  document.getElementById('score').textContent  = state.score;
+  document.getElementById('streak').textContent = state.streak;
+  document.getElementById('lives').textContent  = '❤️'.repeat(state.lives) + '🖤'.repeat(3-state.lives);
+}
+
+function endGame() {
+  clearTimers();
+  document.getElementById('gameoverOverlay').style.display = 'flex';
+  const won = state.lives > 0 && state.qnum >= TOTAL_Q;
+  document.getElementById('goTitle').textContent = won ? '🎉 Gratulálok!' : '💀 Játék vége!';
+  document.getElementById('goScore').textContent = state.score + ' pont';
+  document.getElementById('goMsg').textContent   = won
+    ? `Végigjátszottad mind a ${TOTAL_Q} kérdést! Igazi japán mester vagy! 🇯🇵`
+    : `Elfogytak az életpontjaid a ${state.qnum}. kérdésnél. Próbáld újra!`;
+}
+</script>
+</body>
+</html>

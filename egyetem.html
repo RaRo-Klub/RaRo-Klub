@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RaRo-Klub – Károli Gáspár Egyetem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --dark: #1a1a18;
+      --accent: #3a6e9e;   /* 大学用：青系アクセント */
+      --mid: #7a7060;
+      --light: #e8e2d5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--cream);
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    body:not(.ja) .lang-ja { display: none; }
+    body.ja .lang-hu { display: none; }
+
+    /* LANGUAGE SWITCHER */
+    .lang-bar {
+      position: fixed;
+      top: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--mid);
+      color: var(--mid);
+      padding: 0.3rem 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active, .lang-btn:hover {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: var(--cream);
+    }
+
+    /* HEADER */
+    header {
+      padding: 5rem 3rem 3rem;
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .logo span { color: #c8522a; }  /* ロゴは常にオレンジ */
+
+    .tagline {
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid);
+      max-width: 240px;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      padding: 1rem 3rem;
+      border-bottom: 1px solid var(--light);
+      font-size: 0.8rem;
+      color: var(--mid);
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .breadcrumb a {
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--light); }
+    .breadcrumb .current { color: var(--dark); }
+
+    /* PAGE HERO */
+    .page-hero {
+      padding: 4rem 3rem 3rem;
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .school-badge {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      flex-shrink: 0;
+    }
+
+    .page-hero-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-hero-text p {
+      color: var(--mid);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 4rem 3rem;
+      border-top: 1px solid var(--light);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .line {
+      flex: 1;
+      height: 1px;
+      background: var(--light);
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: var(--dark);
+      border: 1px solid var(--light);
+      padding: 1.8rem 1.5rem;
+      transition: all 0.25s;
+      background: var(--cream);
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    }
+
+    .card-type {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    /* ADD CARD placeholder */
+    .card-add {
+      border: 1px dashed var(--light);
+      padding: 1.8rem 1.5rem;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--mid);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    .card-add .plus {
+      font-size: 1.8rem;
+      color: var(--light);
+    }
+
+    /* COMING SOON */
+    .coming-soon {
+      padding: 3rem;
+      border: 1px dashed var(--light);
+      text-align: center;
+      color: var(--mid);
+    }
+
+    .coming-soon .big {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .coming-soon p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--light);
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .ft-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .ft-logo span { color: #c8522a; }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--mid);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 600px) {
+      header, .breadcrumb, .page-hero, .section, footer {
+        padding-left: 1.5rem; padding-right: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LANGUAGE SWITCHER -->
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('hu')">HU</button>
+    <button class="lang-btn" onclick="setLang('ja')">JA</button>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <a class="logo" href="index.html">Ra<span>Ro</span>-Klub</a>
+    <div class="tagline">
+      <span class="lang-hu">Tanulás · Játék · Alkotás · 2026</span>
+      <span class="lang-ja">学ぶ · 遊ぶ · 創る · 2026</span>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">
+      <span class="lang-hu">Főoldal</span>
+      <span class="lang-ja">ホーム</span>
+    </a>
+    <span class="sep">›</span>
+    <span class="current">
+      <span class="lang-hu">Tananyagok</span>
+      <span class="lang-ja">教材</span>
+    </span>
+    <span class="sep">›</span>
+    <span class="current">Károli Gáspár Egyetem</span>
+  </div>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="school-badge">🎓</div>
+    <div class="page-hero-text">
+      <h1>Károli Gáspár Egyetem</h1>
+      <p class="lang-hu">Japán nyelvi tananyagok és játékok az egyetemi kurzusokhoz · Wakai Seiji</p>
+      <p class="lang-ja">大学の日本語コース向け教材・ゲーム ― Wakai Seiji</p>
+    </div>
+  </div>
+
+  <!-- SECTION: 準備中 / Hamarosan -->
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="lang-hu">Tananyagok</span>
+        <span class="lang-ja">教材</span>
+      </h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="cards">
+      <a class="card" href="magyar-leckek.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Feladatlap</span>
+          <span class="lang-ja">教材</span>
+        </div>
+        <h3>ハンガリー語教材</h3>
+        <p class="lang-hu">Magyar nyelvi leckék – KRE japán hallgatóknak.</p>
+        <p class="lang-ja">カーロリ大学（KRE）の日本語学習者向けハンガリー語教材です。</p>
+      </a>
+      <div class="card-add">
+        <span class="plus">+</span>
+        <span class="lang-hu">Ide jön a következő anyag</span>
+        <span class="lang-ja">次の教材はここに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a class="ft-logo" href="index.html">Ra<span>Ro</span>-Klub</a>
+    <p>© 2026 RaRo-Klub</p>
+  </footer>
+
+  <script>
+    function setLang(lang) {
+      document.body.className = lang === 'ja' ? 'ja' : '';
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

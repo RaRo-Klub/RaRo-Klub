@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RaRo-Klub – Szent-Györgyi Albert Gimnázium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --dark: #1a1a18;
+      --accent: #c8522a;
+      --mid: #7a7060;
+      --light: #e8e2d5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--cream);
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    body:not(.ja) .lang-ja { display: none; }
+    body.ja .lang-hu { display: none; }
+
+    /* LANGUAGE SWITCHER */
+    .lang-bar {
+      position: fixed;
+      top: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--mid);
+      color: var(--mid);
+      padding: 0.3rem 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active, .lang-btn:hover {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: var(--cream);
+    }
+
+    /* HEADER */
+    header {
+      padding: 5rem 3rem 3rem;
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .logo span { color: var(--accent); }
+
+    .tagline {
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid);
+      max-width: 240px;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      padding: 1rem 3rem;
+      border-bottom: 1px solid var(--light);
+      font-size: 0.8rem;
+      color: var(--mid);
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .breadcrumb a {
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--light); }
+    .breadcrumb .current { color: var(--dark); }
+
+    /* PAGE HERO */
+    .page-hero {
+      padding: 4rem 3rem 3rem;
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .school-badge {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      flex-shrink: 0;
+    }
+
+    .page-hero-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-hero-text p {
+      color: var(--mid);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 4rem 3rem;
+      border-top: 1px solid var(--light);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .line {
+      flex: 1;
+      height: 1px;
+      background: var(--light);
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: var(--dark);
+      border: 1px solid var(--light);
+      padding: 1.8rem 1.5rem;
+      transition: all 0.25s;
+      background: var(--cream);
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    }
+
+    .card-type {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    .card-empty {
+      border-style: dashed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      color: var(--mid);
+      font-size: 0.9rem;
+    }
+
+    /* ADD CARD placeholder */
+    .card-add {
+      border: 1px dashed var(--light);
+      padding: 1.8rem 1.5rem;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--mid);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    .card-add .plus {
+      font-size: 1.8rem;
+      color: var(--light);
+    }
+
+    /* BACK BUTTON */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--mid);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--light);
+      padding: 0.5rem 1.2rem;
+      transition: all 0.2s;
+      margin: 2rem 3rem 0;
+      display: inline-flex;
+    }
+
+    .back-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--light);
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .ft-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .ft-logo span { color: var(--accent); }
+
+    footer p {
+      font-size: 0.8rem;
+      color: var(--mid);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 600px) {
+      header, .breadcrumb, .page-hero, .section, .back-btn, footer {
+        padding-left: 1.5rem; padding-right: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LANGUAGE SWITCHER -->
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('hu')">HU</button>
+    <button class="lang-btn" onclick="setLang('ja')">JA</button>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <a class="logo" href="index.html">Ra<span>Ro</span>-Klub</a>
+    <div class="tagline">
+      <span class="lang-hu">Tanulás · Játék · Alkotás · 2026</span>
+      <span class="lang-ja">学ぶ · 遊ぶ · 創る · 2026</span>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">
+      <span class="lang-hu">Főoldal</span>
+      <span class="lang-ja">ホーム</span>
+    </a>
+    <span class="sep">›</span>
+    <span class="current">
+      <span class="lang-hu">Tananyagok</span>
+      <span class="lang-ja">教材</span>
+    </span>
+    <span class="sep">›</span>
+    <span class="current">Szent-Györgyi Albert Gimnázium</span>
+  </div>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="school-badge">🏫</div>
+    <div class="page-hero-text">
+      <h1>Szent-Györgyi Albert Gimnázium</h1>
+      <p class="lang-hu">Japán nyelvi tananyagok és játékok a gimnáziumi óráihoz · Sípos Emese</p>
+      <p class="lang-ja">高校の日本語授業向け教材・ゲーム ― Sípos Emese</p>
+    </div>
+  </div>
+
+  <!-- SECTION: Igék / 動詞 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="lang-hu">Igék</span>
+        <span class="lang-ja">動詞</span>
+      </h2>
+      <div class="line"></div>
+    </div>
+    <div class="cards">
+      <a class="card" href="japanese_verbs_game.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Játék</span>
+          <span class="lang-ja">ゲーム</span>
+        </div>
+        <h3>N5 Japán Igék – Koppints rá!</h3>
+        <p class="lang-hu">Japán igék ragozásának gyakorlása játékos formában. Udvarias igealakok – ます形</p>
+        <p class="lang-ja">ゲーム形式でN5動詞の丁寧形を練習できます。</p>
+      </a>
+      <a class="card" href="muvelteto_nagy_teszt.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Teszt</span>
+          <span class="lang-ja">テスト</span>
+        </div>
+        <h3>使役形テスト – 45–46. fejezet</h3>
+        <p class="lang-hu">Műveltetős szerkezet nagy dolgozat, 100 pont + bónusz.</p>
+        <p class="lang-ja">使役形の大テストです（45・46課）。</p>
+      </a>
+      <!-- 新教材追加用プレースホルダー -->
+      <div class="card-add">
+        <span class="plus">+</span>
+        <span class="lang-hu">Ide jön a következő anyag</span>
+        <span class="lang-ja">次の教材はここに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Szókincs / 語彙 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="lang-hu">Szókincs</span>
+        <span class="lang-ja">語彙</span>
+      </h2>
+      <div class="line"></div>
+    </div>
+    <div class="cards">
+      <a class="card" href="Dekiru12szokincs.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Feladatlap</span>
+          <span class="lang-ja">ドリル</span>
+        </div>
+        <h3>日本語 Szókártyák – Dekiru 1–2</h3>
+        <p class="lang-hu">Szókincskártyák a Dekiru 1–2 tankönyvhöz.</p>
+        <p class="lang-ja">できる1・2の単語カードです。</p>
+      </a>
+      <div class="card-add">
+        <span class="plus">+</span>
+        <span class="lang-hu">Ide jön a következő anyag</span>
+        <span class="lang-ja">次の教材はここに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Nyelvtan / 文法 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="lang-hu">Nyelvtan</span>
+        <span class="lang-ja">文法</span>
+      </h2>
+      <div class="line"></div>
+    </div>
+    <div class="cards">
+      <a class="card" href="node-nishimasu-nyelvtan.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Játék</span>
+          <span class="lang-ja">ゲーム</span>
+        </div>
+        <h3>にします・ので・の 練習ゲーム</h3>
+        <p class="lang-hu">Japán nyelvtani formák gyakorlása játékos feladatokkal.</p>
+        <p class="lang-ja">にします・ので・のの文法練習ゲームです。</p>
+      </a>
+      <div class="card-add">
+        <span class="plus">+</span>
+        <span class="lang-hu">Ide jön a következő anyag</span>
+        <span class="lang-ja">次の教材はここに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Kandzsik / 漢字 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>
+        <span class="lang-hu">Kandzsik</span>
+        <span class="lang-ja">漢字</span>
+      </h2>
+      <div class="line"></div>
+    </div>
+    <div class="cards">
+      <a class="card" href="Kanji_II__29_39_kanjik_mondat_kieg.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Feladatlap</span>
+          <span class="lang-ja">ドリル</span>
+        </div>
+        <h3>Kanji Gyakorló – 29–39</h3>
+        <p class="lang-hu">Mondatkiegészítős kandzsi gyakorló a 29–39. kandzsikhoz.</p>
+        <p class="lang-ja">29〜39番漢字の文章穴埋め練習です。</p>
+      </a>
+      <a class="card" href="Kanji_II__29_39_flashcard.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Kártyák</span>
+          <span class="lang-ja">フラッシュカード</span>
+        </div>
+        <h3>Kanji II. 29–39 – Tanulókártyák</h3>
+        <p class="lang-hu">Tanulókártyák a Kanji II. 29–39. kandzsijaihoz.</p>
+        <p class="lang-ja">漢字II 29〜39番のフラッシュカードです。</p>
+      </a>
+      <div class="card-add">
+        <span class="plus">+</span>
+        <span class="lang-hu">Ide jön a következő anyag</span>
+        <span class="lang-ja">次の教材はここに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Dekiru -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Dekiru</h2>
+      <div class="line"></div>
+    </div>
+    <div class="cards">
+      <a class="card" href="Dekiru_13_もらう_あげる_くれる_nyelvtan_gyakorló.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Játék</span>
+          <span class="lang-ja">ゲーム</span>
+        </div>
+        <h3>あげる・もらう・くれる – 練習</h3>
+        <p class="lang-hu">Dekiru 13. fejezet – adás-kapás igék nyelvtani gyakorlója.</p>
+        <p class="lang-ja">できる13課：あげる・もらう・くれるの文法練習です。</p>
+      </a>
+      <a class="card" href="Dekiru_5_6_ige_udvarias_tegező_alakváltás.html" target="_blank">
+        <div class="card-type">
+          <span class="lang-hu">Játék</span>
+          <span class="lang-ja">ゲーム</span>
+        </div>
+        <h3>動詞練習 – Ige Párosítás</h3>
+        <p class="lang-hu">Dekiru 5–6. fejezet – udvarias és tegező igealakok váltogatása.</p>
+        <p class="lang-ja">できる5・6課：丁寧形とタメ口の動詞変換練習です。</p>
+      </a>
+      <div class="card-add">
+        <span class="plus">+</span>
+        <span class="lang-hu">Ide jön a következő anyag</span>
+        <span class="lang-ja">次の教材はここに追加</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a class="ft-logo" href="index.html">Ra<span>Ro</span>-Klub</a>
+    <p>© 2026 RaRo-Klub</p>
+  </footer>
+
+  <script>
+    function setLang(lang) {
+      document.body.className = lang === 'ja' ? 'ja' : '';
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

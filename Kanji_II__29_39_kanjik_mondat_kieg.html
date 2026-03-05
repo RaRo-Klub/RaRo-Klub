@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanji Gyakorló – 29–39</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=Noto+Sans+JP:wght@300;400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1209;
+  --paper: #f5f0e8;
+  --paper2: #ede6d6;
+  --red: #c0392b;
+  --red2: #e74c3c;
+  --gold: #b8860b;
+  --gold2: #f0c040;
+  --green: #1a6b3a;
+  --green2: #27ae60;
+  --blue: #1a3a6b;
+  --stroke: rgba(26,18,9,0.12);
+  --shadow: 0 4px 32px rgba(26,18,9,0.13);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(26,18,9,0.04) 39px, rgba(26,18,9,0.04) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(26,18,9,0.03) 39px, rgba(26,18,9,0.03) 40px);
+}
+
+/* HEADER */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 3px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.logo-kanji {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 2.1rem;
+  color: var(--gold2);
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(240,192,64,0.4);
+}
+.logo-text h1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+}
+.logo-text p {
+  font-size: 0.7rem;
+  color: rgba(245,240,232,0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.header-stats {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.hstat {
+  text-align: center;
+}
+.hstat-num {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.hstat-num.correct { color: var(--gold2); }
+.hstat-num.wrong { color: #e57373; }
+.hstat-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(245,240,232,0.45);
+}
+.hstat-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.12);
+}
+
+/* MODE TOGGLE */
+.mode-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 20px 16px 0;
+}
+.mode-wrap {
+  display: inline-flex;
+  background: var(--ink);
+  border-radius: 4px;
+  padding: 3px;
+  gap: 2px;
+  box-shadow: var(--shadow);
+}
+.mode-btn {
+  padding: 8px 22px;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  color: rgba(245,240,232,0.45);
+  background: transparent;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.mode-btn.active {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+}
+.mode-btn:hover:not(.active) {
+  color: var(--paper);
+}
+
+/* PROGRESS */
+.progress-wrap {
+  max-width: 720px;
+  margin: 18px auto 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.progress-track {
+  flex: 1;
+  height: 5px;
+  background: var(--stroke);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(26,18,9,0.4);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+/* MAIN CARD AREA */
+main {
+  max-width: 720px;
+  margin: 24px auto;
+  padding: 0 16px 40px;
+}
+
+/* QUESTION CARD */
+.q-card {
+  background: #fff;
+  border-radius: 3px;
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow), 4px 4px 0 rgba(26,18,9,0.06);
+  padding: 36px 36px 28px;
+  position: relative;
+  animation: slideIn 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.q-number {
+  position: absolute;
+  top: -14px;
+  left: 28px;
+  background: var(--ink);
+  color: var(--gold2);
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 0.85rem;
+  padding: 4px 14px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+}
+.q-mode-tag {
+  position: absolute;
+  top: -14px;
+  right: 28px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  border-radius: 2px;
+}
+.tag-choice { background: #dbeafe; color: #1e40af; }
+.tag-write  { background: #dcfce7; color: #166534; }
+
+/* SENTENCE */
+.sentence-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 1.55rem;
+  line-height: 2;
+  margin: 20px 0 10px;
+  justify-content: center;
+}
+.sentence-part { color: var(--ink); }
+.blank-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  padding: 2px 8px;
+  border-bottom: 3px solid var(--ink);
+  position: relative;
+}
+.blank-slot.correct-state { border-color: var(--green2); }
+.blank-slot.wrong-state  { border-color: var(--red2); }
+
+.blank-chosen {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.6rem;
+  color: var(--blue);
+  transition: all 0.2s;
+  min-width: 32px;
+  text-align: center;
+}
+.blank-chosen.correct-text { color: var(--green); }
+.blank-chosen.wrong-text   { color: var(--red); }
+.blank-placeholder {
+  font-size: 1rem;
+  color: rgba(26,18,9,0.25);
+  letter-spacing: 0.08em;
+}
+
+/* TYPE INPUT */
+.type-input {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.6rem;
+  text-align: center;
+  border: none;
+  border-bottom: 3px solid var(--ink);
+  background: transparent;
+  color: var(--blue);
+  outline: none;
+  width: 80px;
+  padding: 0 4px;
+  transition: border-color 0.2s;
+}
+.type-input:focus { border-color: var(--gold); }
+.type-input.correct-text { color: var(--green); border-color: var(--green2); }
+.type-input.wrong-text   { color: var(--red); border-color: var(--red2); }
+
+/* TRANSLATION */
+.translation {
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(26,18,9,0.45);
+  font-style: italic;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* FURIGANA HINT */
+.furigana-hint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(26,18,9,0.35);
+  margin-bottom: 22px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* CHOICES */
+.choices-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 24px;
+}
+.choice-btn {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.5rem;
+  padding: 14px 8px;
+  background: var(--paper2);
+  border: 2px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--ink);
+  text-align: center;
+  transition: all 0.18s;
+  position: relative;
+  box-shadow: 2px 2px 0 rgba(26,18,9,0.08);
+}
+.choice-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(-2px);
+  box-shadow: 2px 4px 0 rgba(26,18,9,0.2);
+}
+.choice-btn:disabled { cursor: default; }
+.choice-btn.selected-correct {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+  box-shadow: 2px 2px 0 rgba(26,100,60,0.3);
+}
+.choice-btn.selected-wrong {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  box-shadow: 2px 2px 0 rgba(192,57,43,0.3);
+}
+.choice-btn.reveal-correct {
+  background: rgba(39,174,96,0.1);
+  border-color: var(--green2);
+  color: var(--green);
+}
+
+/* TYPE SUBMIT */
+.type-submit-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.submit-btn {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 11px 30px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.18s;
+  box-shadow: 3px 3px 0 rgba(26,18,9,0.15);
+}
+.submit-btn:hover { transform: translateY(-1px); box-shadow: 3px 5px 0 rgba(26,18,9,0.15); }
+.submit-btn:active { transform: translateY(1px); box-shadow: 1px 1px 0 rgba(26,18,9,0.15); }
+.btn-check { background: var(--ink); color: var(--gold2); }
+.btn-skip  { background: transparent; color: rgba(26,18,9,0.4); border: 1px solid var(--stroke); box-shadow: none; }
+
+/* FEEDBACK */
+.feedback {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  min-height: 26px;
+  letter-spacing: 0.02em;
+}
+.fb-correct { color: var(--green); }
+.fb-wrong   { color: var(--red); }
+
+/* NEXT BUTTON */
+.next-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.next-btn {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 28px;
+  background: var(--ink);
+  color: var(--gold2);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 3px 3px 0 rgba(26,18,9,0.2);
+  transition: all 0.18s;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.18s, box-shadow 0.18s;
+}
+.next-btn.visible { opacity: 1; pointer-events: auto; }
+.next-btn:hover { transform: translateY(-2px); box-shadow: 3px 5px 0 rgba(26,18,9,0.2); }
+
+/* SHUFFLE + CONTROLS */
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.ctrl-btn {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 7px 18px;
+  background: transparent;
+  color: rgba(26,18,9,0.5);
+  border: 1px solid var(--stroke);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.ctrl-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* SCORE SCREEN */
+.score-screen {
+  text-align: center;
+  padding: 60px 32px;
+  display: none;
+}
+.score-kanji {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 5rem;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(184,134,11,0.3);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.score-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.score-sub {
+  font-size: 0.9rem;
+  color: rgba(26,18,9,0.5);
+  margin-bottom: 32px;
+}
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+  max-width: 360px;
+  margin: 0 auto 32px;
+}
+.score-box {
+  background: #fff;
+  border: 1px solid var(--stroke);
+  border-radius: 3px;
+  padding: 16px;
+  box-shadow: 3px 3px 0 rgba(26,18,9,0.06);
+}
+.score-box-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+.score-box-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(26,18,9,0.4); margin-top: 4px; }
+.restart-btn {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 36px;
+  background: var(--ink);
+  color: var(--gold2);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(26,18,9,0.2);
+  transition: all 0.18s;
+}
+.restart-btn:hover { transform: translateY(-2px); }
+
+/* BRUSH DECORATION */
+.brush-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 4px 0 0;
+  opacity: 0.5;
+}
+
+.red-seal {
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex; align-items:center; justify-content:center;
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 0.65rem;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+  .choices-grid { grid-template-columns: repeat(2,1fr); }
+  .sentence-wrap { font-size: 1.25rem; }
+  .q-card { padding: 28px 18px 20px; }
+  header { padding: 12px 16px; }
+}
+</style>
+</head>
+<body>
+<!-- ── BACK BUTTON ── -->
+<div style="background:#f5f0e8; padding:0.8rem 1.5rem; border-bottom:1px solid #e8e2d5;">
+  <a href="gimnazium.html" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:#7a7060; font-family:'DM Sans',sans-serif; font-size:0.8rem; letter-spacing:0.08em; border:1px solid #e8e2d5; padding:0.4rem 1rem; transition:all 0.2s;"
+     onmouseover="this.style.borderColor='#c8522a';this.style.color='#c8522a';"
+     onmouseout="this.style.borderColor='#e8e2d5';this.style.color='#7a7060';">
+    ← Szent-Györgyi Albert Gimnázium
+  </a>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-kanji">漢字</div>
+    <div class="logo-text">
+      <h1>Kanji Gyakorló II. – 29–39</h1>
+      <p>Fill in the blank · Select &amp; Write</p>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <div class="hstat-num correct" id="hCorrect">0</div>
+      <div class="hstat-label">Helyes</div>
+    </div>
+    <div class="hstat-divider"></div>
+    <div class="hstat">
+      <div class="hstat-num wrong" id="hWrong">0</div>
+      <div class="hstat-label">Hibás</div>
+    </div>
+  </div>
+</header>
+
+<div class="mode-bar">
+  <div class="mode-wrap">
+    <button class="mode-btn active" onclick="setMode('both')">Vegyes</button>
+    <button class="mode-btn" onclick="setMode('choice')">Választós</button>
+    <button class="mode-btn" onclick="setMode('write')">Írós</button>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progBar" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progLabel">0 / 0</div>
+</div>
+
+<main>
+  <div id="qArea"></div>
+  <div class="score-screen" id="scoreScreen">
+    <div class="score-kanji">合格</div>
+    <div class="score-title">Feladat teljesítve!</div>
+    <div class="score-sub" id="scoreSubtitle"></div>
+    <div class="score-grid">
+      <div class="score-box">
+        <div class="score-box-num" id="sTotal" style="color:var(--gold)"></div>
+        <div class="score-box-label">Összes</div>
+      </div>
+      <div class="score-box">
+        <div class="score-box-num" id="sCorrect" style="color:var(--green)"></div>
+        <div class="score-box-label">Helyes</div>
+      </div>
+      <div class="score-box">
+        <div class="score-box-num" id="sWrong" style="color:var(--red)"></div>
+        <div class="score-box-label">Hibás</div>
+      </div>
+    </div>
+    <button class="restart-btn" onclick="restart()">↺ Újra</button>
+  </div>
+</main>
+
+<div class="controls-row">
+  <button class="ctrl-btn" onclick="shuffle()">🔀 Keverés</button>
+  <button class="ctrl-btn" onclick="restart()">↺ Újraindítás</button>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const ALL_SENTENCES = [
+  // 市
+  { blank: "市", sentence: ["ここは", "___", "の中心です。"], hiragana: "し", translation: "Ez a város közepe.", choices_pool: ["市","村","町","国","区","山","川","海"] },
+  { blank: "市場", sentence: ["毎朝、", "___", "へ行きます。"], hiragana: "いちば", translation: "Minden reggel piacra megyek.", choices_pool: ["市場","病院","駅","学校","銀行","公園","図書館","空港"] },
+  { blank: "市役所", sentence: ["新しいパスポートのために", "___", "に行きました。"], hiragana: "しやくしょ", translation: "Elmentem a polgármesteri hivatalba az új útlevélért.", choices_pool: ["市役所","会社","病院","学校","大使館","郵便局","駅","図書館"] },
+  // 味・趣味
+  { blank: "趣味", sentence: ["私の", "___", "は料理です。"], hiragana: "しゅみ", translation: "A hobbyim a főzés.", choices_pool: ["趣味","仕事","勉強","生活","旅行","遊び","練習","友達"] },
+  { blank: "味", sentence: ["このスープの", "___", "はどうですか。"], hiragana: "あじ", translation: "Milyen az íze ennek a levesnek?", choices_pool: ["味","声","色","形","大きさ","重さ","品","香り"] },
+  // 声
+  { blank: "声", sentence: ["先生の", "___", "は大きいです。"], hiragana: "こえ", translation: "A tanár hangja nagy.", choices_pool: ["声","顔","名前","言葉","目","手","歌","話"] },
+  { blank: "小声", sentence: ["図書館では", "___", "で話してください。"], hiragana: "こごえ", translation: "A könyvtárban kérlek halkan (suttogva) beszélj.", choices_pool: ["小声","大声","小話","大話","低声","高声","細声","弱声"] },
+  // 送る
+  { blank: "送る", sentence: ["友だちに手紙を", "___", "つもりです。"], hiragana: "おくる", translation: "Levelet tervezek küldeni a barátomnak.", choices_pool: ["送る","書く","読む","持つ","受ける","取る","見る","上げる"] },
+  { blank: "送金", sentence: ["両親に毎月", "___", "します。"], hiragana: "そうきん", translation: "Minden hónapban pénzt küldök a szüleimnek.", choices_pool: ["送金","借金","節金","貯金","現金","税金","小金","用金"] },
+  // 勉強・強い
+  { blank: "勉強", sentence: ["毎日二時間", "___", "しています。"], hiragana: "べんきょう", translation: "Minden nap két órát tanulok.", choices_pool: ["勉強","運動","練習","仕事","料理","遊び","休憩","散歩"] },
+  { blank: "強い", sentence: ["今日は風が", "___", "です。"], hiragana: "つよい", translation: "Ma erős a szél.", choices_pool: ["強い","弱い","速い","遅い","大きい","小さい","高い","長い"] },
+  // 仕事・仕方
+  { blank: "仕事", sentence: ["毎日九時から", "___", "をします。"], hiragana: "しごと", translation: "Minden nap kilenc órától dolgozom.", choices_pool: ["仕事","勉強","旅行","運動","料理","買い物","休憩","趣味"] },
+  { blank: "仕方ない", sentence: ["電車が遅れましたが、", "___", "ですね。"], hiragana: "しかたない", translation: "A vonat késett, de hát nincs mit tenni.", choices_pool: ["仕方ない","問題ない","関係ない","変わりない","仕方がない","大丈夫","構わない","気にしない"] },
+  // 事・色々
+  { blank: "色々な事", sentence: ["留学中に", "___", "を経験しました。"], hiragana: "いろいろなこと", translation: "Sokféle dolgot tapasztaltam a külföldi tanulmányaim alatt.", choices_pool: ["色々な事","面白い事","大事な事","難しい事","楽しい事","嫌な事","色々なもの","様々な事"] },
+  // 生活・活発
+  { blank: "生活", sentence: ["東京での", "___", "は便利です。"], hiragana: "せいかつ", translation: "A tokiói életvitel kényelmes.", choices_pool: ["生活","勉強","仕事","旅行","遊び","体験","経験","文化"] },
+  { blank: "活発な", sentence: ["彼はとても", "___", "子どもです。"], hiragana: "かっぱつな", translation: "Ő egy nagyon élénk gyerek.", choices_pool: ["活発な","元気な","静かな","大人しい","明るい","楽しい","素直な","賢い"] },
+  { blank: "活火山", sentence: ["富士山は", "___", "ですか。"], hiragana: "かつかざん", translation: "A Fudzsi-hegy működő vulkán?", choices_pool: ["活火山","休火山","死火山","大火山","小火山","古火山","新火山","高火山"] },
+  // 品
+  { blank: "上品な", sentence: ["彼女はとても", "___", "人です。"], hiragana: "じょうひんな", translation: "Ő nagyon elegáns ember.", choices_pool: ["上品な","下品な","親切な","丁寧な","素敵な","礼儀正しい","立派な","品のある"] },
+  { blank: "品物", sentence: ["この店の", "___", "は高いです。"], hiragana: "しなもの", translation: "Ebben az üzletben drága az áru.", choices_pool: ["品物","食べ物","飲み物","乗り物","建て物","贈り物","荷物","買い物"] },
+  { blank: "品切れ", sentence: ["人気商品はすぐに", "___", "になります。"], hiragana: "しなぎれ", translation: "A népszerű termékek hamar elfogynak.", choices_pool: ["品切れ","売り切れ","在庫切れ","品薄","欠品","完売","品不足","在庫なし"] },
+  // 正月・正しい
+  { blank: "正月", sentence: ["___", "に家族で集まります。"], hiragana: "しょうがつ", translation: "Újévkor összejövünk a családdal.", choices_pool: ["正月","夏休み","春休み","お盆","クリスマス","誕生日","年末","連休"] },
+  { blank: "正しい", sentence: ["この答えは", "___", "ですか。"], hiragana: "ただしい", translation: "Helyes ez a válasz?", choices_pool: ["正しい","間違い","難しい","簡単な","面白い","正解の","良い","大切な"] },
+  // 曜日
+  { blank: "月曜日", sentence: ["___", "は学校があります。"], hiragana: "げつようび", translation: "Hétfőn van iskola.", choices_pool: ["月曜日","火曜日","水曜日","木曜日","金曜日","土曜日","日曜日","何曜日"] },
+  { blank: "土曜日", sentence: ["___", "は友だちと遊びます。"], hiragana: "どようび", translation: "Szombaton a barátommal játszom.", choices_pool: ["土曜日","日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","平日"] },
+  { blank: "日曜日", sentence: ["___", "は休みです。"], hiragana: "にちようび", translation: "Vasárnap szabad nap.", choices_pool: ["日曜日","月曜日","祝日","平日","休日","毎日","今日","昨日"] },
+  // 写真・写す
+  { blank: "写真", sentence: ["旅行で", "___", "をたくさん撮りました。"], hiragana: "しゃしん", translation: "Az utazáson sok fényképet csináltam.", choices_pool: ["写真","動画","絵","地図","メモ","記録","映像","スケッチ"] },
+  { blank: "写して", sentence: ["黒板を", "___", "ください。"], hiragana: "うつして", translation: "Kérlek másold le a táblát.", choices_pool: ["写して","読んで","書いて","見て","聞いて","覚えて","消して","直して"] },
+  // 絵本・絵葉書
+  { blank: "絵本", sentence: ["子どもに", "___", "を読みました。"], hiragana: "えほん", translation: "Képeskönyvet olvastam a gyereknek.", choices_pool: ["絵本","教科書","辞書","小説","雑誌","漫画","新聞","辞典"] },
+  { blank: "絵葉書", sentence: ["京都から", "___", "を送りました。"], hiragana: "えはがき", translation: "Képeslapot küldtem Kiotóból.", choices_pool: ["絵葉書","手紙","荷物","メール","電報","贈り物","お土産","パンフレット"] },
+  // 集める・集まる
+  { blank: "集める", sentence: ["切手を", "___", "のが好きです。"], hiragana: "あつめる", translation: "Szeretek bélyegeket gyűjteni.", choices_pool: ["集める","捨てる","売る","買う","持つ","作る","見る","送る"] },
+  { blank: "集中する", sentence: ["試験の前に", "___", "ことが大切です。"], hiragana: "しゅうちゅうする", translation: "Fontos koncentrálni a vizsga előtt.", choices_pool: ["集中する","リラックスする","練習する","確認する","準備する","考える","整理する","復習する"] },
+  // 練習・習う
+  { blank: "練習", sentence: ["毎日ピアノの", "___", "をしています。"], hiragana: "れんしゅう", translation: "Minden nap zongorát gyakorlok.", choices_pool: ["練習","勉強","試合","競争","準備","授業","レッスン","トレーニング"] },
+  { blank: "習って", sentence: ["日本語を先生に", "___", "います。"], hiragana: "ならって", translation: "Japánt tanulok a tanártól.", choices_pool: ["習って","教えて","話して","書いて","読んで","聞いて","使って","覚えて"] },
+  // 遊ぶ・遊園地
+  { blank: "遊んで", sentence: ["子どもたちが公園で", "___", "います。"], hiragana: "あそんで", translation: "A gyerekek a parkban játszanak.", choices_pool: ["遊んで","走って","泳いで","歌って","踊って","読んで","寝て","食べて"] },
+  { blank: "遊園地", sentence: ["週末に", "___", "に行きませんか。"], hiragana: "ゆうえんち", translation: "Elmennénk hétvégén a vidámparkba?", choices_pool: ["遊園地","動物園","水族館","映画館","図書館","博物館","美術館","公園"] },
+  // 明るい・明日・説明
+  { blank: "明るい", sentence: ["この部屋はとても", "___", "です。"], hiragana: "あかるい", translation: "Ez a szoba nagyon világos.", choices_pool: ["明るい","暗い","広い","狭い","暖かい","涼しい","静かな","賑やかな"] },
+  { blank: "明日", sentence: ["___", "の天気はどうですか。"], hiragana: "あした", translation: "Milyen lesz holnap az idő?", choices_pool: ["明日","今日","昨日","来週","先週","今週","今月","来月"] },
+  { blank: "説明", sentence: ["先生が文法を", "___", "してくれました。"], hiragana: "せつめい", translation: "A tanár elmagyarázta a grammatikát.", choices_pool: ["説明","紹介","報告","発表","相談","確認","質問","連絡"] },
+  // 道・書道・剣道
+  { blank: "道", sentence: ["駅までの", "___", "を教えてください。"], hiragana: "みち", translation: "Kérlek mutasd meg az állomáshoz vezető utat.", choices_pool: ["道","駅","地図","方向","場所","番地","住所","目標"] },
+  { blank: "書道", sentence: ["日本では子どもたちが", "___", "を習います。"], hiragana: "しょどう", translation: "Japánban a gyerekek kalligráfiát tanulnak.", choices_pool: ["書道","剣道","柔道","茶道","華道","合気道","弓道","空手道"] },
+  // 葉・紅葉
+  { blank: "葉", sentence: ["木の", "___", "が落ちています。"], hiragana: "は", translation: "A fa levelei hullanak.", choices_pool: ["葉","花","実","枝","根","幹","種","芽"] },
+  { blank: "紅葉", sentence: ["秋の", "___", "はとても美しいです。"], hiragana: "こうよう", translation: "Az őszi lombszíneződés nagyon szép.", choices_pool: ["紅葉","花見","雪景色","新緑","夕焼け","夜景","星空","朝焼け"] },
+  // 調べる → 調べ＋ました（連用形）
+  { blank: "調べ", sentence: ["分からない言葉を辞書で", "___", "ました。"], hiragana: "しらべ", translation: "A szótárban kerestem ki az ismeretlen szót.", choices_pool: ["調べ","読み","書き","覚え","教え","探し","確認し","見つけ"] },
+  // 泳ぐ・水泳
+  { blank: "水泳", sentence: ["___", "はオリンピック競技です。"], hiragana: "すいえい", translation: "Az úszás olimpiai sport.", choices_pool: ["水泳","陸上","体操","バレー","サッカー","バスケ","テニス","柔道"] },
+  // 泳ぐ → 泳ぎ＋ます（連用形）
+  { blank: "泳ぎ", sentence: ["夏はよく海で", "___", "ます。"], hiragana: "およぎ", translation: "Nyáron sokat úszom a tengerben.", choices_pool: ["泳ぎ","遊び","走り","歩き","潜り","飛び","釣り","休み"] },
+  // 運ぶ・運転・運行
+  { blank: "運転", sentence: ["父は車の", "___", "が上手です。"], hiragana: "うんてん", translation: "Apám jól vezet autót.", choices_pool: ["運転","運行","操作","管理","制御","走行","走り","運用"] },
+  // 運ぶ → 辞書形＋のを（連体形として自然）
+  { blank: "運ぶ", sentence: ["重い荷物を", "___", "のを手伝ってください。"], hiragana: "はこぶ", translation: "Kérlek segíts cipelni a nehéz csomagot.", choices_pool: ["運ぶ","持つ","置く","渡す","取る","積む","押す","引く"] },
+  // 転ぶ → 転んで（て形）＋しまいました
+  { blank: "転んで", sentence: ["雪道で", "___", "しまいました。"], hiragana: "ころんで", translation: "Elestem a havas úton.", choices_pool: ["転んで","走って","歩いて","滑って","倒れて","転がって","飛んで","跳んで"] },
+  // 乗る → 乗って（て形）＋連続動作
+  { blank: "乗って", sentence: ["バスに", "___", "駅まで行きます。"], hiragana: "のって", translation: "Buszra szállok és megyek az állomásig.", choices_pool: ["乗って","降りて","待って","見て","走って","歩いて","着いて","向かって"] },
+  // 乗り換える → 乗り換えて（て形）＋ください
+  { blank: "乗り換えて", sentence: ["渋谷で地下鉄に", "___", "ください。"], hiragana: "のりかえて", translation: "Kérlek szálljon át a metróra Shibuyában.", choices_pool: ["乗り換えて","降りて","乗って","待って","向かって","移動して","止まって","出発して"] },
+  // 京都・都
+  { blank: "京都", sentence: ["___", "には古いお寺がたくさんあります。"], hiragana: "きょうと", translation: "Kiotóban sok régi templom van.", choices_pool: ["京都","東京","大阪","奈良","広島","鎌倉","金沢","長崎"] },
+  { blank: "都合", sentence: ["今週末の", "___", "はいかがですか。"], hiragana: "つごう", translation: "Megfelelő-e Önnek ezen a hétvégén?", choices_pool: ["都合","予定","計画","用事","時間","スケジュール","約束","都合い"] },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let sentences = [];
+let idx = 0;
+let correct = 0;
+let wrong = 0;
+let answered = false;
+let mode = 'both'; // 'both' | 'choice' | 'write'
+let currentIsWrite = false;
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  restart();
+}
+
+function shuffle() {
+  sentences = [...ALL_SENTENCES].sort(() => Math.random() - 0.5);
+  idx = 0; correct = 0; wrong = 0;
+  document.getElementById('hCorrect').textContent = '0';
+  document.getElementById('hWrong').textContent = '0';
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('qArea').style.display = '';
+  render();
+}
+
+function restart() {
+  sentences = [...ALL_SENTENCES].sort(() => Math.random() - 0.5);
+  idx = 0; correct = 0; wrong = 0;
+  document.getElementById('hCorrect').textContent = '0';
+  document.getElementById('hWrong').textContent = '0';
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('qArea').style.display = '';
+  render();
+}
+
+function render() {
+  if (idx >= sentences.length) {
+    showScore();
+    return;
+  }
+  answered = false;
+  const total = sentences.length;
+  const pct = (idx / total * 100).toFixed(1);
+  document.getElementById('progBar').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `${idx + 1} / ${total}`;
+
+  const q = sentences[idx];
+
+  // Decide mode
+  if (mode === 'choice') currentIsWrite = false;
+  else if (mode === 'write') currentIsWrite = true;
+  else currentIsWrite = Math.random() < 0.5;
+
+  // Build 4 choices (shuffle, include correct)
+  let pool = [...q.choices_pool];
+  let choices = [q.blank];
+  pool = pool.filter(c => c !== q.blank);
+  pool.sort(() => Math.random() - 0.5);
+  choices = choices.concat(pool.slice(0, 3));
+  choices.sort(() => Math.random() - 0.5);
+
+  // Sentence HTML
+  let sentenceHTML = q.sentence.map(part =>
+    part === '___'
+      ? currentIsWrite
+        ? `<span class="blank-slot" id="blankSlot"><input class="type-input" id="typeInput" maxlength="10" autocomplete="off" placeholder="　" /></span>`
+        : `<span class="blank-slot" id="blankSlot"><span class="blank-placeholder">？</span></span>`
+      : `<span class="sentence-part">${part}</span>`
+  ).join('');
+
+  const tagClass = currentIsWrite ? 'tag-write' : 'tag-choice';
+  const tagText  = currentIsWrite ? '✍ Írj kanjit' : '🔘 Válassz';
+
+  let bottomHTML = '';
+  if (currentIsWrite) {
+    bottomHTML = `
+      <div class="type-submit-row">
+        <button class="submit-btn btn-skip" onclick="skipQ()">Kihagyás</button>
+        <button class="submit-btn btn-check" onclick="checkWrite()">Ellenőrzés →</button>
+      </div>`;
+  } else {
+    const choiceBtns = choices.map(c =>
+      `<button class="choice-btn" onclick="checkChoice(this,'${c.replace(/'/g,"\\'")}','${q.blank.replace(/'/g,"\\'")}')">
+        ${c}
+      </button>`
+    ).join('');
+    bottomHTML = `<div class="choices-grid">${choiceBtns}</div>`;
+  }
+
+  document.getElementById('qArea').innerHTML = `
+    <div class="q-card" id="qCard">
+      <div class="q-number">問 ${idx + 1}</div>
+      <div class="q-mode-tag ${tagClass}">${tagText}</div>
+      <div class="sentence-wrap">${sentenceHTML}</div>
+      <div class="translation">${q.translation}</div>
+      <div class="furigana-hint">ヒント: ${q.hiragana}</div>
+      ${bottomHTML}
+      <div class="feedback" id="feedback"></div>
+      <div class="next-wrap">
+        <button class="next-btn" id="nextBtn" onclick="nextQ()">
+          次へ <span style="font-size:1.1em">→</span>
+        </button>
+      </div>
+      <div class="red-seal">印</div>
+    </div>
+  `;
+
+  if (currentIsWrite) {
+    const inp = document.getElementById('typeInput');
+    if (inp) { inp.focus(); inp.addEventListener('keydown', e => { if(e.key==='Enter') checkWrite(); }); }
+  }
+}
+
+function checkChoice(btn, chosen, correct_ans) {
+  if (answered) return;
+  answered = true;
+  const allBtns = document.querySelectorAll('.choice-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const slot = document.getElementById('blankSlot');
+  const fb = document.getElementById('feedback');
+
+  if (chosen === correct_ans) {
+    btn.classList.add('selected-correct');
+    slot.classList.add('correct-state');
+    slot.innerHTML = `<span class="blank-chosen correct-text">${chosen}</span>`;
+    fb.textContent = '✓ Helyes!';
+    fb.className = 'feedback fb-correct';
+    correct++;
+    document.getElementById('hCorrect').textContent = correct;
+  } else {
+    btn.classList.add('selected-wrong');
+    slot.classList.add('wrong-state');
+    slot.innerHTML = `<span class="blank-chosen wrong-text">${chosen}</span>`;
+    fb.textContent = `✗ Nem! A helyes válasz: ${correct_ans}`;
+    fb.className = 'feedback fb-wrong';
+    allBtns.forEach(b => {
+      if (b.textContent.trim() === correct_ans) b.classList.add('reveal-correct');
+    });
+    wrong++;
+    document.getElementById('hWrong').textContent = wrong;
+  }
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function checkWrite() {
+  if (answered) return;
+  const inp = document.getElementById('typeInput');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  const q = sentences[idx];
+  answered = true;
+
+  const slot = document.getElementById('blankSlot');
+  const fb = document.getElementById('feedback');
+  inp.disabled = true;
+
+  if (val === q.blank) {
+    inp.classList.add('correct-text');
+    slot.classList.add('correct-state');
+    fb.textContent = `✓ Helyes! 「${q.blank}」`;
+    fb.className = 'feedback fb-correct';
+    correct++;
+    document.getElementById('hCorrect').textContent = correct;
+  } else {
+    inp.classList.add('wrong-text');
+    slot.classList.add('wrong-state');
+    fb.innerHTML = `✗ Nem! Helyes: <strong style="font-family:'Zen Antique Soft',serif;font-size:1.1em">「${q.blank}」</strong>`;
+    fb.className = 'feedback fb-wrong';
+    wrong++;
+    document.getElementById('hWrong').textContent = wrong;
+  }
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function skipQ() {
+  answered = true;
+  const q = sentences[idx];
+  const fb = document.getElementById('feedback');
+  const inp = document.getElementById('typeInput');
+  if (inp) { inp.value = q.blank; inp.classList.add('correct-text'); inp.disabled = true; }
+  fb.innerHTML = `→ Helyes: <strong style="font-family:'Zen Antique Soft',serif;font-size:1.1em">「${q.blank}」</strong>`;
+  fb.className = 'feedback fb-wrong';
+  wrong++;
+  document.getElementById('hWrong').textContent = wrong;
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function nextQ() {
+  idx++;
+  document.getElementById('progBar').style.width = ((idx / sentences.length) * 100).toFixed(1) + '%';
+  document.getElementById('progLabel').textContent = `${Math.min(idx+1, sentences.length)} / ${sentences.length}`;
+  render();
+}
+
+function showScore() {
+  document.getElementById('qArea').style.display = 'none';
+  const pct = Math.round(correct / sentences.length * 100);
+  let grade = pct >= 90 ? '優秀' : pct >= 70 ? '合格' : pct >= 50 ? '努力' : '再挑戦';
+  document.querySelector('.score-kanji').textContent = grade;
+  document.getElementById('scoreSubtitle').textContent = `${pct}% helyes – ${pct >= 70 ? '素晴らしい！' : 'Gyakorolj tovább!'}`;
+  document.getElementById('sTotal').textContent = sentences.length;
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('scoreScreen').style.display = 'block';
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && answered) { nextQ(); }
+});
+
+// Boot
+restart();
+</script>
+</body>
+</html>

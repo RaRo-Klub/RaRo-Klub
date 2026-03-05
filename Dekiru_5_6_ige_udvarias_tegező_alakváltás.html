@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動詞練習 – Ige Párosítás</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #c0392b; --red2: #e74c3c; --red3: #8e1c11;
+  --white: #fff; --offwhite: #fff5f5; --pale: #fdecea;
+  --ok: #2e7d52; --bad: #c0392b; --neutral: #9e5555;
+  --border: #f0b4b4; --ink: #2c0808;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--offwhite);color:var(--ink);min-height:100vh;
+  background-image:radial-gradient(circle at 20% 20%,rgba(192,57,43,0.06) 0%,transparent 40%),
+    radial-gradient(circle at 80% 80%,rgba(192,57,43,0.04) 0%,transparent 40%),
+    repeating-linear-gradient(0deg,transparent,transparent 49px,rgba(192,57,43,0.05) 50px),
+    repeating-linear-gradient(90deg,transparent,transparent 49px,rgba(192,57,43,0.05) 50px);}
+
+/* HEADER */
+header{background:var(--red);color:#fff;text-align:center;padding:1.8rem 1rem 2.5rem;position:relative;overflow:hidden;
+  box-shadow:0 4px 20px rgba(142,28,17,0.4);}
+header::before{content:'動詞';font-family:'Noto Serif JP',serif;font-size:8rem;color:rgba(255,255,255,0.06);
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;}
+.header-deco{position:absolute;bottom:-16px;left:0;right:0;display:flex;justify-content:center;gap:0;}
+.petal{width:32px;height:32px;background:var(--offwhite);border-radius:50%;flex-shrink:0;}
+h1{font-family:'Noto Serif JP',serif;font-size:1.6rem;letter-spacing:0.08em;position:relative;}
+.subtitle{font-size:0.82rem;color:rgba(255,255,255,0.85);margin-top:0.3rem;position:relative;}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-bottom:3px solid var(--red);max-width:900px;margin:2rem auto 0;border-radius:8px 8px 0 0;overflow:hidden;box-shadow:0 -2px 10px rgba(0,0,0,0.06);}
+.tab{flex:1;padding:0.8rem 0.5rem;text-align:center;cursor:pointer;font-size:0.82rem;font-weight:500;color:var(--neutral);border-right:1px solid var(--border);transition:all 0.2s;}
+.tab:last-child{border-right:none;}
+.tab:hover{background:var(--pale);}
+.tab.active{background:var(--red);color:#fff;}
+.tab-jp{font-family:'Noto Serif JP',serif;display:block;font-size:0.95rem;}
+
+/* PROGRESS */
+.progress-wrap{background:var(--border);height:5px;max-width:900px;margin:0 auto;}
+.progress-bar{height:5px;background:linear-gradient(90deg,var(--red3),var(--red2));width:0%;transition:width 0.4s;}
+.score-line{text-align:center;font-size:0.78rem;color:var(--neutral);padding:0.4rem;background:#fff;max-width:900px;margin:0 auto;border-bottom:1px solid var(--border);}
+
+/* PANELS */
+.panel{display:none;max-width:900px;margin:0 auto;padding:1.2rem 1rem 4rem;}
+.panel.active{display:block;}
+
+.section-title{font-family:'Noto Serif JP',serif;background:var(--red);color:#fff;padding:0.5rem 1rem;border-radius:4px;font-size:0.85rem;margin-bottom:0.8rem;letter-spacing:0.1em;}
+
+/* CARD */
+.card{background:#fff;border:2px solid var(--border);border-radius:8px;padding:1.2rem 1.5rem 0.9rem;margin-bottom:1rem;position:relative;
+  box-shadow:0 2px 10px rgba(192,57,43,0.06);transition:box-shadow 0.2s,border-color 0.3s;}
+.card:hover{box-shadow:0 4px 18px rgba(192,57,43,0.12);}
+.card.c-ok{border-color:#81c995;background:#f0fff4;}
+.card.c-bad{border-color:var(--red2);background:#fff0f0;}
+.card-num{position:absolute;top:-11px;left:1.2rem;background:var(--red);color:#fff;font-size:0.68rem;padding:2px 9px;border-radius:10px;font-weight:600;box-shadow:0 2px 5px rgba(142,28,17,0.3);}
+
+/* SENTENCE ROW */
+.row{display:flex;align-items:center;flex-wrap:wrap;gap:0.5rem;font-family:'Noto Serif JP',serif;font-size:1.05rem;line-height:2.4;}
+.label{font-size:0.7rem;color:var(--neutral);font-family:'Noto Sans JP',sans-serif;background:var(--pale);padding:1px 6px;border-radius:8px;border:1px solid var(--border);white-space:nowrap;}
+.meaning-text{color:var(--ink);font-family:'Noto Sans JP',sans-serif;font-size:0.95rem;font-weight:500;}
+.verb-known{color:var(--red3);font-weight:600;}
+
+/* INPUTS */
+input[type=text]{font-family:'Noto Serif JP',serif;font-size:1rem;border:none;border-bottom:2px solid var(--red);
+  background:transparent;color:var(--ink);padding:0 0.2rem;outline:none;width:120px;text-align:center;transition:border-color 0.2s;}
+input[type=text]:focus{border-color:var(--red3);}
+input[type=text].ok{border-color:var(--ok);color:var(--ok);font-weight:700;}
+input[type=text].bad{border-color:var(--bad);color:var(--bad);}
+select{font-family:'Noto Serif JP',serif;font-size:1rem;border:none;border-bottom:2px solid var(--red);
+  background:transparent;color:var(--ink);cursor:pointer;padding:0 0.2rem;outline:none;appearance:none;-webkit-appearance:none;
+  min-width:110px;text-align:center;transition:border-color 0.2s;}
+select:focus{border-color:var(--red3);}
+select.ok{border-color:var(--ok);color:var(--ok);font-weight:700;}
+select.bad{border-color:var(--bad);color:var(--bad);}
+select.neutral{border-color:var(--border);color:var(--neutral);}
+
+/* RESULT */
+.result-msg{margin-top:0.5rem;font-size:0.8rem;display:flex;gap:0.6rem;flex-wrap:wrap;min-height:1.1rem;}
+.badge{padding:2px 8px;border-radius:10px;font-weight:600;}
+.badge.ok{background:#e8f5e9;color:var(--ok);}
+.badge.bad{background:#ffebee;color:var(--bad);}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:1rem;justify-content:center;margin:1.5rem 0 0.5rem;}
+.btn{padding:0.7rem 2.2rem;border:none;border-radius:6px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-size:0.9rem;letter-spacing:0.06em;transition:all 0.2s;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.btn-check{background:var(--red);color:#fff;}
+.btn-check:hover{background:var(--red3);transform:translateY(-1px);}
+.btn-reset{background:#fff;color:var(--red);border:2px solid var(--red);}
+.btn-reset:hover{background:var(--pale);}
+
+/* FINAL */
+.final{display:none;text-align:center;padding:2rem;background:#fff;border:3px solid var(--red);border-radius:12px;max-width:380px;margin:1rem auto;box-shadow:0 8px 28px rgba(192,57,43,0.18);}
+.final.show{display:block;}
+.final-score{font-family:'Noto Serif JP',serif;font-size:3.5rem;color:var(--red);font-weight:700;}
+.final-sub{color:var(--neutral);font-size:0.88rem;margin-top:0.4rem;}
+.final-msg{font-size:1.3rem;margin-top:0.6rem;}
+
+/* ANIMATIONS */
+.flower{position:fixed;pointer-events:none;font-size:1.5rem;animation:fly 1.3s ease-out forwards;z-index:9999;}
+@keyframes fly{0%{opacity:1;transform:translate(0,0) scale(0.5) rotate(0deg);}
+  50%{opacity:1;transform:translate(var(--tx),var(--ty)) scale(1.4) rotate(var(--tr));}
+  100%{opacity:0;transform:translate(calc(var(--tx)*1.6),calc(var(--ty) - 90px)) scale(0.5) rotate(calc(var(--tr)*2));}}
+.tanuki{position:fixed;pointer-events:none;font-size:2.6rem;animation:jump 1.7s cubic-bezier(.36,.07,.19,.97) forwards;z-index:9999;text-align:center;line-height:1;}
+.tanuki-lbl{font-size:0.45rem;font-family:'Noto Sans JP',sans-serif;color:var(--red3);font-weight:700;display:block;}
+@keyframes jump{0%{opacity:0;transform:translateY(60px) scaleY(0.6);}
+  10%{opacity:1;transform:translateY(40px) scaleX(0.8) scaleY(1.3);}
+  30%{transform:translateY(-130px) rotate(-12deg);}
+  50%{transform:translateY(-90px) rotate(10deg);}
+  70%{transform:translateY(-150px) rotate(-6deg);}
+  88%{opacity:1;transform:translateY(15px) scaleX(1.1) scaleY(0.75);}
+  100%{opacity:0;transform:translateY(55px) scaleY(0.4);}}
+
+/* MATCH GAME (panel 3) */
+.match-container{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.7rem;margin-bottom:1rem;}
+.match-col-header{text-align:center;font-size:0.75rem;color:var(--neutral);font-weight:600;background:var(--pale);padding:0.3rem;border-radius:4px;border:1px solid var(--border);}
+.match-item{background:#fff;border:2px solid var(--border);border-radius:6px;padding:0.6rem 0.5rem;text-align:center;cursor:pointer;font-family:'Noto Serif JP',serif;font-size:0.95rem;transition:all 0.2s;user-select:none;min-height:52px;display:flex;align-items:center;justify-content:center;}
+.match-item:hover{border-color:var(--red);background:var(--pale);}
+.match-item.selected{border-color:var(--red);background:var(--pale);box-shadow:0 0 0 2px rgba(192,57,43,0.2);}
+.match-item.matched-ok{border-color:var(--ok);background:#f0fff4;cursor:default;}
+.match-item.matched-bad{border-color:var(--bad);background:#fff0f0;animation:shake 0.3s ease;}
+.match-item.meaning-item{font-family:'Noto Sans JP',sans-serif;font-size:0.85rem;}
+@keyframes shake{0%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}100%{transform:translateX(0);}}
+
+@media(max-width:600px){
+  .match-container{grid-template-columns:1fr;gap:0.4rem;}
+  .tabs{flex-wrap:wrap;}
+  .tab{min-width:33%;}
+}
+</style>
+</head>
+<body>
+<!-- ── BACK BUTTON ── -->
+<div style="background:#f5f0e8; padding:0.8rem 1.5rem; border-bottom:1px solid #e8e2d5;">
+  <a href="gimnazium.html" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:#7a7060; font-family:'DM Sans',sans-serif; font-size:0.8rem; letter-spacing:0.08em; border:1px solid #e8e2d5; padding:0.4rem 1rem; transition:all 0.2s;"
+     onmouseover="this.style.borderColor='#c8522a';this.style.color='#c8522a';"
+     onmouseout="this.style.borderColor='#e8e2d5';this.style.color='#7a7060';">
+    ← Szent-Györgyi Albert Gimnázium
+  </a>
+</div>
+
+<header>
+  <h1>🌸 動詞練習 🌸</h1>
+  <p class="subtitle">Ige párosítás – udvarias forma, szótári alak, jelentés</p>
+  <div class="header-deco" id="petals"></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)"><span class="tab-jp">辞書形→丁寧形</span>Szótári→Udvarias</div>
+  <div class="tab" onclick="switchTab(1)"><span class="tab-jp">丁寧形→辞書形</span>Udvarias→Szótári</div>
+  <div class="tab" onclick="switchTab(2)"><span class="tab-jp">意味→両方</span>Jelentés→Mindkettő</div>
+  <div class="tab" onclick="switchTab(3)"><span class="tab-jp">🎯 パズル</span>Párosítás</div>
+</div>
+
+<div class="progress-wrap"><div class="progress-bar" id="pb"></div></div>
+<div class="score-line" id="scoreLine">Válaszd ki a lapot a kezdéshez</div>
+
+<div id="p0" class="panel active"></div>
+<div id="p1" class="panel"></div>
+<div id="p2" class="panel"></div>
+<div id="p3" class="panel"></div>
+
+<script>
+// ============================================================
+// VERB DATA
+// Format: [辞書形(hiragana), 丁寧形(hiragana), Hungarian meaning, kanji+reading (display)]
+// ============================================================
+const VERBS = [
+  // Group 1 – Godan
+  { dict:"かう",   masu:"かいます",   hu:"vesz, vásárol",       kanji:"買います／買う",  group:1 },
+  { dict:"あう",   masu:"あいます",   hu:"találkozik (valakivel)", kanji:"会います／会う", group:1 },
+  { dict:"うたう", masu:"うたいます", hu:"énekel",               kanji:"歌います／歌う",  group:1 },
+  { dict:"いく",   masu:"いきます",   hu:"megy",                 kanji:"行きます／行く",  group:1 },
+  { dict:"かく",   masu:"かきます",   hu:"ír",                   kanji:"書きます／書く",  group:1 },
+  { dict:"ひく",   masu:"ひきます",   hu:"hangszeren játszik",   kanji:"弾きます／弾く",  group:1 },
+  { dict:"およぐ", masu:"およぎます", hu:"úszik",                kanji:"泳ぎます／泳ぐ",  group:1 },
+  { dict:"いそぐ", masu:"いそぎます", hu:"siet",                 kanji:"急ぎます／急ぐ",  group:1 },
+  { dict:"はなす", masu:"はなします", hu:"beszél",               kanji:"話します／話す",  group:1 },
+  { dict:"だす",   masu:"だします",   hu:"kivesz, kiad",         kanji:"出します／出す",  group:1 },
+  { dict:"たつ",   masu:"たちます",   hu:"áll, feláll",          kanji:"立ちます／立つ",  group:1 },
+  { dict:"まつ",   masu:"まちます",   hu:"vár",                  kanji:"待ちます／待つ",  group:1 },
+  { dict:"あそぶ", masu:"あそびます", hu:"játszik, szórakozik",  kanji:"遊びます／遊ぶ",  group:1 },
+  { dict:"やすむ", masu:"やすみます", hu:"pihen, szünetel",      kanji:"休みます／休む",  group:1 },
+  { dict:"もつ",   masu:"もちます",   hu:"tart, birtokban van",  kanji:"持ちます／持つ",  group:1 },
+  { dict:"のむ",   masu:"のみます",   hu:"iszik",                kanji:"飲みます／飲む",  group:1 },
+  { dict:"かえる", masu:"かえります", hu:"hazamegy, visszatér",  kanji:"帰ります／帰る",  group:1 },
+  { dict:"おくる", masu:"おくります", hu:"küld",                 kanji:"送ります／送る",  group:1 },
+  { dict:"とる",   masu:"とります",   hu:"vesz, elvesz",         kanji:"取ります／取る",  group:1 },
+  { dict:"つくる", masu:"つくります", hu:"készít, csinál",       kanji:"作ります／作る",  group:1 },
+  { dict:"はたらく",masu:"はたらきます",hu:"dolgozik",           kanji:"働きます／働く",  group:1 },
+  // Group 2 – Ichidan
+  { dict:"たべる", masu:"たべます",   hu:"eszik",                kanji:"食べます／食べる",group:2 },
+  { dict:"ねる",   masu:"ねます",     hu:"alszik",               kanji:"寝ます／寝る",    group:2 },
+  { dict:"あつめる",masu:"あつめます",hu:"összegyűjt",           kanji:"集めます／集める",group:2 },
+  { dict:"はじめる",masu:"はじめます",hu:"elkezd",              kanji:"始めます／始める",group:2 },
+  { dict:"みる",   masu:"みます",     hu:"néz",                  kanji:"見ます／見る",    group:2 },
+  { dict:"いる",   masu:"います",     hu:"van (élő)",            kanji:"います／いる",    group:2 },
+  { dict:"おきる", masu:"おきます",   hu:"felkel",               kanji:"起きます／起きる",group:2 },
+  { dict:"かりる", masu:"かります",   hu:"kölcsönvesz",          kanji:"借ります／借りる",group:2 },
+  { dict:"あびる", masu:"あびます",   hu:"zuhanyozik",           kanji:"浴びます／浴びる",group:2 },
+  { dict:"できる", masu:"できます",   hu:"tud, képes rá",        kanji:"できます／できる",group:2 },
+  // Irregular
+  { dict:"する",         masu:"します",         hu:"csinál",   kanji:"します／する",         group:3 },
+  { dict:"べんきょうする",masu:"べんきょうします",hu:"tanul",  kanji:"勉強します／勉強する",  group:3 },
+  { dict:"しごとをする", masu:"しごとをします", hu:"dolgozik", kanji:"仕事をします／仕事をする",group:3 },
+  { dict:"くる",         masu:"きます",         hu:"jön",      kanji:"来ます／来る",          group:3 },
+  { dict:"もってくる",   masu:"もってきます",   hu:"magával hoz", kanji:"持って来ます／持って来る",group:3 },
+];
+
+// ============================================================
+const flowers = ['🌸','🌺','🌼','🌷','💮','🌻'];
+function spawnFlower(x,y){
+  for(let i=0;i<7;i++){
+    const el=document.createElement('div');
+    el.className='flower';
+    el.textContent=flowers[Math.floor(Math.random()*flowers.length)];
+    const a=(i/7)*2*Math.PI+Math.random()*0.4;
+    const d=55+Math.random()*65;
+    el.style.setProperty('--tx',Math.cos(a)*d+'px');
+    el.style.setProperty('--ty',Math.sin(a)*d+'px');
+    el.style.setProperty('--tr',(Math.random()*360-180)+'deg');
+    el.style.left=(x-12)+'px'; el.style.top=(y-12)+'px';
+    el.style.animationDelay=(i*0.06)+'s';
+    document.body.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
+  }
+}
+function spawnTanuki(x,y){
+  const el=document.createElement('div');
+  el.className='tanuki';
+  el.innerHTML='🦝<span class="tanuki-lbl">もう一度！</span>';
+  el.style.left=(x-20)+'px'; el.style.top=(y-20)+'px';
+  document.body.appendChild(el);
+  el.addEventListener('animationend',()=>el.remove());
+}
+
+// ============================================================
+// PANEL 0 – Dict → Polite (select)
+// PANEL 1 – Polite → Dict (select)
+// PANEL 2 – Meaning → both (select)
+// PANEL 3 – Matching game
+// ============================================================
+
+let panelState=[null,null,null,null];
+let currentPanel=0;
+
+function switchTab(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  currentPanel=idx;
+  if(!panelState[idx]) buildPanel(idx);
+  updateScore();
+}
+
+// ---- Panel builders ----
+function buildPanel(idx){
+  const el=document.getElementById('p'+idx);
+  el.innerHTML='';
+  if(idx===3){ buildMatchPanel(); return; }
+
+  const sections=[
+    {title:'グループ１ – Godan igék (1. csoport)',filter:v=>v.group===1},
+    {title:'グループ２ – Ichidan igék (2. csoport)',filter:v=>v.group===2},
+    {title:'不規則動詞 – Rendhagyó igék',filter:v=>v.group===3},
+  ];
+
+  panelState[idx]={inputs:[]};
+
+  sections.forEach(sec=>{
+    const secDiv=document.createElement('div');
+    secDiv.className='section-title';
+    secDiv.textContent=sec.title;
+    el.appendChild(secDiv);
+
+    VERBS.filter(sec.filter).forEach((v,localIdx)=>{
+      const card=document.createElement('div');
+      card.className='card';
+      const num=document.createElement('div');
+      num.className='card-num';
+      card.appendChild(num);
+
+      const row=document.createElement('div');
+      row.className='row';
+
+      if(idx===0){
+        // Show dict, select polite
+        const lb=document.createElement('span'); lb.className='label'; lb.textContent='辞書形';
+        const vt=document.createElement('span'); vt.className='verb-known'; vt.textContent=v.dict;
+        const arr=document.createElement('span'); arr.textContent='→';
+        const lb2=document.createElement('span'); lb2.className='label'; lb2.textContent='丁寧形';
+        const sel=makeSelect(v.masu, VERBS.filter(sec.filter).map(x=>x.masu), v);
+        row.append(lb,vt,arr,lb2,sel);
+        const hint=document.createElement('div'); hint.style.cssText='font-size:0.75rem;color:var(--neutral);margin-top:0.2rem;font-family:"Noto Sans JP",sans-serif;';
+        hint.textContent='🇭🇺 '+v.hu;
+        card.appendChild(row); card.appendChild(hint);
+        panelState[idx].inputs.push({el:sel,correct:v.masu,card,res:null});
+      } else if(idx===1){
+        // Show polite, select dict
+        const lb=document.createElement('span'); lb.className='label'; lb.textContent='丁寧形';
+        const vt=document.createElement('span'); vt.className='verb-known'; vt.textContent=v.masu;
+        const arr=document.createElement('span'); arr.textContent='→';
+        const lb2=document.createElement('span'); lb2.className='label'; lb2.textContent='辞書形';
+        const sel=makeSelect(v.dict, VERBS.filter(sec.filter).map(x=>x.dict), v);
+        row.append(lb,vt,arr,lb2,sel);
+        const hint=document.createElement('div'); hint.style.cssText='font-size:0.75rem;color:var(--neutral);margin-top:0.2rem;font-family:"Noto Sans JP",sans-serif;';
+        hint.textContent='🇭🇺 '+v.hu;
+        card.appendChild(row); card.appendChild(hint);
+        panelState[idx].inputs.push({el:sel,correct:v.dict,card,res:null});
+      } else if(idx===2){
+        // Show meaning, select both
+        const lb0=document.createElement('span'); lb0.className='label'; lb0.textContent='意味';
+        const mt=document.createElement('span'); mt.className='meaning-text'; mt.textContent=v.hu;
+        const arr=document.createElement('span'); arr.textContent='→';
+        const lb1=document.createElement('span'); lb1.className='label'; lb1.textContent='丁寧形';
+        const sel1=makeSelect(v.masu, shuffleArr(VERBS.map(x=>x.masu)), v);
+        const arr2=document.createElement('span'); arr2.textContent='／';
+        const lb2=document.createElement('span'); lb2.className='label'; lb2.textContent='辞書形';
+        const sel2=makeSelect(v.dict, shuffleArr(VERBS.map(x=>x.dict)), v);
+        row.append(lb0,mt,arr,lb1,sel1,arr2,lb2,sel2);
+        card.appendChild(row);
+        panelState[idx].inputs.push({el:sel1,correct:v.masu,card,res:null});
+        panelState[idx].inputs.push({el:sel2,correct:v.dict,card,res:null,last:true});
+      }
+
+      const res=document.createElement('div');
+      res.className='result-msg';
+      card.appendChild(res);
+      // store res ref
+      panelState[idx].inputs.filter(i=>i.card===card).forEach(i=>i.res=res);
+      el.appendChild(card);
+    });
+  });
+
+  // Number cards
+  el.querySelectorAll('.card-num').forEach((n,i)=>n.textContent=i+1);
+
+  // Buttons
+  const btnRow=document.createElement('div');
+  btnRow.className='btn-row';
+  const btnCheck=document.createElement('button');
+  btnCheck.className='btn btn-check'; btnCheck.textContent='確認する ✓';
+  btnCheck.onclick=()=>checkPanel(idx);
+  const btnReset=document.createElement('button');
+  btnReset.className='btn btn-reset'; btnReset.textContent='🔄 Újra';
+  btnReset.onclick=()=>{panelState[idx]=null; buildPanel(idx); updateScore();};
+  btnRow.append(btnCheck,btnReset);
+  el.appendChild(btnRow);
+
+  const fin=document.createElement('div');
+  fin.className='final'; fin.id='fin'+idx;
+  fin.innerHTML='<div style="font-size:2rem">🌸🦝🌸</div><div class="final-score" id="fscore'+idx+'">-/-</div><div class="final-sub">helyes válasz</div><div class="final-msg" id="fmsg'+idx+'"></div>';
+  el.appendChild(fin);
+}
+
+function makeSelect(correct, pool, v){
+  const sel=document.createElement('select');
+  sel.className='neutral';
+  const ph=document.createElement('option');
+  ph.value=''; ph.textContent='（　　　　）'; ph.disabled=true; ph.selected=true;
+  sel.appendChild(ph);
+  // Get 3 distractors + correct
+  const distractors=shuffleArr(pool.filter(x=>x!==correct)).slice(0,4);
+  const opts=shuffleArr([correct,...distractors]);
+  opts.forEach(o=>{
+    const op=document.createElement('option');
+    op.value=o; op.textContent=o;
+    sel.appendChild(op);
+  });
+  sel.dataset.correct=correct;
+  sel.addEventListener('change',()=>{sel.classList.remove('ok','bad','neutral'); sel.classList.add('neutral'); updateScore();});
+  return sel;
+}
+
+function checkPanel(idx){
+  const state=panelState[idx];
+  let correct=0,total=state.inputs.length;
+  let delay=0;
+
+  // Group inputs by card
+  const byCard=new Map();
+  state.inputs.forEach(inp=>{
+    if(!byCard.has(inp.card)) byCard.set(inp.card,[]);
+    byCard.get(inp.card).push(inp);
+  });
+
+  byCard.forEach((inps,card)=>{
+    const res=inps[0].res;
+    res.innerHTML='';
+    let cardOk=true;
+
+    inps.forEach(inp=>{
+      const isOk=inp.el.value===inp.correct;
+      inp.el.classList.remove('ok','bad','neutral');
+      if(isOk){ inp.el.classList.add('ok'); correct++; }
+      else { inp.el.classList.add('bad'); cardOk=false;
+        const b=document.createElement('span');
+        b.className='badge bad'; b.textContent='✗ '+inp.correct;
+        res.appendChild(b);
+      }
+      (function(el,ok){ setTimeout(()=>{
+        const r=el.getBoundingClientRect();
+        const x=r.left+r.width/2+window.scrollX;
+        const y=r.top+r.height/2+window.scrollY;
+        if(ok) spawnFlower(x,y); else spawnTanuki(x,y);
+      },delay); delay+=100; })(inp.el,isOk);
+    });
+
+    card.classList.remove('c-ok','c-bad');
+    if(cardOk){ card.classList.add('c-ok');
+      const b=document.createElement('span'); b.className='badge ok'; b.textContent='✓ 正解！';
+      res.appendChild(b);
+    } else { card.classList.add('c-bad'); }
+  });
+
+  const pct=correct/total;
+  const scoreEl=document.getElementById('fscore'+idx);
+  if(scoreEl) scoreEl.textContent=correct+'/'+total;
+  const msgEl=document.getElementById('fmsg'+idx);
+  if(msgEl) msgEl.textContent=pct===1?'🌸🌸🌸 完璧！':pct>=0.8?'🌸 Nagyon jó!':pct>=0.5?'🦝 Szép munka!':'🦝🦝 Próbáld újra!';
+  const fin=document.getElementById('fin'+idx);
+  if(fin) setTimeout(()=>{fin.classList.add('show');fin.scrollIntoView({behavior:'smooth',block:'center'});},delay+300);
+
+  updateScore();
+}
+
+// ---- Panel 3 – Matching ----
+let matchState={};
+
+function buildMatchPanel(){
+  const el=document.getElementById('p3');
+  el.innerHTML='';
+  panelState[3]={matched:0,total:0};
+
+  // Pick 10 random verbs
+  const picked=shuffleArr([...VERBS]).slice(0,10);
+  matchState={picked,selected:{col:null,idx:null},matched:new Set(),score:0};
+
+  const title=document.createElement('div');
+  title.className='section-title';
+  title.textContent='🎯 Párosítás – kösd össze a három oszlopot!';
+  el.appendChild(title);
+
+  const instr=document.createElement('div');
+  instr.style.cssText='font-size:0.8rem;color:var(--neutral);text-align:center;margin-bottom:0.8rem;';
+  instr.textContent='Kattints egy elemre az egyik oszlopból, majd a megfelelőre a másikból. A három oszlopot párosítsd össze!';
+  el.appendChild(instr);
+
+  const grid=document.createElement('div');
+  grid.className='match-container';
+
+  // Column headers
+  ['🇭🇺 Jelentés','丁寧形 (Udvarias)','辞書形 (Szótári)'].forEach(h=>{
+    const hd=document.createElement('div');
+    hd.className='match-col-header'; hd.textContent=h;
+    grid.appendChild(hd);
+  });
+
+  // Shuffled items per column
+  const colHu=shuffleArr(picked.map((v,i)=>({v,i})));
+  const colMasu=shuffleArr(picked.map((v,i)=>({v,i})));
+  const colDict=shuffleArr(picked.map((v,i)=>({v,i})));
+
+  matchState.colHu=colHu; matchState.colMasu=colMasu; matchState.colDict=colDict;
+  matchState.matchCount=0;
+
+  const maxLen=Math.max(colHu.length,colMasu.length,colDict.length);
+  for(let row=0;row<maxLen;row++){
+    [['hu',colHu],['masu',colMasu],['dict',colDict]].forEach(([col,arr])=>{
+      const item=arr[row];
+      const div=document.createElement('div');
+      div.className='match-item'+(col==='hu'?' meaning-item':'');
+      div.dataset.col=col;
+      div.dataset.verbIdx=item.i;
+      div.textContent=col==='hu'?item.v.hu:col==='masu'?item.v.masu:item.v.dict;
+      div.onclick=()=>handleMatchClick(div);
+      grid.appendChild(div);
+    });
+  }
+
+  el.appendChild(grid);
+
+  const scoreBox=document.createElement('div');
+  scoreBox.id='matchScore';
+  scoreBox.style.cssText='text-align:center;font-size:0.85rem;color:var(--neutral);margin:0.5rem;';
+  scoreBox.textContent='0 / '+picked.length+' párosítva';
+  el.appendChild(scoreBox);
+
+  const btnReset=document.createElement('button');
+  btnReset.className='btn btn-reset'; btnReset.style.display='block'; btnReset.style.margin='0.5rem auto';
+  btnReset.textContent='🔄 Új kör'; btnReset.onclick=()=>{panelState[3]=null;buildMatchPanel();};
+  el.appendChild(btnReset);
+
+  const fin=document.createElement('div');
+  fin.className='final'; fin.id='fin3';
+  fin.innerHTML='<div style="font-size:2.5rem">🌸🎉🌸</div><div class="final-score">完璧！</div><div class="final-sub">Minden párt megtaláltál!</div><button class="btn btn-reset" style="margin-top:1rem" onclick="panelState[3]=null;buildMatchPanel()">🔄 Új kör</button>';
+  el.appendChild(fin);
+
+  panelState[3]={built:true};
+}
+
+function handleMatchClick(div){
+  if(div.classList.contains('matched-ok')) return;
+  const col=div.dataset.col;
+  const vIdx=parseInt(div.dataset.verbIdx);
+
+  if(!matchState.selected.col){
+    // First selection
+    document.querySelectorAll('.match-item.selected').forEach(d=>d.classList.remove('selected'));
+    div.classList.add('selected');
+    matchState.selected={col,idx:vIdx,el:div};
+  } else {
+    const prev=matchState.selected;
+    if(prev.col===col){ // same column, reselect
+      document.querySelectorAll('.match-item.selected').forEach(d=>d.classList.remove('selected'));
+      div.classList.add('selected');
+      matchState.selected={col,idx:vIdx,el:div};
+      return;
+    }
+    // Check match
+    if(prev.idx===vIdx){
+      // Correct pair!
+      prev.el.classList.remove('selected'); prev.el.classList.add('matched-ok');
+      div.classList.add('matched-ok');
+      matchState.matchCount++;
+      const r=div.getBoundingClientRect();
+      spawnFlower(r.left+r.width/2+window.scrollX, r.top+r.height/2+window.scrollY);
+      // Check if third column also needs to be matched
+      // We do 2-at-a-time matching; if all 3 are same verbIdx → auto-match remaining
+      const allItems=document.querySelectorAll('.match-item');
+      let allThreeMatched=true;
+      let thirdEl=null;
+      ['hu','masu','dict'].forEach(c=>{
+        let found=false;
+        allItems.forEach(d=>{
+          if(d.dataset.col===c && parseInt(d.dataset.verbIdx)===vIdx){
+            if(!d.classList.contains('matched-ok')) thirdEl=d;
+            else found=true;
+          }
+        });
+        if(!found) allThreeMatched=false;
+      });
+      if(thirdEl){
+        // There's still one unmatched of the trio – highlight it to guide user
+        thirdEl.style.outline='2px dashed var(--ok)';
+      }
+      // Check all matched
+      const totalMatched=document.querySelectorAll('.match-item.matched-ok').length;
+      const totalItems=document.querySelectorAll('.match-item').length;
+      const matchScore=document.getElementById('matchScore');
+      if(matchScore) matchScore.textContent=Math.floor(totalMatched/3)+' / '+matchState.picked.length+' párosítva ('+totalMatched+'/'+totalItems+' elem)';
+      if(totalMatched===totalItems){
+        setTimeout(()=>{
+          const fin=document.getElementById('fin3');
+          if(fin){fin.classList.add('show');fin.scrollIntoView({behavior:'smooth',block:'center'});}
+          for(let i=0;i<12;i++) setTimeout(()=>{
+            spawnFlower(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.7+window.scrollY);
+          },i*120);
+        },300);
+      }
+      matchState.selected={col:null,idx:null,el:null};
+    } else {
+      // Wrong
+      prev.el.classList.add('matched-bad');
+      div.classList.add('matched-bad');
+      const r=div.getBoundingClientRect();
+      spawnTanuki(r.left+r.width/2+window.scrollX, r.top+r.height/2+window.scrollY);
+      setTimeout(()=>{
+        prev.el.classList.remove('matched-bad','selected');
+        div.classList.remove('matched-bad');
+      },400);
+      matchState.selected={col:null,idx:null,el:null};
+    }
+  }
+}
+
+function updateScore(){
+  const idx=currentPanel;
+  if(idx===3){
+    document.getElementById('pb').style.width='0%';
+    document.getElementById('scoreLine').textContent='Párosítós játék – kattints!';
+    return;
+  }
+  const state=panelState[idx];
+  if(!state||!state.inputs){document.getElementById('scoreLine').textContent='';return;}
+  const total=state.inputs.length;
+  const answered=state.inputs.filter(i=>i.el.value!=='').length;
+  const correct=state.inputs.filter(i=>i.el.classList.contains('ok')).length;
+  document.getElementById('pb').style.width=(answered/total*100)+'%';
+  const checked=state.inputs.some(i=>i.el.classList.contains('ok')||i.el.classList.contains('bad'));
+  document.getElementById('scoreLine').textContent=checked?correct+' / '+total+' helyes':answered+' / '+total+' kitöltve';
+}
+
+function shuffleArr(a){
+  const b=[...a];
+  for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
+  return b;
+}
+
+// Build header petals
+(function(){
+  const wrap=document.getElementById('petals');
+  for(let i=0;i<30;i++){const d=document.createElement('div');d.className='petal';wrap.appendChild(d);}
+})();
+
+// Build first panel on load
+buildPanel(0);
+</script>
+</body>
+</html>

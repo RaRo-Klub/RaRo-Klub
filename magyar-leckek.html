@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ハンガリー語教材 — カーロリ大学（KRE）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&family=Fira+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hu-red: #ce2939;
+    --hu-green: #477050;
+    --hu-white: #f9f5ef;
+    --ink: #1a1410;
+    --ink-soft: #3d3028;
+    --muted: #7a6a5a;
+    --border: #d8cfc4;
+    --card-bg: #fff;
+    --highlight-bg: #fff8f0;
+    --speak-btn: #ce2939;
+    --speak-hover: #a01e2b;
+    --accent-gold: #c49a3c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--hu-white);
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  /* ── HEADER (白地、幅制限あり) ── */
+  header {
+    background: var(--hu-white);
+    color: var(--ink);
+    padding: 40px 20px 32px;
+    border-bottom: 3px solid var(--hu-red);
+  }
+  header .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  header .flag-vert {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    width: 40px;
+  }
+  header .flag-vert span {
+    width: 40px; height: 22px;
+  }
+  header .flag-vert .f1 { background: #ce2939; }
+  header .flag-vert .f2 { background: #fff; }
+  header .flag-vert .f3 { background: #477050; }
+  header .header-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--hu-red);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  header .header-text p.subtitle {
+    font-size: .88rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--ink);
+    padding: 0 16px;
+    display: flex;
+    flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav a {
+    color: rgba(255,255,255,.78);
+    text-decoration: none;
+    padding: 12px 16px;
+    font-size: .8rem;
+    letter-spacing: .06em;
+    transition: color .2s, background .2s;
+  }
+  nav a:hover { color: #fff; background: rgba(255,255,255,.1); }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  /* ── INTRO CARD ── */
+  .intro-card {
+    background: var(--card-bg);
+    border-left: 5px solid var(--hu-red);
+    border-radius: 0 8px 8px 0;
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  }
+  .intro-card p { margin-bottom: .7em; color: var(--ink-soft); }
+  .intro-card p:last-child { margin-bottom: 0; }
+  .author-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+    font-size: .85rem;
+    color: var(--muted);
+  }
+  .author-section strong { color: var(--ink-soft); }
+
+  /* ── SECTION HEADINGS ── */
+  .section-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    font-weight: 700;
+    color: var(--hu-red);
+    margin: 56px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--hu-red);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-h1 .num {
+    background: var(--hu-red);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: .85em;
+    width: 36px; height: 36px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .section-h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+    font-weight: 600;
+    color: var(--ink);
+    margin: 36px 0 14px;
+    padding-left: 14px;
+    border-left: 4px solid var(--hu-green);
+  }
+  .section-h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--hu-green);
+    margin: 26px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-h3::before {
+    content: '◆';
+    font-size: .6em;
+    color: var(--accent-gold);
+  }
+
+  p { margin-bottom: 1em; color: var(--ink-soft); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── PHRASE TABLE ── */
+  .phrase-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(0,0,0,.07);
+  }
+  .phrase-table thead tr { background: var(--ink); color: #fff; }
+  .phrase-table thead th {
+    padding: 10px 16px;
+    font-size: .8rem;
+    letter-spacing: .08em;
+    font-weight: 400;
+    text-align: left;
+  }
+  .phrase-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+  .phrase-table tbody tr:last-child { border-bottom: none; }
+  .phrase-table tbody tr:hover { background: var(--highlight-bg); }
+  .phrase-table td { padding: 12px 16px; vertical-align: middle; }
+
+  /* 統一スタイル: ハンガリー語・読み・意味 */
+  .hu-cell {
+    font-family: 'Fira Mono', monospace;
+    font-size: .93rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .yomi-cell {
+    font-size: .82rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .jp-cell {
+    font-size: .9rem;
+    color: var(--ink-soft);
+  }
+
+  /* ── SPEAK BUTTON ── */
+  .speak-btn {
+    background: var(--speak-btn);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .2s, transform .1s;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(206,41,57,.3);
+  }
+  .speak-btn:hover { background: var(--speak-hover); transform: scale(1.08); }
+  .speak-btn:active { transform: scale(.95); }
+  .speak-btn.playing { background: var(--hu-green); animation: pulse .6s infinite alternate; }
+  @keyframes pulse { from { box-shadow: 0 0 0 0 rgba(71,112,80,.4); } to { box-shadow: 0 0 0 6px rgba(71,112,80,0); } }
+
+  /* ── DIALOGUE BLOCK ── */
+  .dialogue-wrap {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 16px 0 28px;
+    box-shadow: 0 1px 10px rgba(0,0,0,.07);
+    border-top: 3px solid var(--accent-gold);
+  }
+  .dialogue-line {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+  }
+  .dialogue-line:last-child { margin-bottom: 0; }
+  .speaker-tag {
+    background: var(--ink);
+    color: #fff;
+    font-size: .7rem;
+    letter-spacing: .05em;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+  .speaker-tag.shop { background: var(--hu-green); }
+  .dialogue-body { flex: 1; }
+  .dialogue-jp { font-size: .88rem; color: var(--ink-soft); margin-bottom: 4px; }
+  .dialogue-hu {
+    font-family: 'Fira Mono', monospace;
+    font-size: .85rem;
+    color: var(--hu-red);
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  /* ── NOTE ── */
+  .note-small {
+    font-size: .82rem;
+    color: var(--muted);
+    background: #f4f0ea;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0 16px;
+    border-left: 3px solid var(--accent-gold);
+  }
+
+  /* ── VOCAB GRID ── */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+    margin: 14px 0 22px;
+  }
+  .vocab-item {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .vocab-item .v-hu {
+    font-family: 'Fira Mono', monospace;
+    font-size: .88rem;
+    color: var(--hu-red);
+    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .vocab-item .v-yomi { font-size: .77rem; color: var(--muted); font-style: italic; }
+  .vocab-item .v-jp { font-size: .83rem; color: var(--ink-soft); }
+
+  /* ── GRAMMAR BOX ── */
+  .grammar-box {
+    background: #f0f4f2;
+    border: 1px solid #c0d4c8;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+    font-size: .9rem;
+    color: var(--ink-soft);
+  }
+  .grammar-box p { margin-bottom: .6em; }
+  .grammar-box .example {
+    font-family: 'Fira Mono', monospace;
+    font-size: .88rem;
+    color: var(--hu-green);
+    background: #fff;
+    border-radius: 4px;
+    padding: 7px 12px;
+    margin: 6px 0;
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .grammar-box .example .ex-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: .82rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-left: 4px;
+  }
+  .grammar-box .trans {
+    font-size: .82rem;
+    color: var(--muted);
+    margin: 2px 0 10px 14px;
+  }
+  .grammar-box strong { color: var(--hu-green); }
+  .grammar-box ul { padding-left: 20px; margin: 8px 0; }
+  .grammar-box ul li { margin-bottom: 5px; font-size: .88rem; }
+  .focus-label {
+    display: inline-block;
+    background: #e8f2ec;
+    color: var(--hu-green);
+    font-size: .78rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin: 6px 0 4px;
+    border: 1px solid #c0d4c8;
+  }
+
+  /* ── PRONUNCIATION TABLE ── */
+  .pron-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+  }
+  .pron-table th {
+    background: var(--hu-green);
+    color: #fff;
+    padding: 8px 14px;
+    font-size: .8rem;
+    text-align: left;
+    letter-spacing: .06em;
+  }
+  .pron-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: .88rem;
+  }
+  .pron-table tr:last-child td { border-bottom: none; }
+  .pron-table tr:nth-child(even) td { background: #f6f2ec; }
+  .pron-table .big-char {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--hu-red);
+  }
+
+  /* ── LARGE VOCAB TABLE ── */
+  .vocab-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: .85rem;
+  }
+  .vocab-table th {
+    background: var(--ink-soft);
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: .78rem;
+    letter-spacing: .06em;
+  }
+  .vocab-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .vocab-table tr:nth-child(even) td { background: #f8f4ee; }
+  .vocab-table tr:last-child td { border-bottom: none; }
+  .vocab-table .v-hu-cell {
+    font-family: 'Fira Mono', monospace;
+    color: var(--hu-red);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .vocab-table .v-yomi-cell {
+    color: var(--muted);
+    font-style: italic;
+    font-size: .8rem;
+  }
+  .vocab-table .v-jp-cell { color: var(--ink-soft); }
+
+  /* ── LISTS ── */
+  ul.content-list { list-style: none; padding: 0; margin: 8px 0 20px; }
+  ul.content-list li {
+    padding: 6px 0 6px 22px;
+    position: relative;
+    color: var(--ink-soft);
+    font-size: .9rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  ul.content-list li:last-child { border-bottom: none; }
+  ul.content-list li::before { content: '▸'; position: absolute; left: 0; color: var(--hu-red); font-size: .85em; }
+
+  /* ── SUMMARY BOX ── */
+  .summary-box {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+    font-size: .88rem;
+    color: var(--ink-soft);
+  }
+  .summary-box ul { padding-left: 18px; margin: 6px 0; }
+  .summary-box ul li { margin-bottom: 4px; }
+  .summary-box strong { color: var(--hu-red); }
+
+  /* ── SECTION DIVIDER ── */
+  .sec-divider {
+    border: none;
+    border-top: 2px dashed var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── TOC ── */
+  .toc-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 32px 0 48px;
+  }
+  .toc-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 14px;
+    letter-spacing: .05em;
+  }
+  .toc-box ol { padding-left: 20px; color: var(--hu-red); }
+  .toc-box ol li { margin-bottom: 6px; }
+  .toc-box ol li a { color: var(--ink-soft); text-decoration: none; font-size: .88rem; transition: color .2s; }
+  .toc-box ol li a:hover { color: var(--hu-red); }
+  .toc-box ul { list-style: none; padding-left: 16px; margin-top: 4px; }
+  .toc-box ul li::before { content: '– '; color: var(--muted); }
+  .toc-box ul li a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  .toc-box ul li a:hover { color: var(--hu-red); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    padding: 28px 20px;
+    font-size: .78rem;
+    letter-spacing: .05em;
+  }
+
+  @media (max-width: 600px) {
+    .vocab-grid { grid-template-columns: 1fr 1fr; }
+    .phrase-table { font-size: .8rem; }
+    .dialogue-wrap { padding: 16px; }
+    header .header-inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── BACK BUTTON ── -->
+<div style="background:var(--hu-white); padding:0.8rem 1.5rem; border-bottom:1px solid var(--border);">
+  <a href="egyetem.html" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--muted); font-family:'Playfair Display',serif; font-size:0.8rem; letter-spacing:0.08em; border:1px solid var(--border); padding:0.4rem 1rem; transition:all 0.2s;"
+     onmouseover="this.style.borderColor='#ce2939';this.style.color='#ce2939';"
+     onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)';">
+    ← Károli Gáspár Egyetem
+  </a>
+</div>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <div class="flag-vert">
+      <span class="f1"></span>
+      <span class="f2"></span>
+      <span class="f3"></span>
+    </div>
+    <div class="header-text">
+      <h1>カーロリ大学（KRE）に留学する<br>日本人のためのハンガリー語教材</h1>
+      <p class="subtitle">Magyar Nyelvi Tananyag Japán Cserediákoknak</p>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <a href="#greeting">挨拶</a>
+  <a href="#conversation">簡単な会話</a>
+  <a href="#ordering">注文・依頼</a>
+  <a href="#phrases">役立つ表現</a>
+  <a href="#pronunciation">発音</a>
+  <a href="#grammar">文法</a>
+  <a href="#situations">シチュエーション別</a>
+  <a href="#wordlist">単語リスト</a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- INTRO -->
+  <div class="intro-card">
+    <p>この資料は、日本からの交換留学生がハンガリーでの学生生活にスムーズに適応できるよう作成したものです。</p>
+    <p>カーロリ大学の学生が、交換留学生がハンガリーで日常的に耳にする語彙と文法を厳選しました。交換留学生がハンガリー語を使いそうな場面・シナリオも掲載されています。また、各セクションには解説も付いています。</p>
+    <p>ハンガリー語の発音は非常に難しいことで知られています。🔊ボタンをクリックすると、ハンガリー語の音声を聞くことができます。また、資料の最後には発音に関するより詳しい解説が付いています。</p>
+    <p>この資料が皆様のお役に立ち、ハンガリーでの交換留学生生活を楽しんでいただく一助となれば幸いです。</p>
+    <div class="author-section">
+      <strong>執筆者：</strong> Bach András Márton, Halmai Tícia Krisztina, Horváth Borbála Alojzia, Juhász Virág Lili, Kónya Nikolett Katalin, Kovács Benjámin, Péli Luca, Vörös Krisztina Viktória<br>
+      <strong>校正者：</strong> 郷田爽、山口奈南
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc-box">
+    <h2>📋 目次</h2>
+    <ol>
+      <li><a href="#greeting">ハンガリー語をよく使う場面</a>
+        <ul>
+          <li><a href="#greeting-friends">友達に会ったときの挨拶</a></li>
+          <li><a href="#greeting-formal">丁寧な挨拶</a></li>
+          <li><a href="#greeting-bye">別れるときの挨拶</a></li>
+          <li><a href="#greeting-thanks">お礼を言う</a></li>
+        </ul>
+      </li>
+      <li><a href="#conversation">簡単な会話をしよう！</a>
+        <ul>
+          <li><a href="#conv-cafeteria">大学のカフェテリアで注文する</a></li>
+          <li><a href="#conv-classroom">授業の教室を聞く</a></li>
+          <li><a href="#conv-break">休み時間に他の学生と話す</a></li>
+        </ul>
+      </li>
+      <li><a href="#ordering">注文・依頼をしてみよう！</a></li>
+      <li><a href="#phrases">言えたらよかった表現・日本語フレーズのハンガリー語訳</a></li>
+      <li><a href="#pronunciation">発音</a></li>
+      <li><a href="#grammar">文法の基礎</a></li>
+      <li><a href="#situations">シチュエーション別重要フレーズ</a></li>
+      <li><a href="#wordlist">これだけは覚えよう「単語リスト」</a></li>
+    </ol>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 1: あいさつ -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="greeting">
+    <span class="num">1</span>ハンガリー語をよく使う場面
+  </h2>
+
+  <p>交換留学生が日常的に遭遇する場面を取り上げます。</p>
+
+  <h3 class="section-h2">１．挨拶をしよう！</h3>
+
+  <p>ハンガリー語には、友だちや家族に使う「<strong>tegezés</strong>」、（友達ではない）同い年の人やパートナーに使う「<strong>magázás</strong>」、職場で目上の人に使う「<strong>önözés</strong>」という３つの言葉遣いがあります。</p>
+  <p>でも、ここでは、そのような難しい話は置いておいて、皆さんが誰にどうやってあいさつをすればいいか説明します。</p>
+
+  <h4 class="section-h3" id="greeting-friends">友達に会ったときの挨拶</h4>
+  <p>友だちに会ったときは、時間帯に関係なく、「Szia!（相手が１人の場合）」や「Sziasztok!（相手が複数の場合）」を使います。若い人の間では、「Hello!」「Csá!」も使われます。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>日本語読み</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="jp-cell">やあ！ハロー！</td>
+        <td class="hu-cell">Hello! / Szia!</td>
+        <td class="yomi-cell">ヘロー！ / スィア！</td>
+        <td><button class="speak-btn" onclick="speak('Hello! Szia!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">よう！おす！</td>
+        <td class="hu-cell">Csá! / Cső!</td>
+        <td class="yomi-cell">チャー！ / チョー！</td>
+        <td><button class="speak-btn" onclick="speak('Csá! Cső!', this)">🔊</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note-small">日本語のように、性別によってあいさつの仕方が違うということはありません。でも、「Cső!」というあいさつは、男性が使うことが多いです。（もちろん、女性が使ってはいけないというわけではありません。）日本語だと「おす！」に近いと思います。</p>
+
+  <h4 class="section-h3" id="greeting-formal">丁寧な挨拶</h4>
+  <p>日本語と同じように、丁寧なあいさつは、時間帯によって変わります。「Jó reggelt!」は、朝のあいさつです。朝、初めて会ったときに使います。朝9時か10時ごろまで使いますが、それは厳しいルールではなく、習慣によるものです。「Jó reggelt kívánok!」という形もあります。これは、もっと丁寧な形です。「kívánok」を言わなくても、失礼にはなりません。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>日本語読み</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="jp-cell">おはようございます！</td>
+        <td class="hu-cell">Jó reggelt kívánok!</td>
+        <td class="yomi-cell">ヨー レッゲルト キヴァーノク！</td>
+        <td><button class="speak-btn" onclick="speak('Jó reggelt kívánok!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">おはよう！</td>
+        <td class="hu-cell">Jó reggelt!</td>
+        <td class="yomi-cell">ヨー レッゲルト！</td>
+        <td><button class="speak-btn" onclick="speak('Jó reggelt!', this)">🔊</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>「Jó napot!」は、午前の遅い時間から暗くなるまで使います。「Jó napot kívánok!」という、もっと丁寧な形もあります。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>日本語読み</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="jp-cell">こんにちは！</td>
+        <td class="hu-cell">Jó napot (kívánok)!</td>
+        <td class="yomi-cell">ヨー ナポト（キヴァーノク）！</td>
+        <td><button class="speak-btn" onclick="speak('Jó napot kívánok!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">こんばんは！</td>
+        <td class="hu-cell">Jó estét (kívánok)!</td>
+        <td class="yomi-cell">ヨー エシュテート（キヴァーノク）！</td>
+        <td><button class="speak-btn" onclick="speak('Jó estét kívánok!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">おやすみなさい！</td>
+        <td class="hu-cell">Jó éjszakát (kívánok)!</td>
+        <td class="yomi-cell">ヨー エーイサカート（キヴァーノク）！</td>
+        <td><button class="speak-btn" onclick="speak('Jó éjszakát kívánok!', this)">🔊</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note-small">「Jó estét!」は暗くなってから使います。ハンガリー語では「夕方」と「夜」を分けて考えます。夜遅い時間帯から深夜にかけては「Jó éjszakát!」を使いますが、これは会ったときには使わず、<strong>別れるときにだけ</strong>使います。夜遅くまで友だちと話したあとや、夜、電話の会話を終えるときに使います。日本語と同じように、寝る前のあいさつとしても使います。</p>
+
+  <h4 class="section-h3" id="greeting-bye">別れるときの挨拶</h4>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>日本語読み</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="jp-cell">さようなら</td>
+        <td class="hu-cell">Viszontlátásra! / Viszlát!</td>
+        <td class="yomi-cell">ヴィソントラータシュラ！ / ヴィスラート！</td>
+        <td><button class="speak-btn" onclick="speak('Viszontlátásra! Viszlát!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">バイバイ／じゃあね</td>
+        <td class="hu-cell">Szia! / Sziasztok!</td>
+        <td class="yomi-cell">スィア！ / スィアストク！</td>
+        <td><button class="speak-btn" onclick="speak('Szia! Sziasztok!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">またね！</td>
+        <td class="hu-cell">Később találkozunk!</td>
+        <td class="yomi-cell">ケーショーブ タラールコズンク！</td>
+        <td><button class="speak-btn" onclick="speak('Később találkozunk!', this)">🔊</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note-small">友達に「バイバイ」と言いたいときは、「やあ！ハロー！」と同じ「Szia! / Sziasztok!」が使えます。丁寧に言いたいときは「Viszontlátásra!」や、その短い形の「Viszlát!」を使ってください。もっと丁寧に言いたい場合は「Mihamarabbi/mielőbbi viszontlátásra!」ですが、これはサービスの場で聞くことがある表現です。日常会話ではあまり使わないので安心してください。</p>
+
+  <h4 class="section-h3" id="greeting-thanks">お礼を言う</h4>
+  <p>友達にお礼を言うときは「Köszi!」や「Köszönöm!」です。知らない人などに丁寧にお礼を言いたいときは、「Köszönöm szépen!」や「Nagyon szépen köszönöm!」を使ってください。どれを使うかは、相手をどれくらい知っているかで決まります。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>日本語読み</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="jp-cell">どうもありがとうございます</td>
+        <td class="hu-cell">Nagyon szépen köszönöm!</td>
+        <td class="yomi-cell">ナジョン セーペン クゥスヌム！</td>
+        <td><button class="speak-btn" onclick="speak('Nagyon szépen köszönöm!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">ありがとうございます</td>
+        <td class="hu-cell">Köszönöm szépen!</td>
+        <td class="yomi-cell">クゥスヌム セーペン！</td>
+        <td><button class="speak-btn" onclick="speak('Köszönöm szépen!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">ありがとう</td>
+        <td class="hu-cell">Köszönöm!</td>
+        <td class="yomi-cell">クゥスヌム！</td>
+        <td><button class="speak-btn" onclick="speak('Köszönöm!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="jp-cell">どうも／あざす／サンキュー</td>
+        <td class="hu-cell">Köszi!</td>
+        <td class="yomi-cell">クシ！</td>
+        <td><button class="speak-btn" onclick="speak('Köszi!', this)">🔊</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 2: 会話 -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="conversation">
+    <span class="num">2</span>簡単な会話をしよう！
+  </h2>
+  <p>以下に交換留学生が日常の場面でよく耳にする会話例を紹介します。掲載されている翻訳は直訳したものではありません。自然な会話の流れを作るために、意訳した日本語の例文を使用しています。</p>
+
+  <h3 class="section-h2" id="conv-cafeteria">大学のカフェテリアで注文する</h3>
+  <div class="dialogue-wrap">
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">店員</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">いらっしゃいませ。ご注文はどうされますか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Mit adhatok?', this)">🔊</button> Mit adhatok?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">こっちのサンドイッチをお願いします。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Jó napot! Azt a szendvicset szeretném!', this)">🔊</button> Jó napot! Azt a szendvicset szeretném!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">店員</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">かしこまりました。他に何かいかがですか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Bármi mást adhatok?', this)">🔊</button> Bármi mást (adhatok)?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">はい、コーラもお願いします。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Igen, egy kólát is szeretnék!', this)">🔊</button> Igen, egy kólát is szeretnék!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">店員</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">はい、サンドとコーラですね。他に何かいかがですか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Egy szendvics és egy kóla. Bármi más?', this)">🔊</button> Egy szendvics és egy kóla. Bármi más?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">大丈夫です。以上でお願いします。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Nem, köszönöm!', this)">🔊</button> Nem, köszönöm!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">店員</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">かしこまりました。全部で1200フォリントになります。お支払方法は？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('1200 Forint lesz. Készpénz vagy kártya?', this)">🔊</button> 1200 Forint lesz. Készpénz vagy kártya?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">現金 / カード</div>
+        <div class="dialogue-hu">
+          <button class="speak-btn" onclick="speak('Készpénz', this)">🔊</button> Készpénz &nbsp;/&nbsp;
+          <button class="speak-btn" onclick="speak('Kártya', this)">🔊</button> Kártya
+        </div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">店員</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">ありがとうございます。少々お待ちください。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Köszönöm, kérem várjon egy kicsit!', this)">🔊</button> Köszönöm, kérem várjon egy kicsit!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">店員</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">お待たせしました。どうぞ。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Köszönöm, meg is vagyunk.', this)">🔊</button> Köszönöm, meg is vagyunk.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">ありがとうございます。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Köszönöm!', this)">🔊</button> Köszönöm!</div>
+      </div>
+    </div>
+  </div>
+  <p class="note-small">「少々お待ちください」の「少々」は、よく「pillanat/egy pillanat」だけになります。意味は同じです。</p>
+
+  <h3 class="section-h2" id="conv-classroom">知らない学生に、授業がどの教室で行われるか聞く</h3>
+  <div class="dialogue-wrap">
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">すみません、この授業ってどの教室でありますか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Elnézést, melyik teremben lesz az óra?', this)">🔊</button> Elnézést/Bocsánat, melyik teremben lesz az óra?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">この授業は314号室ですよ。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Ez az óra a 314-es teremben lesz.', this)">🔊</button> Ez az óra a 314-es teremben lesz.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">314号室ですね。どこにありますか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('314? Az merre van?', this)">🔊</button> 314? Az merre van?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">３階です。３階に上がったら、右に曲がって、それから左に曲がってください。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('A harmadik emeleten. A harmadik emeleten fordulj jobbra, utána pedig rögtön balra.', this)">🔊</button> A harmadik emeleten. A harmadik emeleten fordulj jobbra, utána pedig rögtön balra.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">そのあと、右側の２つ目のドアが314号室です。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Jobb oldalt a második ajtó a 314-es terem.', this)">🔊</button> Jobb oldalt a második ajtó a 314-es terem.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">なるほど！ありがとうございます、助かりました。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Oh! Nagyon köszönöm!', this)">🔊</button> Oh! Nagyon köszönöm!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">いえいえ。気をつけて行ってください。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Szívesen! Sok sikert!', this)">🔊</button> Szívesen! Sok sikert!</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section-h2" id="conv-break">休み時間に（知り合いの）他の学生と話す</h3>
+  <div class="dialogue-wrap">
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">すみません、ここ、空いていますか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Elnézést, szabad ez a szék?', this)">🔊</button> Elnézést, szabad ez a szék?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">あ、はい。空いてますよ。どうぞ。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Persze! Foglalj helyet.', this)">🔊</button> Persze! Foglalj helyet.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">ありがとう。ところで、何の話をしていたんですか？</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Köszönöm! Amúgy miről beszélgettek?', this)">🔊</button> Köszönöm! (Amúgy) miről beszélgettek?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Cさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">ああ、誠二先生の授業について話してたんです。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Épp Seiji tanár úr órájáról beszéltünk.', this)">🔊</button> Épp Seiji tanár úr órájáról beszéltünk.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">誠二先生の授業って、本当に面白いですね。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Ugye, hogy Seiji tanár úr órái nagyon érdekesek?', this)">🔊</button> Ugye, hogy Seiji tanár úr órái nagyon érdekesek?</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">うん、私もそう思いました。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Igen, én is így gondolom!', this)">🔊</button> Igen, én is így gondolom!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Cさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">残念ながら、そろそろ次の授業が始まるので行かなきゃ。</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Nekem sajnos mennem kell, hamarosan kezdődik a következő órám.', this)">🔊</button> Nekem sajnos mennem kell, hamarosan kezdődik a következő órám.</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Bさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">そうなんだ。じゃあ、またね！</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Oh, tényleg? Akkor majd legközelebb!', this)">🔊</button> Oh, tényleg? Akkor majd legközelebb (folytatjuk)!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag shop">Cさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">頑張ってね！</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Sok sikert!', this)">🔊</button> Sok sikert!</div>
+      </div>
+    </div>
+    <div class="dialogue-line">
+      <span class="speaker-tag">Aさん</span>
+      <div class="dialogue-body">
+        <div class="dialogue-jp">ありがとう。また今度！</div>
+        <div class="dialogue-hu"><button class="speak-btn" onclick="speak('Köszönöm! Majd legközelebb!', this)">🔊</button> Köszönöm! Majd legközelebb!</div>
+      </div>
+    </div>
+  </div>
+  <p class="note-small">ハンガリー語では、日本語の「ね」はよく「ugye?」と表されますが、「nem?」も使われます。</p>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 3: 注文・依頼 -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="ordering">
+    <span class="num">3</span>注文・依頼をしてみよう！
+  </h2>
+  <p>何かを頼んだり、お店で注文するときは、まず挨拶をしたり、（日本語のように）「Elnézést（すみません）」と言います。友達に頼む場合では、挨拶はあまり必要ないです。</p>
+
+  <h3 class="section-h2">寮で受付の人に何かを依頼をするとき</h3>
+  <p>寮では、きっと「Elkérhetem?（借りてもいいですか）」「Kérhetek（貰ってもいいですか？）」を使うことが多くなると思います。</p>
+  <div class="grammar-box">
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Elkérhetem a mosógép kulcsát?', this)">🔊</button>
+      Elkérhetem a mosógép kulcsát?
+      <span class="ex-jp">洗濯機の鍵を借りてもいいですか？</span>
+    </div>
+    <div class="trans">（「mosógép」は洗濯機、「kulcs」は鍵です。）</div>
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Elkérhetem a szobám kulcsát?', this)">🔊</button>
+      Elkérhetem a szobám kulcsát?
+      <span class="ex-jp">部屋の鍵を貸していただけませんか？</span>
+    </div>
+    <div class="trans">（「szoba」は部屋です。）</div>
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Kérhetek tiszta lepedőt?', this)">🔊</button>
+      Kérhetek tiszta/új lepedőt?
+      <span class="ex-jp">新しいシーツを貰っていいですか？</span>
+    </div>
+    <div class="trans">（「tiszta」「új」は新しいです。）</div>
+  </div>
+
+  <h3 class="section-h2">カフェで注文をするとき</h3>
+  <p>注文するときは「Szeretnék kérni（～欲しいです）」を使います。</p>
+  <div class="grammar-box">
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Szeretnék kérni egy lattét.', this)">🔊</button>
+      Szeretnék kérni egy (商品名).
+      <span class="ex-jp">「商品名」をお願いします。</span>
+    </div>
+    <div class="trans">（「egy」は一つという意味です）</div>
+    <p>語順が変わっても大丈夫です。</p>
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Egy lattét szeretnék.', this)">🔊</button>
+      Egy (商品名) szeretnék.
+      <span class="ex-jp">…が欲しい。</span>
+    </div>
+    <p style="margin-top:10px;">商品名のあとに「<strong>t</strong>」をつけます。「t」は日本語の助詞「を」と同じ働きをします。</p>
+  </div>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('egy lattét', this)">🔊</button> lattét</div><div class="v-jp">カフェラテを</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('egy kávét', this)">🔊</button> kávét</div><div class="v-jp">コーヒーを</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('egy teát', this)">🔊</button> teát</div><div class="v-jp">お茶を</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('szelet csokitortát', this)">🔊</button> szelet csokitortát</div><div class="v-jp">チョコレートケーキ一切れを</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('egy szendvicset', this)">🔊</button> szendvicset</div><div class="v-jp">サンドイッチを</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('pohár vizet', this)">🔊</button> pohár vizet</div><div class="v-jp">水一杯を</div></div>
+  </div>
+
+  <h3 class="section-h2">パン屋で注文をするとき</h3>
+  <div class="grammar-box">
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Szeretnék kérni két darab kenyeret.', this)">🔊</button>
+      Szeretnék kérni ①、②、③.
+    </div>
+    <ul>
+      <li>① 数字：<button class="speak-btn" onclick="speak('egy, két, tíz, húsz', this)" style="margin:0 4px">🔊</button> <strong>egy, két, tíz, húsz</strong>（一、二、十、二十）</li>
+      <li>② 単位：<button class="speak-btn" onclick="speak('darab', this)" style="margin:0 4px">🔊</button> <strong>darab</strong>（個、つ）／ <button class="speak-btn" onclick="speak('deka gramm', this)" style="margin:0 4px">🔊</button> <strong>deka(gramm)</strong>（デカグラム）／ <button class="speak-btn" onclick="speak('szelet', this)" style="margin:0 4px">🔊</button> <strong>szelet</strong>（切れ）</li>
+      <li>③ パンやお菓子の名前（最後にtをつけてください。）</li>
+    </ul>
+    <p style="margin-top:8px;font-size:.82rem;">日本ではデカグラムという単位は使わないと思いますが、ハンガリーではよく使います。１デカグラムは10グラムです。</p>
+  </div>
+
+  <h3 class="section-h2">スーパーで商品が見つからないとき</h3>
+  <div class="grammar-box">
+    <div class="example">
+      <button class="speak-btn" onclick="speak('Hol találom a rizst?', this)">🔊</button>
+      Hol találom a/az (商品名+t)?
+      <span class="ex-jp">「商品名」はどこですか？</span>
+    </div>
+    <div class="trans">（「Hol」は「どこ」、「találom」は「見つける」です）</div>
+  </div>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('a rizst', this)">🔊</button> a rizst</div><div class="v-jp">米を</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('a szója szószt', this)">🔊</button> a szója szószt</div><div class="v-jp">醬油を</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('az édességeket', this)">🔊</button> az édességeket</div><div class="v-jp">お菓子を</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('az üdítőket', this)">🔊</button> az üdítőket</div><div class="v-jp">飲み物を</div></div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 4: 役立つ表現 -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="phrases">
+    <span class="num">4</span>これまで留学した日本人学生が「言えたらよかった」表現
+  </h2>
+
+  <p>過去にカーロリ大学に留学した日本人学生が「言えたらよかったな」と思った表現を紹介します。いずれも、日常的でよく使われます。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="jp-cell">乾杯！</td><td class="hu-cell">Egészségedre!</td><td><button class="speak-btn" onclick="speak('Egészségedre!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">問題ない</td><td class="hu-cell">Semmi baj!</td><td><button class="speak-btn" onclick="speak('Semmi baj!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">おめでとう！</td><td class="hu-cell">Gratulálok!</td><td><button class="speak-btn" onclick="speak('Gratulálok!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">お誕生日おめでとう！</td><td class="hu-cell">Boldog szülinapot!</td><td><button class="speak-btn" onclick="speak('Boldog szülinapot!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">もちろん</td><td class="hu-cell">Persze</td><td><button class="speak-btn" onclick="speak('Persze', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">ちょうどいい</td><td class="hu-cell">Pont jó</td><td><button class="speak-btn" onclick="speak('Pont jó', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">ありがとう / ありがとうございます</td><td class="hu-cell">Köszönöm / Köszönöm szépen</td><td><button class="speak-btn" onclick="speak('Köszönöm. Köszönöm szépen.', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">こちらこそ／どういたしまして</td><td class="hu-cell">Szívesen!</td><td><button class="speak-btn" onclick="speak('Szívesen!', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+  <p class="note-small">日本語では「どういたしまして」はフォーマルな場面以外ではほとんど使われませんが、「szívesen」は「köszönöm」への返答として広く使われています。</p>
+
+  <h3 class="section-h2">これを知っていれば超上級！</h3>
+  <p>ハンガリー語には「しまった！」を表す表現が数多くあります。中には卑猥な表現もあるのですが、ここでは、やや古風な表現を紹介します。これらは、めったに使われないですが、もしみなさんがこれを使ったら、ハンガリー人は大爆笑間違いなしです。これらの表現はすべて「しまった！」「だめだ〜」を意味しますが、直訳も載せてみます。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>直訳（日本語）</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="hu-cell">Azt a leborult szivarvégit!</td>
+        <td class="jp-cell">落ちた葉巻の端！</td>
+        <td><button class="speak-btn" onclick="speak('Azt a leborult szivarvégit!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="hu-cell">Hogy a kutya meg a macska rúgja meg!</td>
+        <td class="jp-cell">犬も猫もこれを蹴れ！</td>
+        <td><button class="speak-btn" onclick="speak('Hogy a kutya meg a macska rúgja meg!', this)">🔊</button></td>
+      </tr>
+      <tr>
+        <td class="hu-cell">A fűzfán fütyülő rézangyalát!</td>
+        <td class="jp-cell">柳の木の上で口笛を吹く真鍮の天使</td>
+        <td><button class="speak-btn" onclick="speak('A fűzfán fütyülő rézangyalát!', this)">🔊</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note-small">この最後の表現は翻訳不可能です。</p>
+
+  <h3 class="section-h2">日本語でよく使われるフレーズをハンガリー語でどうやって言う？</h3>
+  <p>日本語には、他の言語に翻訳するのが難しいフレーズや表現があります。ここでは、翻訳が難しいけれど、日本ではよく使われる表現をハンガリー語でどう言えばいいか、文脈に沿った説明とともに紹介します。</p>
+
+  <h4 class="section-h3">よろしくお願いします</h4>
+  <p>「よろしくお願いします」という表現は様々な文脈で使われますが、直訳と意味が一致しないため、翻訳が難しい場合がよくあります。</p>
+  <p>初めて会う人に対しては、「örvendek」または「részemről a szerencse」という表現が使えます。「örvendek」は「初めまして」と翻訳できますが、実際には「よろしくお願いします。」の代わりに使ったりします。「részemről a szerencse」は直訳すると「私にとってはラッキー」という意味で、日本語だと「こちらこそ」に近い意味です。</p>
+  <p>友人同士の間では、「じゃ、よろしく」という表現は「üdv」と訳すことができます。これは「üdvözletem（何か頼んだときの「よろしくお願いします」）の短縮形です。別れるときの挨拶の表現としても使われます。</p>
+  <p>手紙やメールを書くとき、日本語では最後に「よろしくお願いします」と書きますが、ハンガリー語では「Tisztelettel」と「Üdvözlettel」を使います。どちらも使えますが、前者の方がより丁寧です。</p>
+
+  <h4 class="section-h3">お疲れ様です</h4>
+  <p>「お疲れ様です」も日本語でよく使われる表現ですが、他の言語に翻訳するのが難しいです。グループ活動の終わりには、通常、別れを意味する「Viszlát」または「Viszontlátásra」と言えば十分です。あるいは「Köszönöm, további szép napot!」とも言えます。これを直訳すると「ありがとう、いい日をお過ごしください」となりますが、「お疲れ様です」の意味で使用されます。</p>
+  <p>グループプロジェクトで協力した後など、より形式的な文脈での「お疲れ様でした」はハンガリー語で「köszönöm az együttműködést（協力をありがとう）」または「köszönöm a közös munkát（共同作業をありがとう）」と表現できます。</p>
+
+  <h4 class="section-h3">失礼します</h4>
+  <p>「すみません」と「失礼します」の意味は同じではありませんが、ハンガリー語ではどちらも「Elnézést」と表現します。</p>
+
+  <h4 class="section-h3">ごめんなさい</h4>
+  <p>「失礼します」や「すみません」と同じように表現すれば大丈夫です。文脈によっては、より深く後悔していることを示すために「nagyon sajnálom（「nagyon」はとても、「sajnálom」は「私は残念に思います」）」、あるいはより丁寧な「bocsánat（許し）」や「bocsánatot kérek（許しをお願いします）」と表現することもあります。</p>
+
+  <h4 class="section-h3">いただきます</h4>
+  <p>ハンガリー人は食事の前に「Jó étvágyat (kívánok)!」と言います。これは直訳すると「よい食欲を！」となりますが、実際には「いただきます」と全く同じ意味で使います。ただ、日本語の「いただきます」は他の人には言いませんが、「Jó étvágyat (kívánok)!」は、誰かが食べ始めるときの声掛けにも使えます。</p>
+
+  <h4 class="section-h3">ごちそうさまでした</h4>
+  <p>ハンガリー人には、食事を終える時の特別な表現はありません。「köszönöm az ételt（食事をありがとう）」という表現は「ごちそうさまでした」と似た意味になりますが、現在ではほとんど使われません。代わりに「とても美味しかった」という意味の「nagyon finom volt（「nagyon」は「とても」「finom」は「おいしい」「volt」は英語の"was"）」と言ってもいいです。</p>
+
+  <h4 class="section-h3">やばい・かっこい・えぐい</h4>
+  <p>日本語と同じように、ハンガリー語にも「やばい」や「カッコいい」を表す表現がいくつかあります。「menő」「király」「baró」「klassz」などですが、さらにくだけた表現もあるので、ぜひハンガリー人学生に聞いてみてください。</p>
+
+  <p><strong>まとめリスト</strong></p>
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="jp-cell">よろしくお願いします（初対面）</td><td class="hu-cell">Örvendek / Részemről a szerencse.</td><td><button class="speak-btn" onclick="speak('Örvendek. Részemről a szerencse.', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">よろしく（友達）</td><td class="hu-cell">Üdv!</td><td><button class="speak-btn" onclick="speak('Üdv!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">おつかれ／お疲れ様です</td><td class="hu-cell">Viszlát / Köszönöm, további szép napot!</td><td><button class="speak-btn" onclick="speak('Viszlát! Köszönöm, további szép napot!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">失礼します</td><td class="hu-cell">Elnézést / Elnézést a zavarásért!</td><td><button class="speak-btn" onclick="speak('Elnézést! Elnézést a zavarásért!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">ごめんなさい</td><td class="hu-cell">Nagyon sajnálom / Bocsánat</td><td><button class="speak-btn" onclick="speak('Nagyon sajnálom. Bocsánat.', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">いただきます</td><td class="hu-cell">Jó étvágyat (kívánok)!</td><td><button class="speak-btn" onclick="speak('Jó étvágyat kívánok!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">ごちそうさまでした</td><td class="hu-cell">Nagyon finom volt!</td><td><button class="speak-btn" onclick="speak('Nagyon finom volt!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">やばい</td><td class="hu-cell">Menő / Klassz</td><td><button class="speak-btn" onclick="speak('Menő! Klassz!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">かっこいい</td><td class="hu-cell">Baró / Király</td><td><button class="speak-btn" onclick="speak('Baró! Király!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">楽しみだ</td><td class="hu-cell">Alig várom!</td><td><button class="speak-btn" onclick="speak('Alig várom!', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 5: 発音 -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="pronunciation">
+    <span class="num">5</span>発音
+  </h2>
+
+  <p>ここでは、母音の発音・リズム（拍）・アクセントなどについて説明します。「聞いてまねする」練習方法を意識して作成しました。</p>
+
+  <h3 class="section-h2">はじめに</h3>
+  <p>ハンガリー語の発音は、文字と音の関係がはっきりしています。まずは、自然な発音を目指して、基本的な練習をしましょう。最初はゆっくりで大丈夫です。伝わる発音を目標にしましょう。</p>
+
+  <h3 class="section-h2">母音と音の長さ</h3>
+  <p>ハンガリー語では、<strong>母音をはっきり発音すること</strong>が大切です。</p>
+  <table class="pron-table">
+    <thead><tr><th>短い音（ハンガリー語）</th><th>長い音（ハンガリー語）</th><th>短い音（日本語）</th><th>長い音（日本語）</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="big-char">a</td><td class="big-char">á</td><td>ア</td><td>—</td><td><button class="speak-btn" onclick="speak('a, á', this)">🔊</button></td></tr>
+      <tr><td class="big-char">i</td><td class="big-char">í</td><td>イ</td><td>イー</td><td><button class="speak-btn" onclick="speak('i, í', this)">🔊</button></td></tr>
+      <tr><td class="big-char">u</td><td class="big-char">ú</td><td>ウ</td><td>ウー</td><td><button class="speak-btn" onclick="speak('u, ú', this)">🔊</button></td></tr>
+      <tr><td class="big-char">e</td><td class="big-char">é</td><td>エ</td><td>—</td><td><button class="speak-btn" onclick="speak('e, é', this)">🔊</button></td></tr>
+      <tr><td class="big-char">o</td><td class="big-char">ó</td><td>オ</td><td>オー</td><td><button class="speak-btn" onclick="speak('o, ó', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="section-h3">練習（母音）</h4>
+  <p>Hallgasd meg és mondd utánam（聞いて、私のあとに言ってください）:</p>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('a, á', this)">🔊</button> a - á</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('i, í', this)">🔊</button> i - í</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('u, ú', this)">🔊</button> u - ú</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('e, é', this)">🔊</button> e - é</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('o, ó', this)">🔊</button> o - ó</div></div>
+  </div>
+  <p>長い音は、少し長く発音します。はっきり言いましょう。</p>
+
+  <h3 class="section-h2">リズム（拍）</h3>
+  <p>ハンガリー語は、一つ一つの音を大切にするリズムです。音を省略せず、順番に発音します。</p>
+
+  <h4 class="section-h3">練習</h4>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('kulcs', this)">🔊</button> ku-lcs → kulcs</div><div class="v-jp">鍵</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('kérsz', this)">🔊</button> kér-sz → kérsz</div><div class="v-jp">（あなたは）欲しい</div></div>
+  </div>
+  <p>最初はゆっくりで大丈夫です。</p>
+
+  <h3 class="section-h2">アクセント（強く読むところ）</h3>
+  <p>ハンガリー語では、アクセントは<strong>いつも言葉の最初の音節</strong>にあります。</p>
+
+  <h4 class="section-h3">練習（アクセント）</h4>
+  <p>最初の音節を強く読みます：<strong>KÖ</strong>-szö-nöm、<strong>KUL</strong>-cs</p>
+  <p>アクセントを意識して発音してみましょう。</p>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('Köszönöm', this)">🔊</button> <strong>Kö</strong>szönöm</div><div class="v-jp">ありがとう</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('Segítsen', this)">🔊</button> <strong>Se</strong>gítsen</div><div class="v-jp">手伝ってください</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('kulcs', this)">🔊</button> <strong>kulcs</strong></div><div class="v-jp">鍵</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('Magyarország', this)">🔊</button> <strong>Ma</strong>gyarország</div><div class="v-jp">ハンガリー</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('villamos', this)">🔊</button> <strong>Vil</strong>lamos</div><div class="v-jp">市電</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('Bocsánat', this)">🔊</button> <strong>Bo</strong>csánat</div><div class="v-jp">ごめんなさい</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('Egészségedre', this)">🔊</button> <strong>Eg</strong>észségedre</div><div class="v-jp">乾杯・お大事に</div></div>
+  </div>
+  <p class="note-small">「Egészségedre」は乾杯のときに言います。だれかがくしゃみをしたときにも言えます。</p>
+
+  <h3 class="section-h2">日本人に注意してほしい音</h3>
+
+  <h4 class="section-h3">「R」の音</h4>
+  <p>ハンガリー語の「R」は、日本語よりはっきりした音です。</p>
+  <p>Ismételd utánam（私の後に繰り返してください）:</p>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('ra, ri, ru, re, ro', this)">🔊</button> ra-ri-ru-re-ro</div></div>
+  </div>
+  <p>Szavakban（言葉で）:</p>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('rádió', this)">🔊</button> rádió</div><div class="v-yomi">ラーディオー</div><div class="v-jp">ラジオ</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('barát', this)">🔊</button> barát</div><div class="v-yomi">バラート</div><div class="v-jp">友達</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('rizs', this)">🔊</button> rizs</div><div class="v-yomi">リジュ</div><div class="v-jp">米</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('ruha', this)">🔊</button> ruha</div><div class="v-yomi">ルハ</div><div class="v-jp">服</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('recepció', this)">🔊</button> recepció</div><div class="v-yomi">レツェプツィオー</div><div class="v-jp">受付</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('rokon', this)">🔊</button> rokon</div><div class="v-yomi">ロコン</div><div class="v-jp">縁故</div></div>
+  </div>
+
+  <h3 class="section-h2">ミニ会話練習</h3>
+  <p>Hallgasd meg és mondd utánam（聞いて、私のあとに言ってください）:</p>
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語の意味</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="hu-cell">Köszönöm szépen.</td><td class="jp-cell">ありがとうございます。</td><td><button class="speak-btn" onclick="speak('Köszönöm szépen.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Hogy vagy?</td><td class="jp-cell">元気ですか。</td><td><button class="speak-btn" onclick="speak('Hogy vagy?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Segítsen, kérem.</td><td class="jp-cell">助けてください。</td><td><button class="speak-btn" onclick="speak('Segítsen, kérem.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Hol van a...?</td><td class="jp-cell">…はどこですか。</td><td><button class="speak-btn" onclick="speak('Hol van a?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Mennyibe kerül?</td><td class="jp-cell">いくらですか。</td><td><button class="speak-btn" onclick="speak('Mennyibe kerül?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Beszél angolul?</td><td class="jp-cell">英語を話せますか。</td><td><button class="speak-btn" onclick="speak('Beszél angolul?', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+  <p>どうでしょうか。「最初の音を強く」「母音をはっきり」を意識すると、ハンガリー人に伝わりやすくなります。</p>
+
+  <h3 class="section-h2">メッセージ</h3>
+  <p>最初は、発音は難しいと思います。でも、使えば少しずつ自然になります。間違えても問題ありません。話そうとすることがいちばん大切です。</p>
+  <p style="font-size:1.2rem; text-align:center; margin: 16px 0;">ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧</p>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 6: 文法 -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="grammar">
+    <span class="num">6</span>文法の基礎
+  </h2>
+
+  <p>ここでは、「これだけは覚えてほしい」文法の基礎について説明します。</p>
+  <p>世界の言語は主語（Subject：S）、動詞（Verb：V）、目的語（Object：O）、補語（Complement：C）をどう並べるかで分類できます。一番一般的なタイプはSOVやSVOの言語です。日本語はSOV、英語はSVOです。</p>
+  <p>ハンガリー語の語順は、他の言語に比較するとかなり自由度が高いです。例えば、英語では、語順が変わると文の意味が変わります。でも、ハンガリー語の場合、語順ではなく、日本語の助詞に近い接尾辞で意味を表します。語順を変えても、意味は同じですが、どこに焦点を置くかが変わります。</p>
+
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('A kutya megharapja az embert.', this)">🔊</button> A kutya megharapja az embert.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Az embert megharapja a kutya.', this)">🔊</button> Az embert megharapja a kutya.</div>
+    <div class="trans">（「kutya」は「犬」、「megharapja」は「かみつく」、「ember」は「人」）<br>この２つの文は同じ意味で「犬は人にかみつきます。」です。主題は同じですが、文の焦点は違います。上の文は基本的な語順で、特別な焦点がありません。下の文は動詞の前の ember（人）に焦点があたっています。（日本語だと「人に犬がかみついた」が近いです。）</div>
+  </div>
+
+  <h3 class="section-h2">基本的な語順</h3>
+  <p>特別な焦点がない場合、ハンガリー語の基本的な語順はSOVです。</p>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('Péter könyvet olvas.', this)">🔊</button> Péter könyvet olvas.</div>
+    <div class="trans">ペーテルさんは本を読んでいます。（「könyv」は「本」、「olvas」は「読む」）</div>
+    <p>ハンガリー語は動詞の接尾辞で、誰がやっているのかがわかります。そのため、基本的な文の場合、通常、主語を省きます。</p>
+    <div class="example"><button class="speak-btn" onclick="speak('Olvasok.', this)">🔊</button> Olvasok. <span class="ex-jp">（私は）読んでいます。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Olvasol.', this)">🔊</button> Olvasol. <span class="ex-jp">（あなたは）読んでいます。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Eszünk.', this)">🔊</button> Eszünk. <span class="ex-jp">（私たちは）食べています。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Esztek.', this)">🔊</button> Esztek. <span class="ex-jp">（あなたたちは）食べています。</span></div>
+    <p style="margin-top:10px;">もし主語がある場合には、焦点が主語にあたります。</p>
+    <div class="example"><button class="speak-btn" onclick="speak('Én olvasok.', this)">🔊</button> Én olvasok. <span class="ex-jp">（私が読んでいます。）</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Te olvasol.', this)">🔊</button> Te olvasol. <span class="ex-jp">（あなたが読んでいます。）</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Mi eszünk.', this)">🔊</button> Mi eszünk. <span class="ex-jp">（私たちが食べています。）</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Ti esztek.', this)">🔊</button> Ti esztek. <span class="ex-jp">（あなたたちが食べています。）</span></div>
+  </div>
+
+  <h3 class="section-h2">焦点</h3>
+  <p>焦点は、話し手が一番伝えたい部分を示します。<strong>焦点は（動詞）の前に置きます。</strong>動詞の語順は自由です。</p>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('Péter tegnap könyvet olvasott.', this)">🔊</button> Péter tegnap könyvet olvasott.</div>
+    <div class="trans">基本的なSOV語順です。焦点はありません。（ペーテルさんは、昨日、本を読みました。）</div>
+
+    <span class="focus-label">焦点: 昨日</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter tegnap olvasott könyvet.', this)">🔊</button> Péter <u>tegnap olvasott</u> könyvet.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Tegnap olvasott könyvet Péter.', this)">🔊</button> <u>Tegnap olvasott</u> könyvet Péter.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Könyvet tegnap olvasott Péter.', this)">🔊</button> Könyvet <u>tegnap olvasott</u> Péter.</div>
+
+    <span class="focus-label">焦点: 本（を）</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter könyvet olvasott tegnap.', this)">🔊</button> Péter <u>könyvet olvasott</u> tegnap.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Könyvet olvasott tegnap Péter.', this)">🔊</button> <u>Könyvet olvasott</u> tegnap Péter.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Könyvet olvasott Péter tegnap.', this)">🔊</button> <u>Könyvet olvasott</u> Péter tegnap.</div>
+
+    <span class="focus-label">焦点: ペーテルさん（は）</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter olvasott könyvet tegnap.', this)">🔊</button> <u>Péter olvasott</u> könyvet tegnap.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Tegnap Péter olvasott könyvet.', this)">🔊</button> Tegnap <u>Péter olvasott</u> könyvet.</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Könyvet tegnap Péter olvasott.', this)">🔊</button> Könyvet tegnap <u>Péter olvasott</u>.</div>
+  </div>
+
+  <h3 class="section-h2">否定</h3>
+  <p>ハンガリー語では、<strong>nem（ネム）</strong> で否定を表します。（命令文だと Ne です）一般的に、nem は動詞・述語の前に置きます。否定文の語順は、S、nem、V、O（、C）になります。</p>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('Péter nem olvasott könyvet tegnap.', this)">🔊</button> Péter nem olvasott könyvet tegnap.</div>
+    <div class="trans">昨日、ペーテルさんは本を読みませんでした。</div>
+    <p>動詞以外の言葉の前に nem を置くと、nem の前の言葉に焦点があたります。この場合、焦点があたった言葉の後に動詞が続きます。</p>
+    <div class="example"><button class="speak-btn" onclick="speak('Nem Péter olvasott tegnap könyvet.', this)">🔊</button> <u>Nem Péter</u> olvasott tegnap könyvet.</div>
+    <div class="trans">焦点：ペーテルさんではない、ペーテルさんと違う人</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter nem könyvet olvasott tegnap.', this)">🔊</button> Péter <u>nem könyvet</u> olvasott tegnap.</div>
+    <div class="trans">焦点：本ではない</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter nem tegnap olvasott könyvet.', this)">🔊</button> Péter <u>nem tegnap</u> olvasott könyvet.</div>
+    <div class="trans">焦点：昨日ではない</div>
+    <p style="margin-top:10px;">否定代名詞（例: senki-シェンキ：誰も、semmi-シェンミ：何も）を使った場合も、動詞の前に nem を置きます。まず否定代名詞、その後に nem+動詞を続けます。</p>
+    <div class="example"><button class="speak-btn" onclick="speak('Senki sem ment tegnap iskolába.', this)">🔊</button> <u>Senki sem ment</u> tegnap iskolába.</div>
+    <div class="trans">昨日、誰も学校へ行きませんでした。<br>（「ment」は「（彼/彼女は）行った」、「tegnap」は「昨日」、「iskolába」は「学校へ」）</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Semmit nem ettem ma.', this)">🔊</button> <u>Semmit nem ettem</u> ma.</div>
+    <div class="trans">（私は）今日、何も食べませんでした。<br>（「ettem」は「（私は）食べた」、「ma」は「今日」）</div>
+  </div>
+
+  <h3 class="section-h2">動詞の接頭辞</h3>
+  <p>ハンガリー語では、動詞の前に接頭辞を付けることが一般的です。接頭辞をつけることで、動詞の意味が変わります。動詞に接頭辞を付けるとき、基本的な語順はSOVではなく、SVOになります。</p>
+  <p>基本的な語順の場合は、接頭辞を動詞の前に付けて、一つの動詞として扱います。</p>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('Péter elolvasta a könyvet.', this)">🔊</button> Péter <em>elolvasta</em> a könyvet. <span class="ex-jp">ペーテルさんは本を読み終わりました。（SVO）</span></div>
+    <div class="trans">（olvas は読むという意味の動詞ですが、接頭辞 el を付けると「最後まで読み終わる」という意味になります。）</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter könyvet olvasott.', this)">🔊</button> Péter könyvet olvasott. <span class="ex-jp">ペーテルさんは本を読みました。（SOV）</span></div>
+    <p style="margin-top:10px;">しかし、ある言葉に焦点を当てたいとき、否定の nem を動詞の前に置くとき、そして疑問詞を置くときは、接頭辞は動詞から離れて、動詞の後に置きます。</p>
+
+    <span class="focus-label">焦点: 本（を）</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter a könyvet olvasta el.', this)">🔊</button> Péter a <u>könyvet <em>olvasta el</em></u>. <span class="ex-jp">その本を読み終わりました。</span></div>
+
+    <span class="focus-label">焦点: ペーテルさん（は）</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter olvasta el a könyvet.', this)">🔊</button> <u>Péter <em>olvasta el</em></u> a könyvet. <span class="ex-jp">ペーテルさんが読み終わりました。</span></div>
+
+    <span class="focus-label">否定</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter nem olvasta el a könyvet.', this)">🔊</button> Péter nem <em>olvasta el</em> a könyvet. <span class="ex-jp">読み終わりませんでした。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Nem Péter olvasta el a könyvet.', this)">🔊</button> <u>Nem Péter <em>olvasta el</em></u> a könyvet. <span class="ex-jp">ペーテルさんが読み終わりませんでした。</span></div>
+    <div class="trans">否定の場合も接頭辞は動詞の後に位置します。</div>
+
+    <span class="focus-label">疑問詞を置くとき（例：Mikor：ミコル＝いつ）</span>
+    <div class="example"><button class="speak-btn" onclick="speak('Mikor olvasta el Péter a könyvet?', this)">🔊</button> Mikor <em>olvasta el</em> Péter a könyvet? <span class="ex-jp">ペーテルさんはいつ本を読み終わりましたか。</span></div>
+  </div>
+
+  <h3 class="section-h2">疑問文</h3>
+  <p>疑問文の語順は、平叙文と同じです。Nem を置く否定疑問文のときも同じです。</p>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('Péter elolvasta a könyvet?', this)">🔊</button> Péter <em>elolvasta</em> a könyvet? <span class="ex-jp">ペーテルさんは本を読み終わりましたか。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Péter elolvasta a könyvet.', this)">🔊</button> Péter <em>elolvasta</em> a könyvet. <span class="ex-jp">ペーテルさんは本を読み終わりました。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Nem eszel?', this)">🔊</button> Nem eszel? <span class="ex-jp">（あなたは）食べていませんか／食べませんか。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Nem eszel.', this)">🔊</button> Nem eszel. <span class="ex-jp">（あなたは）食べていません／食べません。</span></div>
+    <p style="margin-top:10px;">疑問詞を置く場合、動詞は疑問詞の後に付きます。接頭辞は動詞と分かれて、動詞の後に移動します。否定の nem は、疑問詞と動詞の間に置きます。</p>
+    <div class="example"><button class="speak-btn" onclick="speak('Hol laksz?', this)">🔊</button> Hol laksz? <span class="ex-jp">（あなたは）どこに住んでいますか。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Mikor olvasod el a könyvet?', this)">🔊</button> Mikor <em>olvasod el</em> a könyvet? <span class="ex-jp">本をいつ読み終わりますか。</span></div>
+    <div class="example"><button class="speak-btn" onclick="speak('Miért nem jöttél tegnap iskolába?', this)">🔊</button> Miért nem jöttél tegnap iskolába? <span class="ex-jp">（あなたは）なぜ昨日学校に来ませんでしたか。</span></div>
+    <div class="trans">（「Miért」は「なぜ」）</div>
+  </div>
+
+  <div class="summary-box">
+    <p><strong>これまで紹介した語順まとめ：</strong></p>
+    <ul>
+      <li>基本的な語順：SOV</li>
+      <li>焦点：動詞の前に置く</li>
+      <li>否定の nem：動詞の前に置く（nem→焦点→動詞、否定代名詞→nem→動詞）</li>
+      <li>動詞に接頭辞を付ける場合：SOV → SVO</li>
+      <li>否定・焦点・疑問詞がある場合：接頭辞を切り離し、動詞の後に置く</li>
+      <li>はい・いいえ疑問文：平叙文と同じ語順</li>
+      <li>疑問詞疑問文：疑問詞 → 動詞</li>
+    </ul>
+  </div>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 7: シチュエーション別 -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="situations">
+    <span class="num">7</span>シチュエーション別重要フレーズ
+  </h2>
+
+  <h3 class="section-h2">道具を借りたい場合</h3>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('A vasalót szeretném elkérni.', this)">🔊</button> A(z) ___-t szeretném (elkérni).</div>
+    <ul>
+      <li>elkérni（エルケールニ：借りる）</li>
+      <li>szeretném（セレトネーム：私は～したい）</li>
+    </ul>
+    <p style="margin-top:8px;">母音で始まる言葉を使う場合、A が Az になります。また、最後が子音で終わる言葉の場合、「～を」にあたる「t」を置く前に（発音しやすいように）母音を置きます。（言葉の最後の母音が a, o だったら o、u だったら a、i だったら i、e だったら e をつければ通じます。）</p>
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('vasaló', this)">🔊</button> vasaló</div><div class="v-yomi">ヴァシャロー</div><div class="v-jp">アイロン</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('vasalódeszka', this)">🔊</button> vasalódeszka</div><div class="v-yomi">ヴァシャローデスカ</div><div class="v-jp">アイロン台 → vasalódeszkát</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('seprű', this)">🔊</button> seprű</div><div class="v-yomi">シェプルー</div><div class="v-jp">箒</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('lapát', this)">🔊</button> lapát</div><div class="v-yomi">ラパート</div><div class="v-jp">塵取り → lapátot</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('felmosó', this)">🔊</button> felmosó</div><div class="v-yomi">フェルモショー</div><div class="v-jp">モップ</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('vödör', this)">🔊</button> vödör</div><div class="v-yomi">ヴォドル</div><div class="v-jp">バケツ → vödröt</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('porszívó', this)">🔊</button> porszívó</div><div class="v-yomi">ポルスィーヴォー</div><div class="v-jp">掃除機</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('pingpong', this)">🔊</button> pingpong</div><div class="v-yomi">ピングポング</div><div class="v-jp">テーブルテニス → pingponot</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('darts', this)">🔊</button> darts</div><div class="v-yomi">ダーツ</div><div class="v-jp">ダーツ → dartsot</div></div>
+  </div>
+
+  <h4 class="section-h3">予想される返答</h4>
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語読み</th><th>日本語の意味</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="hu-cell">Tessék.</td><td class="yomi-cell">テッシェーク</td><td class="jp-cell">どうぞ</td><td><button class="speak-btn" onclick="speak('Tessék.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Máris/Rögtön hozom.</td><td class="yomi-cell">マールイシュ / ルグトゥン ホゾム</td><td class="jp-cell">すぐ持ってきます。</td><td><button class="speak-btn" onclick="speak('Máris hozom. Rögtön hozom.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Nincs. / Elvitték.</td><td class="yomi-cell">ニンチ / エルヴィッテーク</td><td class="jp-cell">ありません。/ 他の人に持っていかれました。</td><td><button class="speak-btn" onclick="speak('Nincs. Elvitték.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Most/Jelenleg nem adhatom ki/oda.</td><td class="yomi-cell">モシュト / イェレンレグ ネム アドハトム キ オダ</td><td class="jp-cell">今は貸せません。／今は渡せません。</td><td><button class="speak-btn" onclick="speak('Most nem adhatom ki.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Kérem, írja ide a dátumot, a szobaszámát, a felvétel idejét és írja alá.</td><td class="yomi-cell">ケーレム イールヤ イデ ア ダートゥモト ア ソバサーモト ア フェルヴェーテル イデイェート エーシュ イールヤ アラー</td><td class="jp-cell">ここに月日、名前、部屋番号と借りた時分を書いて、サインをお願いします。</td><td><button class="speak-btn" onclick="speak('Kérem, írja ide a dátumot, a szobaszámát, a felvétel idejét és írja alá.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Kérem, amikor visszahozta, írja be az időt és írja alá.</td><td class="yomi-cell">ケーレム アミコル ヴィッサホズタ イールヤ ベ アズ イドェート エーシュ イールヤ アラー</td><td class="jp-cell">返してくれた時は時分を書いて、サインをお願いします。</td><td><button class="speak-btn" onclick="speak('Kérem, amikor visszahozta, írja be az időt és írja alá.', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="section-h3">語彙</h4>
+  <table class="vocab-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語の意味</th><th>ハンガリー語</th><th>日本語の意味</th></tr></thead>
+    <tbody>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('tessék', this)">🔊</button> tessék</td><td class="v-jp-cell">どうぞ</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('ide', this)">🔊</button> ide</td><td class="v-jp-cell">ここに</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('máris, rögtön', this)">🔊</button> máris/rögtön</td><td class="v-jp-cell">すぐ・すぐに</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('dátum', this)">🔊</button> dátum</td><td class="v-jp-cell">月日</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('hozni', this)">🔊</button> hozni</td><td class="v-jp-cell">持って来る</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('szobaszám', this)">🔊</button> szobaszám</td><td class="v-jp-cell">部屋番号</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('nincs', this)">🔊</button> nincs</td><td class="v-jp-cell">ない・いない</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('felvétel ideje', this)">🔊</button> felvétel ideje</td><td class="v-jp-cell">借りた時分</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('elvinni', this)">🔊</button> elvinni</td><td class="v-jp-cell">持って行く</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('aláírni', this)">🔊</button> aláírni</td><td class="v-jp-cell">サインする</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('most, jelenleg', this)">🔊</button> most/jelenleg</td><td class="v-jp-cell">今・現在</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('amikor', this)">🔊</button> amikor</td><td class="v-jp-cell">○○の時に</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('kiadni, odaadni', this)">🔊</button> kiadni/odaadni</td><td class="v-jp-cell">貸す・渡す</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('visszahozni', this)">🔊</button> visszahozni</td><td class="v-jp-cell">返す・戻す</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('kérni', this)">🔊</button> kérni</td><td class="v-jp-cell">お願いする</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('beírni', this)">🔊</button> beír</td><td class="v-jp-cell">書く（記録する感じ）</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('írni', this)">🔊</button> írni</td><td class="v-jp-cell">書く</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('idő', this)">🔊</button> idő</td><td class="v-jp-cell">時間</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="section-h2">鍵を借りたい場合</h3>
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('A mosógép kulcsát szeretném elkérni.', this)">🔊</button> A(z) ___ kulcsát szeretném (elkérni).</div>
+    <div class="trans">（～の鍵を借りたいです。）</div>
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('mosógép', this)">🔊</button> mosógép</div><div class="v-yomi">モショーゲープ</div><div class="v-jp">洗濯機</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('szárítógép', this)">🔊</button> szárítógép</div><div class="v-yomi">サーリートーゲープ</div><div class="v-jp">乾燥機</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('tanulószoba', this)">🔊</button> tanulószoba</div><div class="v-yomi">タヌローソバ</div><div class="v-jp">自習室</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('klubszoba', this)">🔊</button> klubszoba</div><div class="v-yomi">クルブソバ</div><div class="v-jp">クラブ室</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('gépterem', this)">🔊</button> gépterem</div><div class="v-yomi">ゲープテレム</div><div class="v-jp">コンピューター室</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('edzőterem', this)">🔊</button> edzőterem</div><div class="v-yomi">エッゾーテレム</div><div class="v-jp">ジム</div></div>
+  </div>
+
+  <h4 class="section-h3">予想される返答</h4>
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語読み</th><th>日本語の意味</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="hu-cell">Foglalt.</td><td class="yomi-cell">フォグラルト</td><td class="jp-cell">予約済み、だれかが使用中</td><td><button class="speak-btn" onclick="speak('Foglalt.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Használják.</td><td class="yomi-cell">ハスナールヤーク</td><td class="jp-cell">だれかが使用中</td><td><button class="speak-btn" onclick="speak('Használják.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Már vannak bent.</td><td class="yomi-cell">マール ヴァンナク ベント</td><td class="jp-cell">もう中に人がいる（自習室等ではすでに他の人が鍵を借りているから借りる必要はない、という意味）</td><td><button class="speak-btn" onclick="speak('Már vannak bent.', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="section-h3">語彙</h4>
+  <table class="vocab-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語の意味</th><th>ハンガリー語</th><th>日本語の意味</th></tr></thead>
+    <tbody>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('foglalni', this)">🔊</button> foglalni</td><td class="v-jp-cell">予約する</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('már', this)">🔊</button> már</td><td class="v-jp-cell">もう</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('foglalt', this)">🔊</button> foglalt</td><td class="v-jp-cell">もう誰かが予約した／今使っている</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('van', this)">🔊</button> van (lenni)</td><td class="v-jp-cell">いる・ある</td></tr>
+      <tr><td class="v-hu-cell"><button class="speak-btn" onclick="speak('használni', this)">🔊</button> használni</td><td class="v-jp-cell">使う</td><td class="v-hu-cell"><button class="speak-btn" onclick="speak('bent', this)">🔊</button> bent</td><td class="v-jp-cell">中に</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grammar-box">
+    <div class="example"><button class="speak-btn" onclick="speak('Meddig használhatom?', this)">🔊</button> Meddig/Mennyit használhatom?</div>
+    <div class="trans">メッディグ／メンニト ハスナールハトム：（私は）いつまで／どれぐらい使っていい？</div>
+    <div class="example"><button class="speak-btn" onclick="speak('Hány óráig lehet elkérni?', this)">🔊</button> Hány óráig lehet elkérni?</div>
+    <div class="trans">ハーニ オーラーイグ レヘト エルケールニ：何時まで借りれる？</div>
+  </div>
+
+  <p>自分の部屋の鍵をお願いする場合、部屋番号を言いますが、ただ数字をいうと「１つ、２つ」の意味になってしまいます。「～番の」を言いたいときは以下のように言ってください。</p>
+  <div class="grammar-box">
+    <ul>
+      <li>１・２・４・７・９・１０で終わる場合は「番号＋<strong>-es</strong>」</li>
+      <li>３・８で終わる場合は「番号＋<strong>-as</strong>」</li>
+      <li>５で終わる場合は「番号＋<strong>-ös</strong>」</li>
+      <li>６で終わる場合は「番号＋<strong>-os</strong>」</li>
+    </ul>
+    <p style="margin-top:10px;"><strong>例：</strong></p>
+    <div class="example"><button class="speak-btn" onclick="speak('A(z) szoba kulcsát szeretném elkérni.', this)">🔊</button> A(z)（部屋番号+-es/as/ös/os）szoba kulcsát szeretném (elkérni).</div>
+    <div class="example"><button class="speak-btn" onclick="speak('A nyolcas szoba kulcsát szeretném elkérni.', this)">🔊</button> A nyolcas szoba kulcsát szeretném (elkérni).</div>
+    <div class="trans">ア ニョルツァシュ ソバ クルチャート セレトネーム エルケールニ：８番の部屋の鍵を借りたいです。</div>
+    <p style="margin-top:8px;">語彙：szoba（部屋）、kulcs（鍵）→ kulcsa（誰かの鍵）→ kulcsát（「誰かの鍵を」、発音しやすいよう「a」が「á」になります。）</p>
+  </div>
+
+  <h3 class="section-h2">トラブルが発生したとき</h3>
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語読み</th><th>日本語の意味</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="hu-cell">Nincs áram.</td><td class="yomi-cell">ニンチ アーラム</td><td class="jp-cell">停電しました</td><td><button class="speak-btn" onclick="speak('Nincs áram.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Elromlott a(z) ___.</td><td class="yomi-cell">エルロムロット ア（ズ）～</td><td class="jp-cell">～が壊れました</td><td><button class="speak-btn" onclick="speak('Elromlott.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Nem működik a(z) ___.</td><td class="yomi-cell">ネム ムーコディク ア（ズ）～</td><td class="jp-cell">～が動きません</td><td><button class="speak-btn" onclick="speak('Nem működik.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Rossz a(z) ___.</td><td class="yomi-cell">ロス ア（ズ）～</td><td class="jp-cell">～の調子が悪いです</td><td><button class="speak-btn" onclick="speak('Rossz.', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="section-h3">語彙（部屋関係）</h4>
+  <table class="vocab-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語の意味</th><th>ハンガリー語</th><th>日本語の意味</th><th>ハンガリー語</th><th>日本語の意味</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('áram', this)">🔊</button> áram</td><td class="v-jp-cell">電気</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('szekrény', this)">🔊</button> szekrény</td><td class="v-jp-cell">クローゼット</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('ajtó', this)">🔊</button> ajtó</td><td class="v-jp-cell">ドア</td>
+      </tr>
+      <tr>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('ágy', this)">🔊</button> ágy</td><td class="v-jp-cell">ベッド</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('kilincs', this)">🔊</button> kilincs</td><td class="v-jp-cell">ドアノブ</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('hűtő', this)">🔊</button> hűtő</td><td class="v-jp-cell">冷蔵庫</td>
+      </tr>
+      <tr>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('ablak', this)">🔊</button> ablak</td><td class="v-jp-cell">窓</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('lámpa', this)">🔊</button> lámpa</td><td class="v-jp-cell">ランプ</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('fogas', this)">🔊</button> fogas</td><td class="v-jp-cell">ハンガー</td>
+      </tr>
+      <tr>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('zuhany', this)">🔊</button> zuhany</td><td class="v-jp-cell">シャワー</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('zár', this)">🔊</button> zár</td><td class="v-jp-cell">錠前・鍵</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('konnektor', this)">🔊</button> konnektor</td><td class="v-jp-cell">コンセント</td>
+      </tr>
+      <tr>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('vécé', this)">🔊</button> wc（vécé）</td><td class="v-jp-cell">トイレ</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('szék', this)">🔊</button> szék</td><td class="v-jp-cell">椅子</td>
+        <td></td><td></td>
+      </tr>
+      <tr>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('polc', this)">🔊</button> polc</td><td class="v-jp-cell">棚</td>
+        <td class="v-hu-cell"><button class="speak-btn" onclick="speak('asztal', this)">🔊</button> asztal</td><td class="v-jp-cell">机</td>
+        <td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 class="section-h3">他の役に立ちそうなフレーズ</h4>
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語読み</th><th>日本語の意味</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="hu-cell">Fáradt vagyok.</td><td class="yomi-cell">ファーラット ヴァジョク</td><td class="jp-cell">（私は）疲れている</td><td><button class="speak-btn" onclick="speak('Fáradt vagyok.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Nem érzem jól magam.</td><td class="yomi-cell">ネム エールゼム ヨール マガム</td><td class="jp-cell">具合が悪い</td><td><button class="speak-btn" onclick="speak('Nem érzem jól magam.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Kicsit beteg vagyok.</td><td class="yomi-cell">キチト ベテグ ヴァジョク</td><td class="jp-cell">（私は）少し病気になっている</td><td><button class="speak-btn" onclick="speak('Kicsit beteg vagyok.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Most nem érek rá.</td><td class="yomi-cell">モシュト ネム エーレク ラー</td><td class="jp-cell">（私は）今、暇がない</td><td><button class="speak-btn" onclick="speak('Most nem érek rá.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Később.</td><td class="yomi-cell">ケーショーブ</td><td class="jp-cell">後で</td><td><button class="speak-btn" onclick="speak('Később.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Gyere velünk!</td><td class="yomi-cell">ジェレ ヴェルンク</td><td class="jp-cell">（私たちと）一緒にきて</td><td><button class="speak-btn" onclick="speak('Gyere velünk!', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Szeretnél csatlakozni? / Te is?</td><td class="yomi-cell">セレトネール チャトラコズニ / テ イシュ</td><td class="jp-cell">一緒にどう？ / 君も？</td><td><button class="speak-btn" onclick="speak('Szeretnél csatlakozni? Te is?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Jó ötlet!</td><td class="yomi-cell">ヨー ウトゥレット</td><td class="jp-cell">ナイスアイディア！</td><td><button class="speak-btn" onclick="speak('Jó ötlet!', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Tetszik! / Ez jó!</td><td class="yomi-cell">テッツィック / エズ ヨー</td><td class="jp-cell">いいね！</td><td><button class="speak-btn" onclick="speak('Tetszik! Ez jó!', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Nekem is!</td><td class="yomi-cell">ネケム イシュ</td><td class="jp-cell">私にも！私も！</td><td><button class="speak-btn" onclick="speak('Nekem is!', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Nincs gond.</td><td class="yomi-cell">ニンチ ゴンド</td><td class="jp-cell">問題ない</td><td><button class="speak-btn" onclick="speak('Nincs gond.', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Persze.</td><td class="yomi-cell">ペールセ</td><td class="jp-cell">もちろん</td><td><button class="speak-btn" onclick="speak('Persze.', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="section-h3">どこに行く？どこにいた？</h4>
+  <table class="phrase-table">
+    <thead><tr><th>ハンガリー語</th><th>日本語読み</th><th>日本語の意味</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="hu-cell">Hova mész? / Hová megy?</td><td class="yomi-cell">ホヴァー メース？ / ホヴァー メジ？</td><td class="jp-cell">どこに行く？ / どこに行きますか？</td><td><button class="speak-btn" onclick="speak('Hova mész? Hová megy?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Mikor jössz? / Mikor jön?</td><td class="yomi-cell">ミコル ユス？ / ミコル ユン？</td><td class="jp-cell">いつ来る？・いつ戻る？ / いつ来ますか？</td><td><button class="speak-btn" onclick="speak('Mikor jössz? Mikor jön?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Hol voltál? / Hol volt?</td><td class="yomi-cell">ホル ヴォルタール？ / ホル ヴォルト？</td><td class="jp-cell">どこにいた？ / どこにいましたか？</td><td><button class="speak-btn" onclick="speak('Hol voltál? Hol volt?', this)">🔊</button></td></tr>
+      <tr><td class="hu-cell">Milyen volt a napod? / Milyen volt a napja?</td><td class="yomi-cell">ミエン ヴォルト ア ナポド？ / ミエン ヴォルト ア ナプヤ？</td><td class="jp-cell">今日どうだった？ / 今日はどうでしたか？</td><td><button class="speak-btn" onclick="speak('Milyen volt a napod? Milyen volt a napja?', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+  <p class="note-small">Hol voltál?（どこにいたの？）と聞かれたら、「___（voltam）」（～ヴォルタム：私～にいた）と答えてください。voltam を言わなくても意味が通じます。</p>
+
+  <h4 class="section-h3">場所の答え方</h4>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('egyetemen', this)">🔊</button> egyetemen</div><div class="v-yomi">エジェテメン</div><div class="v-jp">大学に</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('iskolában', this)">🔊</button> iskolában/suliban</div><div class="v-yomi">イシュコラーバン / シュリバン</div><div class="v-jp">学校に（シュリはカジュアル）</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('könyvtárban', this)">🔊</button> könyvtárban</div><div class="v-yomi">クニヴタールバン</div><div class="v-jp">図書館に</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('kávézóban', this)">🔊</button> kávézóban</div><div class="v-yomi">カーヴェーゾーバン</div><div class="v-jp">カフェに</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('étteremben', this)">🔊</button> étteremben</div><div class="v-yomi">エッテレムベン</div><div class="v-jp">レストランに</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('barátnál', this)">🔊</button> barátnál</div><div class="v-yomi">バラートナール</div><div class="v-jp">友達の家に</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('kollégiumban', this)">🔊</button> kollégiumban/koliban</div><div class="v-yomi">コレーギウムバン / コリバン</div><div class="v-jp">寮に</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('boltban', this)">🔊</button> boltban</div><div class="v-yomi">ボルトバン</div><div class="v-jp">コンビニに・店に</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('külföldön', this)">🔊</button> külföldön</div><div class="v-yomi">クルフォルドン</div><div class="v-jp">外国に</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('vécén', this)">🔊</button> vécén</div><div class="v-yomi">ヴェーツェーン</div><div class="v-jp">トイレに</div></div>
+  </div>
+
+  <h4 class="section-h3">「今日どうだった？」への返答</h4>
+  <div class="vocab-grid">
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('rövid', this)">🔊</button> rövid</div><div class="v-yomi">ルヴィド</div><div class="v-jp">あっという間、短い</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('hosszú', this)">🔊</button> hosszú</div><div class="v-yomi">ホッスー</div><div class="v-jp">長い</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('érdekes', this)">🔊</button> érdekes</div><div class="v-yomi">エールデケシュ</div><div class="v-jp">面白い</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('unalmas', this)">🔊</button> unalmas</div><div class="v-yomi">ウナーマシュ</div><div class="v-jp">つまらない</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('mókás', this)">🔊</button> mókás</div><div class="v-yomi">モーカーシュ</div><div class="v-jp">楽しい</div></div>
+    <div class="vocab-item"><div class="v-hu"><button class="speak-btn" onclick="speak('furcsa', this)">🔊</button> furcsa</div><div class="v-yomi">フルチャ</div><div class="v-jp">変な</div></div>
+  </div>
+  <p class="note-small">（volt を言わなくても意味が通じます。例：「Érdekes volt.」→「Érdekes.」）</p>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SECTION 8: 単語リスト -->
+  <!-- ══════════════════════════════════════ -->
+  <h2 class="section-h1" id="wordlist">
+    <span class="num">8</span>これだけは覚えよう「単語リスト」
+  </h2>
+  <p>日本語の意味と日本語読みをセットで確認しましょう。🔊で発音を聞けます。</p>
+
+  <table class="phrase-table">
+    <thead><tr><th>日本語の意味</th><th>ハンガリー語</th><th>日本語読み</th><th>▶</th></tr></thead>
+    <tbody>
+      <tr><td class="jp-cell">こんにちは！/さようなら！（１人へ）</td><td class="hu-cell">Szia!</td><td class="yomi-cell">スィア！</td><td><button class="speak-btn" onclick="speak('Szia!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">こんにちは！/さようなら！（複数人へ）</td><td class="hu-cell">Sziasztok!</td><td class="yomi-cell">スィアストク！</td><td><button class="speak-btn" onclick="speak('Sziasztok!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">おはよう！</td><td class="hu-cell">Jó reggelt!</td><td class="yomi-cell">ヨー レッゲルト！</td><td><button class="speak-btn" onclick="speak('Jó reggelt!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">おはようございます！</td><td class="hu-cell">Jó reggelt kívánok!</td><td class="yomi-cell">ヨー レッゲルト キヴァーノク！</td><td><button class="speak-btn" onclick="speak('Jó reggelt kívánok!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">こんにちは！</td><td class="hu-cell">Jó napot!</td><td class="yomi-cell">ヨー ナポト！</td><td><button class="speak-btn" onclick="speak('Jó napot!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">こんばんは！</td><td class="hu-cell">Jó estét!</td><td class="yomi-cell">ヨー エシュテート！</td><td><button class="speak-btn" onclick="speak('Jó estét!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">おやすみなさい！</td><td class="hu-cell">Jó éjszakát!</td><td class="yomi-cell">ヨー エーイサカート！</td><td><button class="speak-btn" onclick="speak('Jó éjszakát!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">ありがとう</td><td class="hu-cell">Köszönöm</td><td class="yomi-cell">クゥスヌム</td><td><button class="speak-btn" onclick="speak('Köszönöm', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">どういたしまして</td><td class="hu-cell">Szívesen</td><td class="yomi-cell">スィーヴェシェン</td><td><button class="speak-btn" onclick="speak('Szívesen', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">はい</td><td class="hu-cell">Igen</td><td class="yomi-cell">イゲン</td><td><button class="speak-btn" onclick="speak('Igen', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">いいえ</td><td class="hu-cell">Nem</td><td class="yomi-cell">ネム</td><td><button class="speak-btn" onclick="speak('Nem', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">お元気ですか？</td><td class="hu-cell">Hogy vagy?</td><td class="yomi-cell">ホジ ヴァジ？</td><td><button class="speak-btn" onclick="speak('Hogy vagy?', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">元気です、ありがとう</td><td class="hu-cell">Jól, köszönöm.</td><td class="yomi-cell">ヨール、クゥスヌム</td><td><button class="speak-btn" onclick="speak('Jól, köszönöm.', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">あなたはどうですか？</td><td class="hu-cell">És te? / És Ön?</td><td class="yomi-cell">エーシュ テ？ / エーシュ オン？</td><td><button class="speak-btn" onclick="speak('És te? És Ön?', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">お名前は？</td><td class="hu-cell">Hogy hívnak?</td><td class="yomi-cell">ホジ ヒーヴァナク？</td><td><button class="speak-btn" onclick="speak('Hogy hívnak?', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">すみません／ごめんなさい</td><td class="hu-cell">Elnézést</td><td class="yomi-cell">エルネーゼーシュト</td><td><button class="speak-btn" onclick="speak('Elnézést', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">助けて！</td><td class="hu-cell">Segítség!</td><td class="yomi-cell">シェギーツェグ！</td><td><button class="speak-btn" onclick="speak('Segítség!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">はい、どうぞ</td><td class="hu-cell">Tessék!</td><td class="yomi-cell">テシェーク！</td><td><button class="speak-btn" onclick="speak('Tessék!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">わかります</td><td class="hu-cell">Értem</td><td class="yomi-cell">エールテム</td><td><button class="speak-btn" onclick="speak('Értem', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">わかりません</td><td class="hu-cell">Nem értem</td><td class="yomi-cell">ネム エールテム</td><td><button class="speak-btn" onclick="speak('Nem értem', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">手伝ってくれる？</td><td class="hu-cell">Tudnál segíteni?</td><td class="yomi-cell">トゥドナール シェギーツェニ？</td><td><button class="speak-btn" onclick="speak('Tudnál segíteni?', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">もっとゆっくりお願いします！</td><td class="hu-cell">Lassabban, kérlek!</td><td class="yomi-cell">ラッシャッバン、ケーレク！</td><td><button class="speak-btn" onclick="speak('Lassabban, kérlek!', this)">🔊</button></td></tr>
+      <tr><td class="jp-cell">これをハンガリー語で何と言いますか？</td><td class="hu-cell">Ezt hogy mondják magyarul?</td><td class="yomi-cell">エズト ホジ モンジャーク マジャルル？</td><td><button class="speak-btn" onclick="speak('Ezt hogy mondják magyarul?', this)">🔊</button></td></tr>
+    </tbody>
+  </table>
+
+</div><!-- end .page-wrap -->
+
+<footer>
+  <p>カーロリ大学（KRE）交換留学生のためのハンガリー語教材　©️ KRE Students</p>
+  <p style="margin-top:6px">🔊 音声はブラウザのWeb Speech APIを使用しています</p>
+</footer>
+
+<script>
+  // ── SPEECH SYNTHESIS ──
+  // rate 0.75 = もう少しゆっくり
+  const SPEAK_RATE = 0.75;
+
+  function speak(text, btnEl) {
+    if (!window.speechSynthesis) {
+      alert('このブラウザは音声合成に対応していません。');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'hu-HU';
+    utt.rate = SPEAK_RATE;
+    utt.pitch = 1;
+
+    // Try to pick a Hungarian voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const huVoice = voices.find(v => v.lang && v.lang.startsWith('hu'));
+    if (huVoice) utt.voice = huVoice;
+
+    // Visual feedback
+    if (btnEl) {
+      btnEl.classList.add('playing');
+      utt.onend = () => btnEl.classList.remove('playing');
+      utt.onerror = () => btnEl.classList.remove('playing');
+    }
+    window.speechSynthesis.speak(utt);
+  }
+
+  // Preload voices (Chrome requires this)
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+</script>
+</body>
+</html>

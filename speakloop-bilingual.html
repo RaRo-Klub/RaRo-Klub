@@ -104,6 +104,13 @@ button{cursor:pointer;font-family:inherit}input{font-family:inherit}
       <div class="box-label">&#35469;&#35672;&#32080;&#26524; / Recognized</div>
       <div id="transcript-text" style="font-size:.95rem;line-height:1.65"></div>
     </div>
+    <div id="text-fallback" style="margin-bottom:1rem">
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;margin-bottom:.4rem">&#12414;&#12383;&#12399;&#12486;&#12461;&#12473;&#12488;&#12391;&#20837;&#21147; / Or type your answer</div>
+      <div style="display:flex;gap:.5rem">
+        <input id="text-input" class="finput" placeholder="&#12371;&#12371;&#12395;&#20837;&#21147;&#12375;Enter / Type here and press Enter" style="flex:1" onkeydown="if(event.key===&apos;Enter&apos;)submitText()"/>
+        <button class="btn primary" id="text-submit-btn" onclick="submitText()" style="flex-shrink:0">&#10003; &#30906;&#35469;</button>
+      </div>
+    </div>
     <div id="score-panel">
       <svg width="64" height="64" viewBox="0 0 64 64" style="flex-shrink:0;transform:rotate(-90deg)">
         <circle cx="32" cy="32" r="28" fill="none" stroke="#eee" stroke-width="6"/>
@@ -204,6 +211,7 @@ function updateLangUI(){
   g('btn-listen').style.background=a;
   g('fc-listen').style.background=a;
   g('add-btn').style.background=a;
+  if(g('text-submit-btn'))g('text-submit-btn').style.background=a;
   g('prog-fill').style.background='linear-gradient(90deg,'+a+','+accM()+')';
   g('rec-status').textContent=lang==='en'?'Tap \uD83C\uDF64 to record':'\uD83C\uDF64 \u3092\u30BF\u30C3\u30D7\u3057\u3066\u9332\u97F3';
   g('rec-hint').textContent=lang==='en'?'Speak clearly into your microphone':'\u30DE\u30A4\u30AF\u306B\u5411\u304B\u3063\u3066\u306F\u3063\u304D\u308A\u8A71\u3057\u3066\u304F\u3060\u3055\u3044';
@@ -326,35 +334,49 @@ function toggleRec(){
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){showToast('Chrome\u3092\u304A\u4F7F\u3044\u304F\u3060\u3055\u3044',true);return;}
   var capturedIdx=curIdx,capturedLang=lang;
-  isRec=true;
-  g('transcript-box').className='';g('score-panel').className='';g('transcript-text').textContent='';
   var a=acc(),al=accL();
-  g('mic-btn').className='pulsing';g('mic-btn').style.background='#dc2626';g('mic-btn').style.boxShadow='0 5px 16px #dc262660';g('mic-btn').textContent='\u23F9';
-  g('rec-status').style.color=a;g('rec-status').textContent=lang==='en'?'Recording... tap \u23F9 to stop':'\u9332\u97F3\u4E2D\u2026 \u23F9\u3067\u505C\u6B62';
-  g('record-area').style.borderStyle='solid';g('record-area').style.borderColor=a;g('record-area').style.background=al;
-  g('wave').style.opacity='1';
+
+  // SpeechRecognitionを先に起動してから波形を開始する
   var rec=new SR();recObj=rec;
   rec.lang=lang==='en'?'en-US':'ja-JP';rec.continuous=false;rec.interimResults=true;
+
+  rec.onstart=function(){
+    isRec=true;
+    g('transcript-box').className='';g('score-panel').className='';g('transcript-text').textContent='';
+    g('mic-btn').className='pulsing';g('mic-btn').style.background='#dc2626';g('mic-btn').style.boxShadow='0 5px 16px #dc262660';g('mic-btn').textContent='\u23F9';
+    g('rec-status').style.color=a;g('rec-status').textContent=lang==='en'?'Recording... tap \u23F9 to stop':'\u9332\u97F3\u4E2D\u2026 \u23F9\u3067\u505C\u6B62';
+    g('record-area').style.borderStyle='solid';g('record-area').style.borderColor=a;g('record-area').style.background=al;
+    g('wave').style.opacity='1';
+    // 波形アニメーション（マイク不要のダミー）
+    var waveEl=g('wave');waveEl.innerHTML='';
+    var NUM=28,bars=[],a2=acc(),am=accM();
+    for(var i=0;i<NUM;i++){var b=document.createElement('div');b.className='bar';b.style.background='linear-gradient(to top,'+a2+','+am+')';b.style.height='3px';waveEl.appendChild(b);bars.push(b);}
+    var t=0;
+    function tick(){rafId=requestAnimationFrame(tick);t+=0.15;for(var i=0;i<NUM;i++){var h=Math.max(3,Math.abs(Math.sin(t+i*0.4))*40+Math.random()*8);bars[i].style.height=h+'px';}}
+    tick();
+  };
   rec.onresult=function(e){
     var t='';for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;
     g('transcript-text').textContent=t;g('transcript-box').className='show';
     if(e.results[e.results.length-1].isFinal)evaluate(t,capturedIdx,capturedLang);
   };
-  rec.onerror=function(e){stopRecUI();if(e.error==='not-allowed')showToast('\u30DE\u30A4\u30AF\u3078\u306E\u30A2\u30AF\u30BB\u30B9\u3092\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044',true);else if(e.error!=='no-speech')showToast('\u30A8\u30E9\u30FC: '+e.error,true);};
+  rec.onerror=function(e){
+    stopRecUI();
+    if(e.error==='not-allowed')showToast('\u30DE\u30A4\u30AF\u3078\u306E\u30A2\u30AF\u30BB\u30B9\u3092\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044',true);
+    else if(e.error==='network')showToast('\u30CD\u30C3\u30C8\u30EF\u30FC\u30AF\u30A8\u30E9\u30FC\u3002\u4E0B\u306E\u30C6\u30AD\u30B9\u30C8\u5165\u529B\u3067\u3082\u7B54\u3048\u3092\u78BA\u8A8D\u3067\u304D\u307E\u3059\u3002',true);
+    else if(e.error!=='no-speech')showToast('\u30A8\u30E9\u30FC: '+e.error,true);
+  };
   rec.onend=stopRecUI;
-  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-    mediaStream=stream;
-    var ctx=new(window.AudioContext||window.webkitAudioContext)();audioCtx=ctx;
-    var an=ctx.createAnalyser();an.fftSize=128;analyser=an;ctx.createMediaStreamSource(stream).connect(an);
-    var waveEl=g('wave');waveEl.innerHTML='';
-    var NUM=28,bars=[],a2=acc(),am=accM();
-    for(var i=0;i<NUM;i++){var b=document.createElement('div');b.className='bar';b.style.background='linear-gradient(to top,'+a2+','+am+')';b.style.height='3px';waveEl.appendChild(b);bars.push(b);}
-    var buf=new Uint8Array(an.frequencyBinCount),step=Math.floor(buf.length/NUM);
-    function tick(){rafId=requestAnimationFrame(tick);an.getByteFrequencyData(buf);for(var i=0;i<NUM;i++){bars[i].style.height=Math.max(3,(buf[i*step]/255)*52)+'px';}}
-    tick();rec.start();
-  }).catch(function(){stopRecUI();showToast('\u30DE\u30A4\u30AF\u3078\u306E\u30A2\u30AF\u30BB\u30B9\u3092\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044',true);});
+  try{ rec.start(); } catch(e){ stopRecUI(); showToast('\u9332\u97F3\u3092\u958B\u59CB\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F',true); }
 }
 
+function submitText(){
+  var val=g('text-input').value.trim();
+  if(!val){showToast('テキストを入力してください',true);return;}
+  g('transcript-text').textContent=val;g('transcript-box').className='show';
+  evaluate(val,curIdx,lang);
+  g('text-input').value='';
+}
 function renderFlash(idx){
   fcIdx=((idx%phrases.length)+phrases.length)%phrases.length;fcFlipped=false;
   var p=phrases[fcIdx],a=acc(),al=accL(),isEN=lang==='en';

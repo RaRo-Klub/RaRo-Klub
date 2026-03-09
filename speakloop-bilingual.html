@@ -3,1014 +3,413 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SpeakLoop — Bilingual Practice</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<title>SpeakLoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f5f2eb;
-  --surface: #ede9e0;
-  --card: #fff;
-  --border: #ddd8cc;
-  --shadow: rgba(60,50,30,0.10);
-  --en-main: #1a3a5c;
-  --en-acc: #2563eb;
-  --en-light: #dbeafe;
-  --ja-main: #5c1a1a;
-  --ja-acc: #dc2626;
-  --ja-light: #fee2e2;
-  --text: #1c1a15;
-  --muted: #7a7060;
-  --success: #16a34a;
-  --warn: #d97706;
-  --radius: 18px;
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Outfit', 'Noto Sans JP', sans-serif;
-  min-height: 100vh;
-}
-
-/* Texture overlay */
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='none'/%3E%3Ccircle cx='1' cy='1' r='0.6' fill='%23c8bfa8' opacity='0.4'/%3E%3C/svg%3E");
-  pointer-events:none; z-index:0;
-}
-
-/* ─── HEADER ─── */
-header {
-  position: sticky; top:0; z-index:100;
-  background: var(--card);
-  border-bottom: 2px solid var(--border);
-  padding: 0 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem;
-  box-shadow: 0 2px 12px var(--shadow);
-  flex-wrap: wrap;
-  min-height: 64px;
-}
-
-.logo {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: 1.35rem;
-  letter-spacing: -0.04em;
-  display: flex; align-items: center; gap: 0.4rem;
-}
-.logo-en { color: var(--en-acc); }
-.logo-sep { color: var(--border); font-weight: 300; }
-.logo-ja { color: var(--ja-acc); font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 1.1rem; }
-
-/* Language toggle */
-.lang-toggle {
-  display: flex;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 100px;
-  padding: 4px;
-  gap: 4px;
-}
-.lang-btn {
-  padding: 0.35rem 1rem;
-  border-radius: 100px;
-  border: none;
-  cursor: pointer;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  background: transparent;
-  color: var(--muted);
-  transition: all 0.2s;
-}
-.lang-btn.active-en { background: var(--en-acc); color: #fff; }
-.lang-btn.active-ja { background: var(--ja-acc); color: #fff; }
-
-.header-stats {
-  display: flex; gap: 0.6rem; align-items: center;
-  font-size: 0.82rem; color: var(--muted);
-}
-.stat-badge {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.3rem 0.7rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-/* ─── MAIN ─── */
-main {
-  position: relative; z-index: 1;
-  max-width: 740px;
-  margin: 0 auto;
-  padding: 2rem 1.2rem 5rem;
-}
-
-/* ─── TABS ─── */
-.nav-tabs {
-  display: flex;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  padding: 5px;
-  gap: 4px;
-  margin-bottom: 1.8rem;
-  width: fit-content;
-}
-.nav-tab {
-  padding: 0.5rem 1.1rem;
-  border-radius: calc(var(--radius) - 4px);
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  transition: all 0.2s;
-}
-.nav-tab.active {
-  background: var(--text);
-  color: var(--bg);
-  box-shadow: 0 2px 8px var(--shadow);
-}
-
-/* ─── VIEWS ─── */
-.view { display: none; }
-.view.active { display: block; animation: fadeUp 0.3s ease both; }
-@keyframes fadeUp {
-  from { opacity:0; transform: translateY(12px); }
-  to   { opacity:1; transform: translateY(0); }
-}
-
-/* ─── CARD BASE ─── */
-.card {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.8rem 2rem;
-  box-shadow: 0 4px 18px var(--shadow);
-  margin-bottom: 1.2rem;
-}
-
-/* ─── PHRASE CARD ─── */
-.phrase-card {
-  border-left: 5px solid var(--en-acc);
-  position: relative;
-}
-.phrase-card.lang-ja { border-left-color: var(--ja-acc); }
-
-.phrase-meta {
-  display: flex; align-items: center; gap: 0.7rem;
-  margin-bottom: 1.1rem;
-}
-.cat-tag {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.75rem;
-  border-radius: 100px;
-}
-.cat-tag.en { background: var(--en-light); color: var(--en-main); }
-.cat-tag.ja { background: var(--ja-light); color: var(--ja-main); }
-.phrase-num { font-size: 0.78rem; color: var(--muted); margin-left: auto; }
-
-.phrase-target {
-  font-size: 1.75rem;
-  font-weight: 800;
-  line-height: 1.35;
-  letter-spacing: -0.025em;
-  margin-bottom: 0.65rem;
-}
-.phrase-target.ja-text {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 1.5rem;
-  letter-spacing: 0.02em;
-}
-
-.phrase-sub {
-  font-size: 0.92rem;
-  color: var(--muted);
-  font-weight: 300;
-  margin-bottom: 1.4rem;
-  line-height: 1.6;
-}
-
-.phrase-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; }
-
-/* ─── BUTTONS ─── */
-.btn {
-  display: inline-flex; align-items: center; gap: 0.45rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.18s;
-  line-height: 1;
-}
-.btn:active { transform: scale(0.96); }
-
-.btn-en { background: var(--en-acc); color: #fff; }
-.btn-en:hover { background: #1d4ed8; }
-.btn-ja { background: var(--ja-acc); color: #fff; }
-.btn-ja:hover { background: #b91c1c; }
-.btn-outline {
-  background: transparent;
-  border-color: var(--border);
-  color: var(--text);
-}
-.btn-outline:hover { border-color: var(--text); }
-
-/* ─── RECORD AREA ─── */
-.record-area {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 2rem;
-  text-align: center;
-  margin-bottom: 1.2rem;
-  transition: all 0.3s;
-  background: var(--card);
-  box-shadow: 0 2px 12px var(--shadow);
-}
-.record-area.recording-en {
-  border-color: var(--en-acc);
-  border-style: solid;
-  background: var(--en-light);
-}
-.record-area.recording-ja {
-  border-color: var(--ja-acc);
-  border-style: solid;
-  background: var(--ja-light);
-}
-.record-area.has-result {
-  border-color: var(--success);
-  border-style: solid;
-}
-
-#waveform {
-  width: 100%; height: 44px;
-  margin-bottom: 1rem;
-  opacity: 0; transition: opacity 0.3s;
-  border-radius: 8px;
-}
-#waveform.visible { opacity: 1; }
-
-.mic-btn {
-  width: 76px; height: 76px;
-  border-radius: 50%;
-  border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 1rem;
-  transition: all 0.22s;
-  font-size: 2rem;
-}
-.mic-btn.idle-en { background: var(--en-acc); box-shadow: 0 6px 20px rgba(37,99,235,0.35); }
-.mic-btn.idle-ja { background: var(--ja-acc); box-shadow: 0 6px 20px rgba(220,38,38,0.35); }
-.mic-btn.recording { animation: pulse 1s ease-in-out infinite; }
-.mic-btn.idle-en:hover { transform: scale(1.07); }
-.mic-btn.idle-ja:hover { transform: scale(1.07); }
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.record-hint { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
-.record-status { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
-.record-status.active-en { color: var(--en-acc); }
-.record-status.active-ja { color: var(--ja-acc); }
-
-/* ─── TRANSCRIPT ─── */
-.transcript-box {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 14px;
-  padding: 1rem 1.3rem;
-  margin-bottom: 1rem;
-  display: none;
-}
-.transcript-box.visible { display: block; }
-.tbox-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 0.4rem;
-}
-.tbox-text { font-size: 1rem; line-height: 1.6; }
-
-/* ─── SCORE ─── */
-.score-panel {
-  display: none;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem 1.8rem;
-  margin-bottom: 1.2rem;
-  align-items: center;
-  gap: 1.5rem;
-  box-shadow: 0 4px 18px var(--shadow);
-}
-.score-panel.visible { display: flex; }
-
-.score-ring { width: 76px; height: 76px; flex-shrink: 0; position: relative; }
-.score-ring svg { transform: rotate(-90deg); }
-.score-pct {
-  position: absolute; top:50%; left:50%;
-  transform: translate(-50%,-50%);
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 800;
-}
-.score-info { flex:1; }
-.score-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-}
-.score-words { font-size: 0.85rem; color: var(--muted); line-height: 1.8; }
-.word-ok { color: var(--success); font-weight: 600; }
-.word-miss { color: var(--ja-acc); text-decoration: line-through; }
-
-/* ─── FLASHCARD ─── */
-.flashcard-wrap {
-  perspective: 1000px;
-  margin-bottom: 1.5rem;
-}
-.flashcard {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 24px;
-  padding: 3rem 2rem;
-  text-align: center;
-  min-height: 200px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 6px 24px var(--shadow);
-  transition: all 0.25s;
-  position: relative;
-}
-.flashcard:hover { transform: translateY(-3px); box-shadow: 0 12px 30px var(--shadow); }
-.flashcard.flipped-en { background: var(--en-light); border-color: var(--en-acc); }
-.flashcard.flipped-ja { background: var(--ja-light); border-color: var(--ja-acc); }
-
-.fc-lang-badge {
-  position: absolute; top: 1.2rem; left: 1.5rem;
-  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; padding: 0.2rem 0.65rem;
-  border-radius: 100px;
-}
-.fc-lang-badge.en { background: var(--en-light); color: var(--en-main); }
-.fc-lang-badge.ja { background: var(--ja-light); color: var(--ja-main); }
-
-.fc-hint { position: absolute; bottom: 1rem; right: 1.5rem; font-size: 0.72rem; color: var(--muted); }
-
-.fc-word {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  font-size: 1.8rem;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
-}
-.fc-word.ja-text {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 1.5rem;
-}
-.fc-sub { font-size: 0.9rem; color: var(--muted); }
-
-.fc-nav { display: flex; gap: 0.75rem; justify-content: center; }
-.fc-progress { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--muted); }
-
-/* ─── PHRASE LIST ─── */
-.pl-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1.2rem;
-}
-.section-title {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.progress-bar {
-  background: var(--border);
-  border-radius: 100px;
-  height: 8px;
-  margin-bottom: 0.5rem;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  border-radius: 100px;
-  transition: width 0.6s ease;
-}
-.progress-fill.en { background: linear-gradient(90deg, var(--en-acc), #60a5fa); }
-.progress-fill.ja { background: linear-gradient(90deg, var(--ja-acc), #f87171); }
-
-.progress-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 1.8rem; }
-
-/* Add form */
-.add-form {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.4rem 1.6rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 10px var(--shadow);
-}
-.add-form h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 1rem; }
-.add-row { display: flex; gap: 0.65rem; flex-wrap: wrap; }
-.finput {
-  flex: 1; min-width: 150px;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  padding: 0.6rem 0.9rem;
-  font-family: 'Outfit','Noto Sans JP',sans-serif;
-  font-size: 0.88rem;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.finput:focus { border-color: var(--en-acc); }
-.finput.ja:focus { border-color: var(--ja-acc); }
-
-/* Phrase items */
-.pl-grid { display: flex; flex-direction: column; gap: 0.5rem; }
-.pl-item {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 0.9rem 1.1rem;
-  display: flex; align-items: center; gap: 0.9rem;
-  cursor: pointer;
-  transition: all 0.18s;
-}
-.pl-item:hover { border-color: var(--text); transform: translateX(3px); }
-.pl-item.active-item { border-color: var(--en-acc); background: var(--en-light); }
-.pl-item.active-item.ja-active { border-color: var(--ja-acc); background: var(--ja-light); }
-.pl-n { font-size: 0.75rem; color: var(--muted); width: 22px; flex-shrink:0; font-weight: 600; }
-.pl-texts { flex:1; }
-.pl-en { font-size: 0.88rem; font-weight: 600; }
-.pl-ja { font-size: 0.78rem; color: var(--muted); font-family: 'Noto Sans JP',sans-serif; }
-.pl-check {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; flex-shrink:0;
-  font-weight: 700;
-}
-.pl-item.done .pl-check { background: var(--success); color: #fff; }
-.pl-del {
-  background: none; border: none; cursor: pointer;
-  color: var(--muted); font-size: 1rem;
-  padding: 0.2rem 0.4rem; border-radius: 6px;
-  transition: all 0.15s;
-}
-.pl-del:hover { color: var(--ja-acc); background: var(--ja-light); }
-
-/* ─── TOAST ─── */
-.toast {
-  position: fixed; bottom: 2rem; right: 2rem;
-  background: var(--text); color: var(--bg);
-  border-radius: 14px;
-  padding: 0.9rem 1.4rem;
-  font-size: 0.88rem; font-weight: 600;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.25);
-  z-index: 999;
-  transform: translateY(80px); opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  max-width: 300px;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-
-/* Divider */
-.divider {
-  display: flex; align-items: center; gap: 1rem;
-  margin: 0.5rem 0 1rem; color: var(--muted); font-size: 0.78rem;
-}
-.divider::before, .divider::after {
-  content:''; flex:1; height:1px; background: var(--border);
-}
-
-@media (max-width:560px) {
-  .phrase-target { font-size: 1.35rem; }
-  header { padding: 0.75rem 1rem; }
-  main { padding: 1.2rem 0.9rem 4rem; }
-  .fc-word { font-size: 1.4rem; }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f7f5f0;color:#1c1a15;font-family:'Outfit','Noto Sans JP',sans-serif;min-height:100vh}
+button{cursor:pointer;font-family:inherit}input{font-family:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.fade{animation:fadeUp .25s ease both}.pulsing{animation:blink .9s ease-in-out infinite}
+#header{background:#fff;border-bottom:1.5px solid #e2e0db;padding:0 1.2rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;min-height:56px;position:sticky;top:0;z-index:50}
+#logo{font-weight:900;font-size:1.15rem;letter-spacing:-.04em}
+.lang-toggle{display:flex;background:#f0ede8;border:1.5px solid #e2e0db;border-radius:100px;padding:3px;gap:2px;margin-left:auto}
+.lang-btn{padding:.28rem .85rem;border-radius:100px;border:none;font-weight:700;font-size:.8rem;background:transparent;color:#7a7060;transition:all .18s}
+.stat{background:#f0ede8;border:1.5px solid #e2e0db;border-radius:7px;padding:.2rem .5rem;font-weight:700;font-size:.76rem}
+#main{max-width:640px;margin:0 auto;padding:1.2rem 1rem 4rem}
+#tabs{display:flex;gap:3px;background:#fff;border:1.5px solid #e2e0db;border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.2rem}
+.tab{padding:.42rem .95rem;border-radius:9px;border:none;font-weight:700;font-size:.82rem;background:transparent;color:#7a7060;transition:all .18s}
+.tab.active{background:#1c1a15;color:#f7f5f0}
+.view{display:none}.view.active{display:block}
+.card{background:#fff;border:1.5px solid #e2e0db;border-radius:15px;padding:1.3rem 1.5rem;margin-bottom:1rem}
+.cat-tag{font-size:.67rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:.18rem .6rem;border-radius:100px}
+.btn{padding:.52rem 1.05rem;border-radius:10px;font-weight:600;font-size:.83rem;border:1.5px solid #e2e0db;background:transparent;color:#1c1a15;transition:opacity .15s}
+.btn.primary{border:none;color:#fff}.btn:hover{opacity:.82}
+#record-area{background:#fff;border:1.5px dashed #ccc;border-radius:15px;padding:1.5rem 1.2rem;text-align:center;margin-bottom:1rem;transition:all .25s}
+#wave{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:48px;margin-bottom:1rem;opacity:.1;transition:opacity .3s}
+.bar{width:6px;border-radius:3px;transition:height .06s ease}
+#mic-btn{width:66px;height:66px;border-radius:50%;border:none;color:#fff;font-size:1.5rem;display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;cursor:pointer;transition:all .2s}
+#transcript-box{background:#f7f5f0;border:1.5px solid #e2e0db;border-radius:12px;padding:.8rem 1.1rem;margin-bottom:.9rem;display:none}
+#transcript-box.show{display:block}
+.box-label{font-size:.63rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#bbb;margin-bottom:.28rem}
+#score-panel{background:#fff;border:1.5px solid #e2e0db;border-radius:15px;padding:1.1rem 1.3rem;display:none;align-items:center;gap:1.1rem;margin-bottom:1rem}
+#score-panel.show{display:flex}
+.word-ok{color:#16a34a;font-weight:700}.word-miss{color:#dc2626;text-decoration:line-through}
+#flashcard{background:#fff;border:1.5px solid #e2e0db;border-radius:20px;padding:2.6rem 1.8rem;text-align:center;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .22s;margin-bottom:1rem;position:relative}
+.fc-badge{position:absolute;top:.9rem;left:1.2rem;font-size:.63rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.16rem .55rem;border-radius:100px}
+#fc-hint{position:absolute;bottom:.75rem;right:1.1rem;font-size:.65rem;color:#ccc}
+#fc-nav{display:flex;gap:.55rem;justify-content:center;margin-bottom:.7rem}
+#fc-progress{text-align:center;font-size:.76rem;color:#bbb}
+#prog-bar{background:#e2e0db;border-radius:100px;height:7px;margin-bottom:.42rem;overflow:hidden}
+#prog-fill{height:100%;border-radius:100px;transition:width .5s}
+#prog-label{font-size:.74rem;color:#bbb;margin-bottom:1.3rem}
+#add-form{background:#fff;border:1.5px solid #e2e0db;border-radius:13px;padding:1.1rem 1.3rem;margin-bottom:1.1rem}
+#add-form h3{font-weight:700;font-size:.86rem;margin-bottom:.75rem}
+#add-row{display:flex;gap:.48rem;flex-wrap:wrap}
+.finput{flex:1;min-width:90px;background:#f7f5f0;border:1.5px solid #e2e0db;border-radius:9px;padding:.52rem .75rem;font-size:.82rem;color:#1c1a15;outline:none}
+#pl-grid{display:flex;flex-direction:column;gap:.4rem}
+.pl-item{background:#fff;border:1.5px solid #e2e0db;border-radius:11px;padding:.78rem .95rem;display:flex;align-items:center;gap:.7rem;cursor:pointer;transition:all .15s}
+.pl-n{font-size:.68rem;color:#ccc;font-weight:700;width:18px;flex-shrink:0}
+.pl-texts{flex:1;min-width:0}
+.pl-en{font-size:.83rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-ja{font-size:.73rem;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-check{width:19px;height:19px;border-radius:50%;background:#e2e0db;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:#fff;font-weight:800;flex-shrink:0}
+.pl-check.done{background:#16a34a}
+.pl-del{background:none;border:none;color:#ccc;font-size:.88rem;cursor:pointer;padding:.12rem .32rem;border-radius:5px;flex-shrink:0}
+#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);color:#fff;border-radius:11px;padding:.75rem 1.2rem;font-size:.84rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;display:none;white-space:nowrap;animation:toastIn .26s ease both}
+#toast.show{display:block}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">
-    <span class="logo-en">Speak</span><span class="logo-sep">/</span><span class="logo-ja">話す</span>Loop
-  </div>
+<div id="header">
+  <div id="logo"></div>
   <div class="lang-toggle">
-    <button class="lang-btn active-en" id="btnEN" onclick="setLang('en')">🇺🇸 English</button>
-    <button class="lang-btn" id="btnJA" onclick="setLang('ja')">🇯🇵 日本語</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">&#127482;&#127480; EN</button>
+    <button class="lang-btn" id="btn-ja" onclick="setLang('ja')">&#127471;&#127477; JA</button>
   </div>
-  <div class="header-stats">
-    ✅ <span class="stat-badge" id="hDone">0</span> / <span class="stat-badge" id="hTotal">0</span>
-    &nbsp;🔥 <span class="stat-badge" id="hStreak">0</span>
+  <div style="display:flex;gap:.35rem">
+    <span class="stat" id="h-done"></span>
+    <span class="stat" id="h-streak"></span>
   </div>
-</header>
-
-<main>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchView('practice', this)">🎤 練習</button>
-    <button class="nav-tab" onclick="switchView('flash', this)">🃏 暗記</button>
-    <button class="nav-tab" onclick="switchView('manage', this)">📋 一覧</button>
+</div>
+<div id="main">
+  <div id="tabs">
+    <button class="tab active" id="tab-practice" onclick="switchTab('practice',this)">&#127908; &#32640;&#32722;</button>
+    <button class="tab" id="tab-flash" onclick="switchTab('flash',this)">&#127183; &#26266;&#35352;</button>
+    <button class="tab" id="tab-manage" onclick="switchTab('manage',this)">&#128203; &#19968;&#35239;</button>
   </div>
-
-  <!-- ── PRACTICE ── -->
   <div class="view active" id="view-practice">
-
-    <div class="card phrase-card" id="phraseCard">
-      <div class="phrase-meta">
-        <span class="cat-tag en" id="catTag">Daily</span>
-        <span class="phrase-num" id="phraseNum">#1</span>
+    <div class="card" id="phrase-card" style="border-left-width:4px;border-left-style:solid">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem">
+        <span class="cat-tag" id="cat-tag"></span>
+        <span id="phrase-num" style="margin-left:auto;font-size:.7rem;color:#bbb"></span>
       </div>
-      <div class="phrase-target" id="phraseTarget">—</div>
-      <div class="phrase-sub" id="phraseSub"></div>
-      <div class="phrase-actions">
-        <button class="btn btn-en" id="btnListen" onclick="playTTS()">🔊 Listen</button>
-        <button class="btn btn-outline" onclick="nextPhrase()">→ Next</button>
-        <button class="btn btn-outline" onclick="shufflePhrase()">🔀</button>
-      </div>
-    </div>
-
-    <div class="record-area" id="recordArea">
-      <canvas id="waveform"></canvas>
-      <button class="mic-btn idle-en" id="micBtn" onclick="toggleRec()">🎤</button>
-      <div class="record-status" id="recStatus">タップして録音開始 / Tap to record</div>
-      <div class="record-hint" id="recHint">Speak clearly into your microphone</div>
-    </div>
-
-    <div class="transcript-box" id="transcriptBox">
-      <div class="tbox-label">認識結果 / Recognized</div>
-      <div class="tbox-text" id="transcriptText"></div>
-    </div>
-
-    <div class="score-panel" id="scorePanel">
-      <div class="score-ring">
-        <svg width="76" height="76" viewBox="0 0 76 76">
-          <circle cx="38" cy="38" r="32" fill="none" stroke="var(--border)" stroke-width="7"/>
-          <circle cx="38" cy="38" r="32" fill="none" stroke="var(--success)" stroke-width="7"
-            stroke-dasharray="201" stroke-dashoffset="201" id="scoreArc"
-            stroke-linecap="round" style="transition:stroke-dashoffset 0.9s ease"/>
-        </svg>
-        <div class="score-pct" id="scorePct">0%</div>
-      </div>
-      <div class="score-info">
-        <div class="score-title" id="scoreTitle">—</div>
-        <div class="score-words" id="scoreWords"></div>
+      <div id="phrase-target" style="font-size:1.5rem;font-weight:800;line-height:1.38;letter-spacing:-.02em;margin-bottom:.5rem"></div>
+      <div id="phrase-sub" style="font-size:.86rem;color:#999;margin-bottom:1.1rem;line-height:1.6"></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn primary" id="btn-listen" onclick="playTTS()">&#128266; Listen</button>
+        <button class="btn" onclick="nextPhrase()">&#8594; Next</button>
+        <button class="btn" onclick="shufflePhrase()">&#128256;</button>
       </div>
     </div>
-
+    <div id="record-area">
+      <div id="wave"></div>
+      <button id="mic-btn" onclick="toggleRec()">&#127908;</button>
+      <div id="rec-status" style="font-weight:700;font-size:.86rem;margin-bottom:.2rem;color:#bbb"></div>
+      <div id="rec-hint" style="font-size:.73rem;color:#ccc"></div>
+    </div>
+    <div id="transcript-box">
+      <div class="box-label">&#35469;&#35672;&#32080;&#26524; / Recognized</div>
+      <div id="transcript-text" style="font-size:.95rem;line-height:1.65"></div>
+    </div>
+    <div id="score-panel">
+      <svg width="64" height="64" viewBox="0 0 64 64" style="flex-shrink:0;transform:rotate(-90deg)">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="#eee" stroke-width="6"/>
+        <circle id="score-arc" cx="32" cy="32" r="28" fill="none" stroke="#16a34a" stroke-width="6"
+          stroke-dasharray="175.9" stroke-dashoffset="175.9" stroke-linecap="round"
+          style="transition:stroke-dashoffset .8s ease"/>
+        <text id="score-num" x="32" y="32" text-anchor="middle" dominant-baseline="central"
+          style="transform:rotate(90deg);transform-origin:32px 32px"
+          fill="#1c1a15" font-size="10" font-weight="800">0%</text>
+      </svg>
+      <div style="flex:1">
+        <div id="score-title" style="font-weight:800;font-size:.95rem;margin-bottom:.3rem"></div>
+        <div id="score-detail" style="font-size:.75rem;color:#bbb;margin-bottom:.35rem"></div>
+        <div id="score-words" style="font-size:.83rem;line-height:2;display:flex;flex-wrap:wrap"></div>
+      </div>
+    </div>
   </div>
-
-  <!-- ── FLASHCARD ── -->
   <div class="view" id="view-flash">
-    <div class="flashcard-wrap">
-      <div class="flashcard" id="flashcard" onclick="flipCard()">
-        <div class="fc-lang-badge en" id="fcBadge">EN</div>
-        <div class="fc-word" id="fcWord">—</div>
-        <div class="fc-sub" id="fcSub">タップして翻訳を表示 / Tap to reveal</div>
-        <div class="fc-hint">tap to flip ↺</div>
-      </div>
+    <div id="flashcard" onclick="flipCard()">
+      <span class="fc-badge" id="fc-badge"></span>
+      <div id="fc-word" style="font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.55rem;line-height:1.38"></div>
+      <div id="fc-sub" style="font-size:.86rem;color:#ccc;transition:color .2s;line-height:1.6"></div>
+      <div id="fc-hint">tap &#8635;</div>
     </div>
-    <div class="fc-nav">
-      <button class="btn btn-outline" onclick="fcMove(-1)">← 前へ</button>
-      <button class="btn btn-en" id="fcListenBtn" onclick="fcListen()">🔊 Listen</button>
-      <button class="btn btn-outline" onclick="fcMove(1)">次へ →</button>
+    <div id="fc-nav">
+      <button class="btn" onclick="fcMove(-1)">&#8592; &#21069;&#12408;</button>
+      <button class="btn primary" id="fc-listen" onclick="fcPlayTTS()">&#128266; Listen</button>
+      <button class="btn" onclick="fcMove(1)">&#27425;&#12408; &#8594;</button>
     </div>
-    <div class="fc-progress" id="fcProgress"></div>
+    <div id="fc-progress"></div>
   </div>
-
-  <!-- ── MANAGE ── -->
   <div class="view" id="view-manage">
-    <div class="section-title">Progress</div>
-    <div class="progress-bar" style="margin-top:0.6rem">
-      <div class="progress-fill en" id="progFill" style="width:0%"></div>
-    </div>
-    <div class="progress-label" id="progLabel">0 / 0 フレーズ練習済み</div>
-
-    <div class="add-form">
-      <h3>+ フレーズを追加 / Add phrase</h3>
-      <div class="add-row">
-        <input class="finput" id="addEn" placeholder="English phrase" />
-        <input class="finput ja" id="addJa" placeholder="日本語訳" />
-        <input class="finput" id="addCat" placeholder="Category" style="max-width:130px" />
-        <button class="btn btn-en" onclick="addPhrase()">追加</button>
+    <div id="prog-bar"><div id="prog-fill" style="width:0%"></div></div>
+    <div id="prog-label"></div>
+    <div id="add-form">
+      <h3>&#65291; &#12501;&#12524;&#12540;&#12474;&#12434;&#36861;&#21152;</h3>
+      <div id="add-row">
+        <input class="finput" id="add-en" placeholder="English phrase" style="max-width:200px"/>
+        <input class="finput" id="add-ja" placeholder="&#26085;&#26412;&#35486;&#35383;" style="max-width:180px"/>
+        <input class="finput" id="add-cat" placeholder="Category" style="max-width:110px"/>
+        <button class="btn primary" id="add-btn" onclick="addPhrase()">&#36861;&#21152;</button>
       </div>
     </div>
-
-    <div class="section-title">All Phrases</div>
-    <div class="pl-grid" id="plGrid"></div>
+    <div id="pl-grid"></div>
   </div>
-</main>
-
-<div class="toast" id="toast"></div>
-
+</div>
+<div id="toast"></div>
 <script>
-// ─── STATE ───────────────────────────────────────────────────
-let lang = 'en'; // 'en' | 'ja'
-let curIdx = 0;
-let fcIdx = 0;
-let fcFlipped = false;
-let done = new Set();
-let isRec = false;
-let recognition = null;
-let audioCtx = null, analyser = null, rafId = null, mediaStream = null;
-
-// ─── PHRASES ─────────────────────────────────────────────────
-let phrases = [
-  { en:"Could you say that again, please?",       ja:"もう一度おっしゃっていただけますか？",  cat:"Clarification" },
-  { en:"I'm afraid I don't quite follow.",         ja:"ちょっと理解できないのですが。",          cat:"Clarification" },
-  { en:"What do you mean by that?",               ja:"それはどういう意味ですか？",              cat:"Clarification" },
-  { en:"Nice to meet you.",                        ja:"はじめまして。",                          cat:"Greetings" },
-  { en:"Let me get back to you on that.",          ja:"それについては後でご連絡します。",        cat:"Business" },
-  { en:"Would you mind if I joined you?",          ja:"ご一緒してもよろしいでしょうか？",        cat:"Polite" },
-  { en:"I completely agree with your point.",      ja:"おっしゃる通りだと思います。",            cat:"Agreement" },
-  { en:"That's a great idea, actually.",           ja:"それは素晴らしいアイデアですね。",        cat:"Praise" },
-  { en:"To be honest, I'm not so sure about that.",ja:"正直、それについては自信がありません。",  cat:"Opinion" },
-  { en:"Could we schedule a meeting for next week?",ja:"来週ミーティングをスケジュールできますか？",cat:"Business"},
-  { en:"I'll keep that in mind.",                  ja:"念頭に置いておきます。",                  cat:"Daily" },
-  { en:"How has your day been so far?",            ja:"今日はいかがでしたか？",                  cat:"Small Talk" },
-  { en:"I really appreciate your help.",           ja:"本当にありがとうございます。",            cat:"Gratitude" },
-  { en:"Excuse me, could you tell me how to get to the station?", ja:"すみません、駅への行き方を教えていただけますか？", cat:"Directions" },
-  { en:"I'd like to make a reservation for two.", ja:"2名で予約をしたいのですが。",              cat:"Daily" },
-  { en:"お手洗いはどこですか？",                  ja:"Where is the restroom?",                  cat:"Daily", primary:"ja" },
-  { en:"少々お待ちください。",                    ja:"Please wait a moment.",                   cat:"Polite", primary:"ja" },
-  { en:"ありがとうございました。",               ja:"Thank you very much.",                    cat:"Gratitude", primary:"ja" },
-  { en:"もう少しゆっくり話してもらえますか？",   ja:"Could you speak a little more slowly?",   cat:"Clarification", primary:"ja" },
-  { en:"これをください。",                        ja:"I'll take this one.",                     cat:"Shopping", primary:"ja" },
+var lang='en',curIdx=0,fcIdx=0,fcFlipped=false,done=[],isRec=false,recObj=null,audioCtx=null,analyser=null,rafId=null,mediaStream=null,toastTimer=null;
+var phrases=[
+  {en:"Could you say that again, please?",ja:"\u3082\u3046\u4e00\u5ea6\u304a\u3063\u3057\u3083\u3063\u3066\u3044\u305f\u3060\u3051\u307e\u3059\u304b\uff1f",cat:"Clarification"},
+  {en:"I am afraid I do not quite follow.",ja:"\u3061\u3087\u3063\u3068\u7406\u89e3\u3067\u304d\u306a\u3044\u306e\u3067\u3059\u304c\u3002",cat:"Clarification"},
+  {en:"What do you mean by that?",ja:"\u305d\u308c\u306f\u3069\u3046\u3044\u3046\u610f\u5473\u3067\u3059\u304b\uff1f",cat:"Clarification"},
+  {en:"Nice to meet you.",ja:"\u306f\u3058\u3081\u307e\u3057\u3066\u3002",cat:"Greetings"},
+  {en:"Let me get back to you on that.",ja:"\u305d\u308c\u306b\u3064\u3044\u3066\u306f\u5f8c\u3067\u3054\u9023\u7d61\u3057\u307e\u3059\u3002",cat:"Business"},
+  {en:"Would you mind if I joined you?",ja:"\u3054\u4e00\u7dd2\u3057\u3066\u3082\u3088\u308d\u3057\u3044\u3067\u3057\u3087\u3046\u304b\uff1f",cat:"Polite"},
+  {en:"I completely agree with your point.",ja:"\u304a\u3063\u3057\u3083\u308b\u901a\u308a\u3060\u3068\u601d\u3044\u307e\u3059\u3002",cat:"Agreement"},
+  {en:"That is a great idea, actually.",ja:"\u305d\u308c\u306f\u7d20\u6674\u3089\u3057\u3044\u30a2\u30a4\u30c7\u30a2\u3067\u3059\u306d\u3002",cat:"Praise"},
+  {en:"To be honest, I am not so sure about that.",ja:"\u6b63\u76f4\u3001\u305d\u308c\u306b\u3064\u3044\u3066\u306f\u81ea\u4fe1\u304c\u3042\u308a\u307e\u305b\u3093\u3002",cat:"Opinion"},
+  {en:"Could we schedule a meeting for next week?",ja:"\u6765\u9031\u30df\u30fc\u30c6\u30a3\u30f3\u30b0\u3092\u30b9\u30b1\u30b8\u30e5\u30fc\u30eb\u3067\u304d\u307e\u3059\u304b\uff1f",cat:"Business"},
+  {en:"I will keep that in mind.",ja:"\u5ff5\u982d\u306b\u7f6e\u3044\u3066\u304a\u304d\u307e\u3059\u3002",cat:"Daily"},
+  {en:"How has your day been so far?",ja:"\u4eca\u65e5\u306f\u3044\u304b\u304c\u3067\u3057\u305f\u304b\uff1f",cat:"Small Talk"},
+  {en:"I really appreciate your help.",ja:"\u672c\u5f53\u306b\u3042\u308a\u304c\u3068\u3046\u3054\u3056\u3044\u307e\u3059\u3002",cat:"Gratitude"},
+  {en:"Could you tell me how to get to the station?",ja:"\u99c5\u3078\u306e\u884c\u304d\u65b9\u3092\u6559\u3048\u3066\u3044\u305f\u3060\u3051\u307e\u3059\u304b\uff1f",cat:"Directions"},
+  {en:"I would like to make a reservation for two.",ja:"2\u540d\u3067\u4e88\u7d04\u3092\u3057\u305f\u3044\u306e\u3067\u3059\u304c\u3002",cat:"Daily"},
+  {en:"\u304a\u624b\u6d17\u3044\u306f\u3069\u3053\u3067\u3059\u304b\uff1f",ja:"Where is the restroom?",cat:"Daily",primary:"ja"},
+  {en:"\u5c11\u3005\u304a\u5f85\u3061\u304f\u3060\u3055\u3044\u3002",ja:"Please wait a moment.",cat:"Polite",primary:"ja"},
+  {en:"\u3042\u308a\u304c\u3068\u3046\u3054\u3056\u3044\u307e\u3057\u305f\u3002",ja:"Thank you very much.",cat:"Gratitude",primary:"ja"},
+  {en:"\u3082\u3046\u5c11\u3057\u30f3\u3063\u304f\u308a\u8a71\u3057\u3066\u3082\u3089\u3048\u307e\u3059\u304b\uff1f",ja:"Could you speak a little more slowly?",cat:"Clarification",primary:"ja"},
+  {en:"\u3053\u308c\u3092\u304f\u3060\u3055\u3044\u3002",ja:"I will take this one.",cat:"Shopping",primary:"ja"}
 ];
+function isDone(i){return done.indexOf(i)>=0;}
+function getTarget(p){return lang==='en'?p.en:p.ja;}
+function getSub(p){return lang==='en'?p.ja:p.en;}
+function acc(){return lang==='en'?'#1d4ed8':'#b91c1c';}
+function accL(){return lang==='en'?'#eff6ff':'#fff1f2';}
+function accM(){return lang==='en'?'#3b82f6':'#ef4444';}
+function g(id){return document.getElementById(id);}
 
-// Filter by current language
-function getFilteredPhrases() {
-  // Show all, but highlight native side based on lang
-  return phrases;
-}
-
-function getTarget(p) {
-  return lang === 'en' ? p.en : p.ja;
-}
-function getSub(p) {
-  return lang === 'en' ? p.ja : p.en;
-}
-function getRecogLang() {
-  return lang === 'en' ? 'en-US' : 'ja-JP';
-}
-
-// ─── INIT ─────────────────────────────────────────────────────
-function init() {
-  renderPhrase(curIdx);
-  renderFlash(fcIdx);
-  renderManage();
+function init(){
+  updateLangUI();
+  renderPhrase(0);
+  renderFlash(0);
   updateHeader();
-  initSR();
-  window.speechSynthesis && window.speechSynthesis.getVoices();
+  if(window.speechSynthesis){
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};
+  }
 }
 
-// ─── LANGUAGE ─────────────────────────────────────────────────
-function setLang(l) {
-  lang = l;
-  document.getElementById('btnEN').className = 'lang-btn' + (l==='en' ? ' active-en' : '');
-  document.getElementById('btnJA').className = 'lang-btn' + (l==='ja' ? ' active-ja' : '');
-  resetRecUI();
+function updateLangUI(){
+  var a=acc(),al=accL();
+  g('btn-en').style.background=lang==='en'?'#1d4ed8':'transparent';
+  g('btn-en').style.color=lang==='en'?'#fff':'#7a7060';
+  g('btn-ja').style.background=lang==='ja'?'#b91c1c':'transparent';
+  g('btn-ja').style.color=lang==='ja'?'#fff':'#7a7060';
+  g('logo').innerHTML='<span style="color:'+a+'">\u30b9\u30d4\u30fc\u30af</span><span style="color:#ddd;font-weight:300">/</span><span style="color:'+(lang==='en'?'#b91c1c':a)+'">\u8a71\u3059</span>Loop';
+  g('btn-listen').style.background=a;
+  g('fc-listen').style.background=a;
+  g('add-btn').style.background=a;
+  g('prog-fill').style.background='linear-gradient(90deg,'+a+','+accM()+')';
+  g('rec-status').textContent=lang==='en'?'Tap \uD83C\uDF64 to record':'\uD83C\uDF64 \u3092\u30BF\u30C3\u30D7\u3057\u3066\u9332\u97F3';
+  g('rec-hint').textContent=lang==='en'?'Speak clearly into your microphone':'\u30DE\u30A4\u30AF\u306B\u5411\u304B\u3063\u3066\u306F\u3063\u304D\u308A\u8A71\u3057\u3066\u304F\u3060\u3055\u3044';
+  g('mic-btn').style.background=a;
+  g('mic-btn').style.boxShadow='0 5px 16px '+a+'55';
+}
+
+function setLang(l){
+  lang=l;
+  updateLangUI();
+  resetRec();
   renderPhrase(curIdx);
   renderFlash(fcIdx);
   renderManage();
 }
 
-// ─── PHRASE ──────────────────────────────────────────────────
-function renderPhrase(idx) {
-  curIdx = (idx + phrases.length) % phrases.length;
-  const p = phrases[curIdx];
-  const isEN = lang === 'en';
-
-  const card = document.getElementById('phraseCard');
-  card.className = 'card phrase-card' + (isEN ? '' : ' lang-ja');
-
-  const cat = document.getElementById('catTag');
-  cat.textContent = p.cat;
-  cat.className = 'cat-tag ' + (isEN ? 'en' : 'ja');
-
-  document.getElementById('phraseNum').textContent = `#${curIdx+1}`;
-  const tgt = document.getElementById('phraseTarget');
-  tgt.textContent = getTarget(p);
-  tgt.className = 'phrase-target' + (isEN ? '' : ' ja-text');
-  document.getElementById('phraseSub').textContent = getSub(p);
-
-  const lb = document.getElementById('btnListen');
-  lb.className = 'btn ' + (isEN ? 'btn-en' : 'btn-ja');
-
-  const mb = document.getElementById('micBtn');
-  mb.className = 'mic-btn idle-' + lang;
-
-  resetRecUI();
+function updateHeader(){
+  var streak=0;
+  for(var i=0;i<phrases.length;i++){if(isDone(i))streak++;else break;}
+  g('h-done').textContent='\u2705 '+done.length+'/'+phrases.length;
+  g('h-streak').textContent='\uD83D\uDD25 '+streak;
 }
 
-function nextPhrase() { renderPhrase(curIdx + 1); }
-function shufflePhrase() {
-  let r;
-  do { r = Math.floor(Math.random() * phrases.length); } while (r === curIdx && phrases.length > 1);
-  renderPhrase(r);
+function renderPhrase(idx){
+  curIdx=((idx%phrases.length)+phrases.length)%phrases.length;
+  var p=phrases[curIdx],a=acc(),al=accL(),isEN=lang==='en';
+  g('phrase-card').style.borderLeftColor=a;
+  var ct=g('cat-tag');
+  ct.textContent=p.cat;ct.style.background=al;ct.style.color=a;
+  g('phrase-num').textContent='#'+(curIdx+1)+'/'+phrases.length;
+  var tgt=g('phrase-target');
+  tgt.textContent=getTarget(p);
+  tgt.style.fontSize=isEN?'1.5rem':'1.3rem';
+  tgt.style.letterSpacing=isEN?'-.02em':'.02em';
+  g('phrase-sub').textContent=getSub(p);
+  resetRec();
 }
 
-function resetRecUI() {
-  document.getElementById('transcriptBox').classList.remove('visible');
-  document.getElementById('scorePanel').classList.remove('visible');
-  document.getElementById('recordArea').className = 'record-area';
-  document.getElementById('waveform').classList.remove('visible');
-  document.getElementById('recStatus').className = 'record-status';
-  document.getElementById('recStatus').textContent = lang === 'en' ? 'Tap to record' : 'タップして録音開始';
-  document.getElementById('recHint').textContent = lang === 'en' ? 'Speak clearly into your microphone' : 'マイクに向かってはっきり話してください';
+function nextPhrase(){renderPhrase(curIdx+1);}
+function shufflePhrase(){var r;do{r=Math.floor(Math.random()*phrases.length);}while(r===curIdx&&phrases.length>1);renderPhrase(r);}
+
+function resetRec(){
+  if(isRec){if(recObj)recObj.stop();}
+  g('transcript-box').className='';
+  g('score-panel').className='';
+  g('record-area').style.borderStyle='dashed';
+  g('record-area').style.borderColor='#ccc';
+  g('record-area').style.background='#fff';
+  var a=acc();
+  g('mic-btn').className='';
+  g('mic-btn').style.background=a;
+  g('mic-btn').style.boxShadow='0 5px 16px '+a+'55';
+  g('mic-btn').textContent='\uD83C\uDF64';
+  g('rec-status').style.color='#bbb';
+  g('rec-status').textContent=lang==='en'?'Tap \uD83C\uDF64 to record':'\uD83C\uDF64 \u3092\u30BF\u30C3\u30D7\u3057\u3066\u9332\u97F3';
+  g('wave').style.opacity='.1';
+  cancelAnimationFrame(rafId);
+  if(audioCtx){audioCtx.close();audioCtx=null;}
+  if(mediaStream){mediaStream.getTracks().forEach(function(t){t.stop();});mediaStream=null;}
+  isRec=false;
 }
 
-// ─── TTS ─────────────────────────────────────────────────────
-function playTTS() { speakText(getTarget(phrases[curIdx])); }
-function fcListen() { speakText(getTarget(phrases[fcIdx])); }
-function speakText(text) {
-  if (!window.speechSynthesis) return showToast('TTS非対応のブラウザです', 'err');
+function playTTS(){speakText(getTarget(phrases[curIdx]));}
+function fcPlayTTS(){speakText(getTarget(phrases[fcIdx]));}
+function speakText(text){
+  if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = getRecogLang();
-  u.rate = 0.85;
-  const voices = window.speechSynthesis.getVoices();
-  const v = voices.find(v => v.lang.startsWith(lang === 'en' ? 'en' : 'ja') && v.localService) ||
-            voices.find(v => v.lang.startsWith(lang === 'en' ? 'en' : 'ja'));
-  if (v) u.voice = v;
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='en'?'en-US':'ja-JP';u.rate=.82;
+  var vs=window.speechSynthesis.getVoices(),prefix=lang==='en'?'en':'ja',v=null;
+  for(var i=0;i<vs.length;i++){if(vs[i].lang.indexOf(prefix)===0&&vs[i].localService){v=vs[i];break;}}
+  if(!v){for(var i=0;i<vs.length;i++){if(vs[i].lang.indexOf(prefix)===0){v=vs[i];break;}}}
+  if(v)u.voice=v;
   window.speechSynthesis.speak(u);
 }
 
-// ─── SPEECH RECOGNITION ──────────────────────────────────────
-function initSR() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    document.getElementById('recStatus').textContent = '音声認識非対応 / Not supported';
-    return;
-  }
-  recognition = new SR();
-  recognition.continuous = false;
-  recognition.interimResults = true;
-
-  recognition.onresult = e => {
-    let t = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript;
-    document.getElementById('transcriptText').textContent = t;
-    document.getElementById('transcriptBox').classList.add('visible');
-    if (e.results[e.results.length-1].isFinal) evaluate(t);
-  };
-  recognition.onerror = e => { stopRecUI(); if (e.error !== 'no-speech') showToast('Error: ' + e.error, 'err'); };
-  recognition.onend = stopRecUI;
-}
-
-async function toggleRec() {
-  if (isRec) { recognition && recognition.stop(); return; }
-  if (!recognition) return showToast('Speech API非対応', 'err');
-  isRec = true;
-
-  recognition.lang = getRecogLang();
-  document.getElementById('recStatus').textContent = lang === 'en' ? 'Recording...' : '録音中...';
-  document.getElementById('recStatus').className = 'record-status active-' + lang;
-  document.getElementById('micBtn').className = 'mic-btn recording';
-  document.getElementById('micBtn').style.background = lang === 'en' ? 'var(--en-acc)' : 'var(--ja-acc)';
-  document.getElementById('recordArea').className = 'record-area recording-' + lang;
-  document.getElementById('waveform').classList.add('visible');
-  document.getElementById('transcriptBox').classList.remove('visible');
-  document.getElementById('scorePanel').classList.remove('visible');
-
-  try {
-    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256;
-    audioCtx.createMediaStreamSource(mediaStream).connect(analyser);
-    drawWave();
-  } catch(e) {}
-  recognition.start();
-}
-
-function stopRecUI() {
-  isRec = false;
-  const mb = document.getElementById('micBtn');
-  mb.className = 'mic-btn idle-' + lang;
-  mb.style.background = '';
-  document.getElementById('recStatus').textContent = lang === 'en' ? 'Tap to record again' : 'もう一度タップ';
-  document.getElementById('recStatus').className = 'record-status';
-  document.getElementById('recordArea').className = 'record-area';
+function stopRecUI(){
+  isRec=false;
   cancelAnimationFrame(rafId);
-  if (audioCtx) { audioCtx.close(); audioCtx = null; }
-  if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  if(audioCtx){audioCtx.close();audioCtx=null;}
+  if(mediaStream){mediaStream.getTracks().forEach(function(t){t.stop();});mediaStream=null;}
+  var a=acc();
+  g('mic-btn').className='';
+  g('mic-btn').style.background=a;
+  g('mic-btn').style.boxShadow='0 5px 16px '+a+'55';
+  g('mic-btn').textContent='\uD83C\uDF64';
+  g('rec-status').style.color='#bbb';
+  g('rec-status').textContent=lang==='en'?'Tap \uD83C\uDF64 to record again':'\u3082\u3046\u4E00\u5EA6\u30BF\u30C3\u30D7';
+  g('record-area').style.borderStyle='dashed';
+  g('record-area').style.borderColor='#ccc';
+  g('record-area').style.background='#fff';
+  g('wave').style.opacity='.1';
 }
 
-function drawWave() {
-  const canvas = document.getElementById('waveform');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
-  const buf = new Uint8Array(analyser.frequencyBinCount);
-  const c1 = lang === 'en' ? '#2563eb' : '#dc2626';
-  const c2 = lang === 'en' ? '#60a5fa' : '#f87171';
-  function draw() {
-    rafId = requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(buf);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const bw = canvas.width / buf.length * 2;
-    for (let i = 0; i < buf.length; i++) {
-      const h = (buf[i] / 255) * canvas.height;
-      const g = ctx.createLinearGradient(0, canvas.height-h, 0, canvas.height);
-      g.addColorStop(0, c1); g.addColorStop(1, c2);
-      ctx.fillStyle = g;
-      ctx.fillRect(i * bw, canvas.height - h, bw - 1, h);
-    }
-  }
-  draw();
+function evaluate(text,pIdx,pLang){
+  var p=phrases[pIdx];if(!p)return;
+  var target=(pLang==='en'?p.en:p.ja).toLowerCase().replace(/[^\p{L}\s]/gu,'');
+  var spoken=text.toLowerCase().replace(/[^\p{L}\s]/gu,'');
+  var tw=pLang==='en'?target.split(/\s+/).filter(Boolean):Array.from(target).filter(function(c){return c.trim();});
+  var sw=pLang==='en'?spoken.split(/\s+/).filter(Boolean):Array.from(spoken).filter(function(c){return c.trim();});
+  var matched=0;
+  var words=tw.map(function(w){var hit=sw.indexOf(w)>=0;if(hit)matched++;return{w:w,hit:hit};});
+  var pct=tw.length?Math.round(matched/tw.length*100):0;
+  g('score-panel').className='show';
+  var circ=175.9,arc=g('score-arc');
+  arc.setAttribute('stroke-dashoffset',String(circ-circ*pct/100));
+  arc.setAttribute('stroke',pct>=75?'#16a34a':pct>=50?'#d97706':'#dc2626');
+  g('score-num').textContent=pct+'%';
+  g('score-title').textContent=pct===100?'\uD83C\uDF89 Perfect!':pct>=75?'\u2705 Excellent!':pct>=50?'\uD83D\uDCAA Good try!':'\uD83D\uDD04 Keep going!';
+  g('score-detail').textContent=matched+'/'+tw.length+' \u8A9E\u4E00\u81F4';
+  var sw_el=g('score-words');sw_el.innerHTML='';
+  sw_el.style.gap=pLang==='en'?'.2rem':'0';
+  words.forEach(function(wd){var sp=document.createElement('span');sp.textContent=wd.w;sp.className=wd.hit?'word-ok':'word-miss';sw_el.appendChild(sp);});
+  if(pct>=75){if(!isDone(pIdx))done.push(pIdx);updateHeader();renderManage();showToast(pct===100?'\uD83C\uDF89 \u30D1\u30FC\u30D5\u30A7\u30AF\u30C8\uFF01':'\u2705 '+(pLang==='en'?'Great job!':'\u3088\u304F\u3067\u304D\u307E\u3057\u305F\uFF01'));}
+  else{showToast(pct>=50?'\uD83D\uDCAA \u3082\u3046\u4E00\u5EA6\uFF01':'\uD83D\uDD04 \u7DF4\u7FD2\u3092\u7D9A\u3051\u3088\u3046\uFF01');}
 }
 
-// ─── EVALUATE ────────────────────────────────────────────────
-function evaluate(transcript) {
-  const target = getTarget(phrases[curIdx]).toLowerCase().replace(/[^\p{L}\s]/gu, '');
-  const spoken = transcript.toLowerCase().replace(/[^\p{L}\s]/gu, '');
-
-  // Word-level match (works for both EN and JA char-split)
-  const tw = lang === 'en' ? target.split(/\s+/) : [...target];
-  const sw = lang === 'en' ? spoken.split(/\s+/) : [...spoken];
-
-  let matched = 0;
-  const annotated = tw.map(w => {
-    if (sw.includes(w)) { matched++; return `<span class="word-ok">${w}</span>`; }
-    return `<span class="word-miss">${w}</span>`;
-  });
-
-  const pct = tw.length ? Math.round(matched / tw.length * 100) : 0;
-  showScore(pct, annotated, matched, tw.length);
-  document.getElementById('recordArea').className = 'record-area has-result';
-
-  if (pct >= 75) {
-    done.add(curIdx);
-    updateHeader();
-    renderManage();
-    showToast(pct === 100 ? '🎉 パーフェクト！' : '✅ ' + (lang==='en' ? 'Great job!' : 'よくできました！'));
-  }
-}
-
-function showScore(pct, annotated, matched, total) {
-  const panel = document.getElementById('scorePanel');
-  panel.classList.add('visible');
-
-  document.getElementById('scorePct').textContent = pct + '%';
-  const arc = document.getElementById('scoreArc');
-  arc.style.strokeDashoffset = 201 - (201 * pct / 100);
-  arc.style.stroke = pct >= 75 ? 'var(--success)' : pct >= 50 ? 'var(--warn)' : 'var(--ja-acc)';
-
-  const titles = {
-    100: '🎉 Perfect!', 75: '✅ Excellent!', 50: '💪 Good try!', 0: '🔄 Keep going!'
+function toggleRec(){
+  if(isRec){if(recObj)recObj.stop();return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('Chrome\u3092\u304A\u4F7F\u3044\u304F\u3060\u3055\u3044',true);return;}
+  var capturedIdx=curIdx,capturedLang=lang;
+  isRec=true;
+  g('transcript-box').className='';g('score-panel').className='';g('transcript-text').textContent='';
+  var a=acc(),al=accL();
+  g('mic-btn').className='pulsing';g('mic-btn').style.background='#dc2626';g('mic-btn').style.boxShadow='0 5px 16px #dc262660';g('mic-btn').textContent='\u23F9';
+  g('rec-status').style.color=a;g('rec-status').textContent=lang==='en'?'Recording... tap \u23F9 to stop':'\u9332\u97F3\u4E2D\u2026 \u23F9\u3067\u505C\u6B62';
+  g('record-area').style.borderStyle='solid';g('record-area').style.borderColor=a;g('record-area').style.background=al;
+  g('wave').style.opacity='1';
+  var rec=new SR();recObj=rec;
+  rec.lang=lang==='en'?'en-US':'ja-JP';rec.continuous=false;rec.interimResults=true;
+  rec.onresult=function(e){
+    var t='';for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;
+    g('transcript-text').textContent=t;g('transcript-box').className='show';
+    if(e.results[e.results.length-1].isFinal)evaluate(t,capturedIdx,capturedLang);
   };
-  const t = pct === 100 ? titles[100] : pct >= 75 ? titles[75] : pct >= 50 ? titles[50] : titles[0];
-  document.getElementById('scoreTitle').textContent = t;
-  document.getElementById('scoreWords').innerHTML =
-    `<strong>${matched}/${total}</strong> 語一致<br>${annotated.join(lang==='en'?' ':'')}`;
+  rec.onerror=function(e){stopRecUI();if(e.error==='not-allowed')showToast('\u30DE\u30A4\u30AF\u3078\u306E\u30A2\u30AF\u30BB\u30B9\u3092\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044',true);else if(e.error!=='no-speech')showToast('\u30A8\u30E9\u30FC: '+e.error,true);};
+  rec.onend=stopRecUI;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaStream=stream;
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();audioCtx=ctx;
+    var an=ctx.createAnalyser();an.fftSize=128;analyser=an;ctx.createMediaStreamSource(stream).connect(an);
+    var waveEl=g('wave');waveEl.innerHTML='';
+    var NUM=28,bars=[],a2=acc(),am=accM();
+    for(var i=0;i<NUM;i++){var b=document.createElement('div');b.className='bar';b.style.background='linear-gradient(to top,'+a2+','+am+')';b.style.height='3px';waveEl.appendChild(b);bars.push(b);}
+    var buf=new Uint8Array(an.frequencyBinCount),step=Math.floor(buf.length/NUM);
+    function tick(){rafId=requestAnimationFrame(tick);an.getByteFrequencyData(buf);for(var i=0;i<NUM;i++){bars[i].style.height=Math.max(3,(buf[i*step]/255)*52)+'px';}}
+    tick();rec.start();
+  }).catch(function(){stopRecUI();showToast('\u30DE\u30A4\u30AF\u3078\u306E\u30A2\u30AF\u30BB\u30B9\u3092\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044',true);});
 }
 
-// ─── FLASHCARD ────────────────────────────────────────────────
-function renderFlash(idx) {
-  fcIdx = (idx + phrases.length) % phrases.length;
-  fcFlipped = false;
-  const p = phrases[fcIdx];
-  const isEN = lang === 'en';
-  const fc = document.getElementById('flashcard');
-  fc.className = 'flashcard';
-
-  const badge = document.getElementById('fcBadge');
-  badge.textContent = isEN ? 'EN' : 'JA';
-  badge.className = 'fc-lang-badge ' + (isEN ? 'en' : 'ja');
-
-  const word = document.getElementById('fcWord');
-  word.textContent = getTarget(p);
-  word.className = 'fc-word' + (isEN ? '' : ' ja-text');
-
-  document.getElementById('fcSub').textContent = 'タップして翻訳を表示 / Tap to reveal';
-  document.getElementById('fcProgress').textContent = `${fcIdx+1} / ${phrases.length}`;
-
-  const lb = document.getElementById('fcListenBtn');
-  lb.className = 'btn btn-' + lang;
+function renderFlash(idx){
+  fcIdx=((idx%phrases.length)+phrases.length)%phrases.length;fcFlipped=false;
+  var p=phrases[fcIdx],a=acc(),al=accL(),isEN=lang==='en';
+  var fc=g('flashcard');fc.style.background='#fff';fc.style.borderColor='#e2e0db';
+  var badge=g('fc-badge');badge.textContent=isEN?'EN':'JA';badge.style.background=al;badge.style.color=a;
+  var fw=g('fc-word');fw.textContent=getTarget(p);fw.style.fontSize=isEN?'1.6rem':'1.35rem';fw.style.letterSpacing=isEN?'-.02em':'.02em';
+  var fs=g('fc-sub');fs.textContent='\u30BF\u30C3\u30D7\u3057\u3066\u7FFB\u8A33\u3092\u8868\u793A / Tap to reveal';fs.style.color='#ccc';
+  g('fc-progress').textContent=(fcIdx+1)+' / '+phrases.length;
 }
-
-function flipCard() {
-  fcFlipped = !fcFlipped;
-  const p = phrases[fcIdx];
-  const isEN = lang === 'en';
-  const fc = document.getElementById('flashcard');
-  if (fcFlipped) {
-    const sub = getSub(p);
-    const subEl = document.getElementById('fcSub');
-    subEl.textContent = sub;
-    fc.className = 'flashcard flipped-' + lang;
-  } else {
-    document.getElementById('fcSub').textContent = 'タップして翻訳を表示 / Tap to reveal';
-    fc.className = 'flashcard';
-  }
+function flipCard(){
+  fcFlipped=!fcFlipped;var p=phrases[fcIdx],a=acc(),al=accL(),fc=g('flashcard'),fs=g('fc-sub');
+  if(fcFlipped){fc.style.background=al;fc.style.borderColor=a;fs.textContent=getSub(p);fs.style.color='#333';}
+  else{fc.style.background='#fff';fc.style.borderColor='#e2e0db';fs.textContent='\u30BF\u30C3\u30D7\u3057\u3066\u7FFB\u8A33\u3092\u8868\u793A / Tap to reveal';fs.style.color='#ccc';}
 }
-function fcMove(d) { renderFlash(fcIdx + d); }
+function fcMove(d){renderFlash(fcIdx+d);}
 
-// ─── MANAGE ──────────────────────────────────────────────────
-function renderManage() {
-  const pct = phrases.length ? Math.round(done.size / phrases.length * 100) : 0;
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progFill').className = 'progress-fill ' + lang;
-  document.getElementById('progLabel').textContent = `${done.size} / ${phrases.length} フレーズ練習済み`;
-
-  const grid = document.getElementById('plGrid');
-  grid.innerHTML = '';
-  phrases.forEach((p, i) => {
-    const d = document.createElement('div');
-    const activeClass = i===curIdx ? (' active-item' + (lang==='ja'?' ja-active':'')) : '';
-    d.className = 'pl-item' + activeClass + (done.has(i) ? ' done' : '');
-    d.innerHTML = `
-      <span class="pl-n">${i+1}</span>
-      <div class="pl-texts">
-        <div class="pl-en">${p.en}</div>
-        <div class="pl-ja">${p.ja}</div>
-      </div>
-      <span class="pl-check">${done.has(i)?'✓':''}</span>
-      <button class="pl-del" onclick="deletePhrase(event,${i})">✕</button>`;
-    d.onclick = () => { renderPhrase(i); switchView('practice', document.querySelector('.nav-tab')); };
-    grid.appendChild(d);
+function renderManage(){
+  var pct=phrases.length?Math.round(done.length/phrases.length*100):0;
+  g('prog-fill').style.width=pct+'%';
+  g('prog-label').textContent=done.length+' / '+phrases.length+' \u30D5\u30EC\u30FC\u30BA\u7DF4\u7FD2\u6E08\u307F';
+  var grid=g('pl-grid');grid.innerHTML='';
+  var a=acc(),al=accL();
+  phrases.forEach(function(p,i){
+    var div=document.createElement('div');div.className='pl-item';
+    if(i===curIdx){div.style.borderColor=a;div.style.background=al;}
+    div.innerHTML='<span class="pl-n">'+(i+1)+'</span><div class="pl-texts"><div class="pl-en">'+escHtml(p.en)+'</div><div class="pl-ja">'+escHtml(p.ja)+'</div></div><div class="pl-check'+(isDone(i)?' done':'')+'">'+( isDone(i)?'&#10003;':'')+'</div><button class="pl-del" data-i="'+i+'">&#10005;</button>';
+    div.querySelector('.pl-del').addEventListener('click',function(e){e.stopPropagation();delPhrase(parseInt(this.getAttribute('data-i')));});
+    div.addEventListener('click',function(){renderPhrase(i);switchTab('practice',g('tab-practice'));});
+    grid.appendChild(div);
   });
 }
-
-function addPhrase() {
-  const en = document.getElementById('addEn').value.trim();
-  const ja = document.getElementById('addJa').value.trim();
-  const cat = document.getElementById('addCat').value.trim() || 'Custom';
-  if (!en && !ja) return showToast('フレーズを入力してください', 'err');
-  phrases.push({ en: en || '(no EN)', ja: ja || '(日本語なし)', cat });
-  document.getElementById('addEn').value = '';
-  document.getElementById('addJa').value = '';
-  document.getElementById('addCat').value = '';
-  updateHeader();
-  renderManage();
-  showToast('✨ 追加しました！');
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function addPhrase(){
+  var en=g('add-en').value.trim(),ja=g('add-ja').value.trim(),cat=g('add-cat').value.trim()||'Custom';
+  if(!en&&!ja){showToast('\u30D5\u30EC\u30FC\u30BA\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044',true);return;}
+  phrases.push({en:en||'(no EN)',ja:ja||'(\u65E5\u672C\u8A9E\u306A\u3057)',cat:cat});
+  g('add-en').value='';g('add-ja').value='';g('add-cat').value='';
+  updateHeader();renderManage();showToast('\u2728 \u8FFD\u52A0\u3057\u307E\u3057\u305F\uFF01');
 }
-
-function deletePhrase(e, i) {
-  e.stopPropagation();
-  phrases.splice(i, 1);
-  done = new Set([...done].filter(d => d !== i).map(d => d > i ? d-1 : d));
-  if (curIdx >= phrases.length) curIdx = phrases.length - 1;
-  updateHeader();
-  renderManage();
-  renderPhrase(curIdx);
+function delPhrase(i){
+  phrases.splice(i,1);
+  done=done.filter(function(d){return d!==i;}).map(function(d){return d>i?d-1:d;});
+  if(curIdx>=phrases.length)curIdx=Math.max(0,phrases.length-1);
+  updateHeader();renderManage();renderPhrase(curIdx);
 }
-
-// ─── HEADER ──────────────────────────────────────────────────
-function updateHeader() {
-  document.getElementById('hDone').textContent = done.size;
-  document.getElementById('hTotal').textContent = phrases.length;
-  let streak = 0;
-  for (let i = 0; i < phrases.length; i++) { if (done.has(i)) streak++; else break; }
-  document.getElementById('hStreak').textContent = streak;
+function switchTab(v,btn){
+  document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active');});
+  g('view-'+v).classList.add('active');if(btn)btn.classList.add('active');
+  if(v==='manage')renderManage();
 }
-
-// ─── VIEW SWITCH ──────────────────────────────────────────────
-function switchView(v, btn) {
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (v === 'manage') renderManage();
+function showToast(msg,err){
+  var t=g('toast');t.textContent=msg;t.style.background=err?'#b91c1c':'#1c1a15';t.className='show';
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.className='';},3000);
 }
-
-// ─── TOAST ───────────────────────────────────────────────────
-let toastT;
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show';
-  if (type === 'err') t.style.background = 'var(--ja-acc)';
-  else t.style.background = 'var(--text)';
-  clearTimeout(toastT);
-  toastT = setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-window.speechSynthesis && (window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices());
 init();
 </script>
 </body>

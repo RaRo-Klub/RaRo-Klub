@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 漢字 Kanji Gyakorló 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff1493;
+    --pink-light: #ff69b4;
+    --pink-pale: #fff0f6;
+    --pink-mid: #ffc0db;
+    --white: #ffffff;
+    --dark: #7c003e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #ff1a6c 100%);
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow-x: hidden;
+  }
+  .sakura-bg { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+  .sakura-bg span { position:absolute; font-size:60px; opacity:0.07; }
+
+  header { text-align:center; padding: 36px 20px 16px; position:relative; z-index:1; }
+  header h1 { font-family:'Fredoka One',cursive; font-size: clamp(28px, 7vw, 56px); color:#fff; text-shadow: 0 4px 20px rgba(0,0,0,0.2); letter-spacing:4px; }
+  header p { color:rgba(255,255,255,0.85); font-size:16px; margin-top:8px; font-weight:700; }
+
+  .tabs { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; padding:0 16px 28px; position:relative; z-index:1; }
+  .tab-btn {
+    padding: 11px 24px; border-radius:50px; border:2px solid #fff;
+    background:transparent; color:#fff; font-weight:800; font-size:15px;
+    cursor:pointer; transition:all 0.25s; font-family:'Noto Sans JP',sans-serif;
+    letter-spacing:0.5px;
+  }
+  .tab-btn.active { background:#fff; color:var(--pink); box-shadow:0 4px 18px rgba(0,0,0,0.18); transform:translateY(-2px); }
+  .tab-btn:hover:not(.active) { background:rgba(255,255,255,0.2); }
+
+  .panel { display:none; position:relative; z-index:1; padding:0 16px; animation:fadeIn 0.4s ease; }
+  .panel.active { display:flex; flex-direction:column; align-items:center; gap:20px; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .card-box {
+    background:linear-gradient(135deg,#fff5f8,#ffe0ec);
+    border-radius:28px; padding:36px 52px; text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,0.18); border:3px solid var(--pink-light);
+    min-width:300px;
+  }
+  .kanji-big { font-size:110px; line-height:1; color:var(--dark); }
+  .hiragana { font-size:22px; color:#e0558a; margin-top:8px; font-weight:700; }
+  .card-label { font-size:12px; color:#ff9ec6; margin-top:6px; letter-spacing:2px; font-weight:700; }
+
+  /* Olvasás-típus jelvény */
+  .reading-badge {
+    display:inline-block; font-size:11px; font-weight:800; letter-spacing:1px;
+    padding:3px 12px; border-radius:20px; margin-top:10px;
+    background:rgba(255,20,147,0.12); color:var(--dark); border:1.5px solid var(--pink-light);
+  }
+
+  /* Flip kártya */
+  .flip-scene { width:340px; height:240px; cursor:pointer; perspective:1000px; }
+  .flip-card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.65s cubic-bezier(.4,2,.6,1); }
+  .flip-card.flipped { transform:rotateY(180deg); }
+  .flip-front, .flip-back {
+    position:absolute; width:100%; height:100%; backface-visibility:hidden;
+    border-radius:24px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    box-shadow:0 8px 32px rgba(0,0,0,0.15); padding:16px;
+  }
+  .flip-front { background:linear-gradient(135deg,#fff5f8,#ffe0ec); border:3px solid var(--pink-light); }
+  .flip-back { background:linear-gradient(135deg,#ff1a8c,#ff69b4); border:3px solid #fff; transform:rotateY(180deg); }
+  .flip-back .hu-word { font-size:42px; font-weight:900; color:#fff; font-family:'Fredoka One',cursive; text-align:center; }
+
+  /* Gombok */
+  .btn {
+    padding:12px 28px; border-radius:50px; border:2px solid var(--pink);
+    background:#fff; color:var(--pink); font-weight:800; font-size:15px;
+    cursor:pointer; transition:all 0.2s; font-family:'Noto Sans JP',sans-serif;
+    letter-spacing:1px;
+  }
+  .btn:hover { background:var(--pink); color:#fff; transform:translateY(-2px); box-shadow:0 4px 14px rgba(0,0,0,0.15); }
+  .btn.primary { background:var(--pink); color:#fff; border-color:var(--pink); }
+  .btn.primary:hover { background:#c0006e; }
+  .btn-row { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+
+  /* Kvíz választók */
+  .choices { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:340px; }
+  .choice-btn {
+    padding:14px 10px; border-radius:18px; border:2px solid var(--pink-light);
+    background:#fff; color:var(--pink); font-weight:800; font-size:14px;
+    cursor:pointer; transition:all 0.2s; font-family:'Noto Sans JP',sans-serif;
+    line-height:1.3;
+  }
+  .choice-btn:hover:not(:disabled) { background:var(--pink-pale); transform:scale(1.04); }
+  .choice-btn.correct { background:#00c853!important; color:#fff!important; border-color:#00c853!important; }
+  .choice-btn.wrong { background:#e53935!important; color:#fff!important; border-color:#e53935!important; }
+  .choice-btn.dim { background:#f0f0f0!important; color:#bbb!important; border-color:#eee!important; }
+
+  /* Memória */
+  .memory-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .mem-scene { width:80px; height:80px; perspective:600px; cursor:pointer; }
+  .mem-card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.5s; }
+  .mem-card.flipped { transform:rotateY(180deg); }
+  .mem-front, .mem-back {
+    position:absolute; width:100%; height:100%; backface-visibility:hidden;
+    border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-weight:700; box-shadow:0 4px 12px rgba(0,0,0,0.13);
+  }
+  .mem-front { background:linear-gradient(135deg,var(--pink),var(--pink-light)); font-size:28px; }
+  .mem-back { background:linear-gradient(135deg,#fff5f8,#ffd6e8); transform:rotateY(180deg); font-size:12px; color:var(--dark); text-align:center; padding:4px; }
+  .mem-back.jp-side { font-size:18px; color:var(--dark); }
+  .mem-back.matched { background:linear-gradient(135deg,#00c853,#69f0ae)!important; color:#fff!important; }
+
+  /* Mondatgyakorlás */
+  .fill-box {
+    background:linear-gradient(135deg,#fff5f8,#ffe0ec);
+    border-radius:24px; padding:28px 36px; text-align:center;
+    box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid var(--pink-light);
+    max-width:420px; width:100%;
+  }
+  .sentence-jp { font-size:22px; color:#333; margin:14px 0 6px; font-weight:700; }
+  .sentence-hu { font-size:14px; color:#888; }
+  .fill-input {
+    padding:12px 22px; border-radius:50px; border:2px solid var(--pink-light);
+    font-size:18px; outline:none; font-family:'Noto Sans JP',sans-serif;
+    width:240px; text-align:center; transition:border-color 0.2s;
+  }
+  .fill-input:focus { border-color:var(--pink); }
+  .fill-input.correct-in { background:#e8f5e9; border-color:#00c853; }
+  .fill-input.wrong-in { background:#ffebee; border-color:#e53935; }
+
+  .score-badge {
+    color:#fff; font-weight:800; font-size:16px;
+    background:rgba(255,255,255,0.2); padding:8px 22px;
+    border-radius:50px; backdrop-filter:blur(4px); letter-spacing:1px;
+  }
+  .result-msg { font-size:20px; font-weight:900; color:#fff; text-align:center; }
+
+  #flower-rain { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; }
+  .petal { position:absolute; top:-60px; font-size:24px; animation:petalFall linear forwards; }
+  @keyframes petalFall { to { transform:translateY(110vh) rotate(720deg); opacity:0; } }
+
+  #tanuki { position:fixed; bottom:24px; right:24px; font-size:80px; z-index:998;
+    animation:tanukiBounce 0.45s ease infinite alternate; display:none;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.25)); }
+  @keyframes tanukiBounce { from{transform:translateY(0) rotate(-12deg)} to{transform:translateY(-22px) rotate(12deg)} }
+
+  .summary {
+    margin:28px auto 0; max-width:680px; padding:18px 24px;
+    background:rgba(255,255,255,0.15); border-radius:20px;
+    backdrop-filter:blur(8px); text-align:center; position:relative; z-index:1;
+  }
+  .summary h3 { color:#fff; font-weight:800; margin-bottom:10px; letter-spacing:2px; font-size:14px; }
+  .summary-chips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .chip { background:rgba(255,255,255,0.2); border-radius:12px; padding:6px 14px;
+    color:#fff; font-size:13px; font-weight:700; }
+
+  .done-screen { text-align:center; color:#fff; padding:20px; }
+  .done-screen .big { font-size:80px; }
+  .done-screen h2 { font-size:36px; font-weight:900; font-family:'Fredoka One',cursive; margin:8px 0; }
+  .done-screen p { font-size:22px; }
+  .info-text { color:rgba(255,255,255,0.9); font-size:16px; font-weight:700; }
+</style>
+</head>
+<body>
+
+<div class="sakura-bg">
+  <span style="top:8%;left:8%;font-size:70px;transform:rotate(15deg)">🌸</span>
+  <span style="top:20%;left:82%;font-size:50px;transform:rotate(-20deg)">🌸</span>
+  <span style="top:55%;left:5%;font-size:55px;transform:rotate(10deg)">🌸</span>
+  <span style="top:75%;left:88%;font-size:65px;transform:rotate(-15deg)">🌸</span>
+  <span style="top:40%;left:50%;font-size:40px;transform:rotate(25deg)">🌸</span>
+  <span style="top:88%;left:30%;font-size:58px;transform:rotate(-10deg)">🌸</span>
+</div>
+
+<div id="flower-rain"></div>
+<div id="tanuki">🦝</div>
+
+<header>
+  <h1>🌸 漢字 KANJI 練習 🌸</h1>
+  <p>Számok japánul — Minden olvasat külön kártyán!</p>
+</header>
+
+<div style="position:relative;z-index:1;padding:0 16px 0;display:flex;justify-content:flex-start;">
+  <a href="gimnazium.html" style="display:inline-flex;align-items:center;gap:0.4rem;text-decoration:none;color:rgba(255,255,255,0.85);font-size:0.8rem;font-weight:700;letter-spacing:0.08em;border:1.5px solid rgba(255,255,255,0.5);padding:0.4rem 1rem;border-radius:50px;transition:all 0.2s;font-family:'Noto Sans JP',sans-serif;"
+    onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='transparent'">
+    ← Vissza
+  </a>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('flash',event)">🃏 Kártyák</button>
+  <button class="tab-btn" onclick="switchTab('quiz',event)">❓ Kvíz</button>
+  <button class="tab-btn" onclick="switchTab('memory',event)">🧠 Memória</button>
+  <button class="tab-btn" onclick="switchTab('fill',event)">✏️ Mondat</button>
+</div>
+
+<!-- FLASH CARDS -->
+<div id="panel-flash" class="panel active">
+  <div class="info-text" id="flash-counter"></div>
+  <div class="flip-scene" onclick="flipCard()">
+    <div class="flip-card" id="flip-card">
+      <div class="flip-front">
+        <div class="kanji-big" id="fc-kanji"></div>
+        <div class="hiragana" id="fc-hiragana"></div>
+        <div id="fc-badge" class="reading-badge"></div>
+        <div class="card-label" style="margin-top:12px">🌸 KANJI + HIRAGANA — kattints!</div>
+      </div>
+      <div class="flip-back">
+        <div class="hu-word" id="fc-hungarian"></div>
+        <div class="card-label" style="color:rgba(255,255,255,0.8);margin-top:10px">🇭🇺 MAGYAR</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="flashPrev()">← Előző</button>
+    <button class="btn" onclick="flashNext()">Következő →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="panel-quiz" class="panel">
+  <div class="score-badge" id="quiz-score-badge">Pontok: 0</div>
+  <div id="quiz-content"></div>
+</div>
+
+<!-- MEMORY -->
+<div id="panel-memory" class="panel">
+  <div class="info-text" id="mem-info">Párosítsd össze! ✅ 0/8</div>
+  <div class="memory-grid" id="memory-grid"></div>
+  <button class="btn" onclick="initMemory()">🔄 Új játék</button>
+</div>
+
+<!-- FILL -->
+<div id="panel-fill" class="panel">
+  <div class="score-badge" id="fill-score-badge">Pontok: 0</div>
+  <div class="fill-box" id="fill-box"></div>
+  <div class="btn-row" id="fill-btns"></div>
+  <div id="fill-result"></div>
+</div>
+
+<!-- Summary -->
+<div class="summary">
+  <h3>KANJI ÖSSZEFOGLALÓ</h3>
+  <div class="summary-chips" id="summary-chips"></div>
+</div>
+
+<script>
+// ─── ADATOK ──────────────────────────────────────────
+// Minden olvasat külön kártya. Mondatokban: főnév + számoló szó
+const KANJI = [
+  // ━━━ 一 ━━━
+  { id:1,  kanji:"一",   hiragana:"いち",    badge:"音読み",  hungarian:"egy",
+    sentence:{ jp:"___はJanuárです。",                   blanks:["いちがつ","一月"],  hu:"Január az első hónap." }},
+  { id:2,  kanji:"一つ", hiragana:"ひとつ",  badge:"訓読み",  hungarian:"egy darab",
+    sentence:{ jp:"りんごが___あります。",                blanks:["ひとつ","一つ"],    hu:"Egy darab alma van." }},
+
+  // ━━━ 二 ━━━
+  { id:3,  kanji:"二",   hiragana:"に",      badge:"音読み",  hungarian:"kettő",
+    sentence:{ jp:"___はFebruárです。",                  blanks:["にがつ","二月"],    hu:"Február a második hónap." }},
+  { id:4,  kanji:"二つ", hiragana:"ふたつ",  badge:"訓読み",  hungarian:"két darab",
+    sentence:{ jp:"本が___あります。",                    blanks:["ふたつ","二つ"],    hu:"Két darab könyv van." }},
+
+  // ━━━ 三 ━━━
+  { id:5,  kanji:"三",   hiragana:"さん",    badge:"音読み",  hungarian:"három",
+    sentence:{ jp:"___はMárciusです。",                  blanks:["さんがつ","三月"],  hu:"Március a harmadik hónap." }},
+  { id:6,  kanji:"三つ", hiragana:"みっつ",  badge:"訓読み",  hungarian:"három darab",
+    sentence:{ jp:"ケーキが___あります。",                blanks:["みっつ","三つ"],    hu:"Három darab sütemény van." }},
+
+  // ━━━ 四 ━━━
+  { id:7,  kanji:"四",   hiragana:"し",      badge:"音読み (hónap/óra)", hungarian:"négy",
+    sentence:{ jp:"___はÁprilisです。",                  blanks:["しがつ","四月"],    hu:"Április a negyedik hónap." }},
+  { id:8,  kanji:"四",   hiragana:"よん",    badge:"音読み (számolás)",  hungarian:"négy (számlálás)",
+    sentence:{ jp:"えんぴつが___ほんあります。",          blanks:["よん","四"],        hu:"Négy ceruza van." }},
+  { id:9,  kanji:"四つ", hiragana:"よっつ",  badge:"訓読み",  hungarian:"négy darab",
+    sentence:{ jp:"みかんが___あります。",                blanks:["よっつ","四つ"],    hu:"Négy darab mandarin van." }},
+
+  // ━━━ 五 ━━━
+  { id:10, kanji:"五",   hiragana:"ご",      badge:"音読み",  hungarian:"öt",
+    sentence:{ jp:"___はMájusです。",                    blanks:["ごがつ","五月"],    hu:"Május az ötödik hónap." }},
+  { id:11, kanji:"五つ", hiragana:"いつつ",  badge:"訓読み",  hungarian:"öt darab",
+    sentence:{ jp:"おかしが___あります。",                blanks:["いつつ","五つ"],    hu:"Öt darab édesség van." }},
+
+  // ━━━ 六 ━━━
+  { id:12, kanji:"六",   hiragana:"ろく",    badge:"音読み",  hungarian:"hat",
+    sentence:{ jp:"___はJúniusです。",                   blanks:["ろくがつ","六月"],  hu:"Június a hatodik hónap." }},
+  { id:13, kanji:"六つ", hiragana:"むっつ",  badge:"訓読み",  hungarian:"hat darab",
+    sentence:{ jp:"たまごが___あります。",                blanks:["むっつ","六つ"],    hu:"Hat darab tojás van." }},
+
+  // ━━━ 七 ━━━
+  { id:14, kanji:"七",   hiragana:"しち",    badge:"音読み (hónap)",    hungarian:"hét",
+    sentence:{ jp:"___はJúliusです。",                   blanks:["しちがつ","七月"],  hu:"Július a hetedik hónap." }},
+  { id:15, kanji:"七",   hiragana:"なな",    badge:"音読み (számolás)", hungarian:"hét (számlálás)",
+    sentence:{ jp:"ペンが___ほんあります。",              blanks:["なな","七"],        hu:"Hét toll van." }},
+  { id:16, kanji:"七つ", hiragana:"ななつ",  badge:"訓読み",  hungarian:"hét darab",
+    sentence:{ jp:"いすが___あります。",                  blanks:["ななつ","七つ"],    hu:"Hét darab szék van." }},
+
+  // ━━━ 八 ━━━
+  { id:17, kanji:"八",   hiragana:"はち",    badge:"音読み",  hungarian:"nyolc",
+    sentence:{ jp:"___はAugusztusです。",                blanks:["はちがつ","八月"],  hu:"Augusztus a nyolcadik hónap." }},
+  { id:18, kanji:"八つ", hiragana:"やっつ",  badge:"訓読み",  hungarian:"nyolc darab",
+    sentence:{ jp:"おもちゃが___あります。",              blanks:["やっつ","八つ"],    hu:"Nyolc darab játék van." }},
+
+  // ━━━ 九 ━━━
+  { id:19, kanji:"九",   hiragana:"く",      badge:"音読み (hónap/óra)", hungarian:"kilenc",
+    sentence:{ jp:"___はSeptemberです。",                blanks:["くがつ","九月"],    hu:"Szeptember a kilencedik hónap." }},
+  { id:20, kanji:"九",   hiragana:"きゅう",  badge:"音読み (számolás)",  hungarian:"kilenc (számlálás)",
+    sentence:{ jp:"学生が___にんいます。",                blanks:["きゅう","九"],      hu:"Kilenc tanuló van." }},
+  { id:21, kanji:"九つ", hiragana:"ここのつ",badge:"訓読み",  hungarian:"kilenc darab",
+    sentence:{ jp:"アメが___あります。",                  blanks:["ここのつ","九つ"],  hu:"Kilenc darab cukor van." }},
+
+  // ━━━ 十 ━━━
+  { id:22, kanji:"十",   hiragana:"じゅう",  badge:"音読み",  hungarian:"tíz",
+    sentence:{ jp:"___はOktóberです。",                  blanks:["じゅうがつ","十月"], hu:"Október a tizedik hónap." }},
+  { id:23, kanji:"十",   hiragana:"とお",    badge:"訓読み",  hungarian:"tíz darab",
+    sentence:{ jp:"チョコレートが___あります。",          blanks:["とお","十"],        hu:"Tíz darab csokoládé van." }},
+
+  // ━━━ 百 ━━━
+  { id:24, kanji:"百",   hiragana:"ひゃく",  badge:"音読み",  hungarian:"száz",
+    sentence:{ jp:"ジュースが___えんです。",              blanks:["ひゃく","百"],      hu:"A juice száz jen." }},
+
+  // ━━━ 千 ━━━
+  { id:25, kanji:"千",   hiragana:"せん",    badge:"音読み",  hungarian:"ezer",
+    sentence:{ jp:"このほんが___えんです。",              blanks:["せん","千"],        hu:"Ez a könyv ezer jen." }},
+  { id:26, kanji:"千",   hiragana:"ぜん",    badge:"音読み (változóhang)", hungarian:"ezer (kötőhangban: 三千)",
+    sentence:{ jp:"かばんが三___えんです。",              blanks:["ぜん","千"],        hu:"A táska háromezer jen." }},
+
+  // ━━━ 万 ━━━
+  { id:27, kanji:"万",   hiragana:"まん",    badge:"音読み",  hungarian:"tízezer",
+    sentence:{ jp:"パソコンが一___えんです。",            blanks:["まん","万"],        hu:"A számítógép tízezer jen." }},
+
+  // ━━━ 円 ━━━
+  { id:28, kanji:"円",   hiragana:"えん",    badge:"音読み",  hungarian:"jen",
+    sentence:{ jp:"これが五百___です。",                  blanks:["えん","円"],        hu:"Ez ötszáz jen." }},
+  { id:29, kanji:"円",   hiragana:"まる",    badge:"訓読み",  hungarian:"kör",
+    sentence:{ jp:"ノートに___をかきます。",              blanks:["まる","丸"],        hu:"Kört rajzolok a füzetbe." }},
+
+  // ━━━ 時 ━━━
+  { id:30, kanji:"時",   hiragana:"じ",      badge:"音読み",  hungarian:"óra (időpont)",
+    sentence:{ jp:"今、何___ですか？",                   blanks:["じ","時"],          hu:"Hány óra van most?" }},
+  { id:31, kanji:"時",   hiragana:"とき",    badge:"訓読み",  hungarian:"idő / alkalom",
+    sentence:{ jp:"その___のことを覚えています。",        blanks:["とき","時"],        hu:"Emlékszem arra az időre." }},
+];
+
+// ─── ÖSSZEFOGLALÓ ──────────────────────────────────────
+const chips = document.getElementById('summary-chips');
+KANJI.forEach(d => {
+  chips.innerHTML += `<div class="chip">${d.kanji} ${d.hiragana} = ${d.hungarian}</div>`;
+});
+
+// ─── HANG ──────────────────────────────────────────────
+function playSuccess() {
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    [523,659,784,1047].forEach((f,i) => {
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value=f; o.type="sine";
+      const t=ctx.currentTime+i*0.13;
+      g.gain.setValueAtTime(0.28,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.32);
+      o.start(t); o.stop(t+0.32);
+    });
+  } catch(e){}
+}
+function playFail() {
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    [320,260,210].forEach((f,i) => {
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value=f; o.type="sawtooth";
+      const t=ctx.currentTime+i*0.16;
+      g.gain.setValueAtTime(0.18,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.3);
+      o.start(t); o.stop(t+0.3);
+    });
+  } catch(e){}
+}
+
+// ─── EFFEKTEK ──────────────────────────────────────────
+function showFlowers() {
+  const rain = document.getElementById('flower-rain');
+  rain.innerHTML='';
+  const emojis = ['🌸','🌺','🌷','🌼','💮'];
+  for(let i=0;i<32;i++){
+    const p=document.createElement('div');
+    p.className='petal';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left=Math.random()*100+'%';
+    p.style.fontSize=(14+Math.random()*18)+'px';
+    const dur=1.4+Math.random()*1.8;
+    const delay=Math.random()*0.8;
+    p.style.animation=`petalFall ${dur}s linear ${delay}s forwards`;
+    rain.appendChild(p);
+  }
+  setTimeout(()=>rain.innerHTML='', 3500);
+}
+function showTanuki() {
+  const t=document.getElementById('tanuki');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none', 2000);
+}
+
+// ─── TAB VÁLTÁS ────────────────────────────────────────
+function switchTab(name, event) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(event) event.currentTarget.classList.add('active');
+  if(name==='quiz') initQuiz();
+  if(name==='memory') initMemory();
+  if(name==='fill') initFill();
+}
+
+// ─── FLASH KÁRTYÁK ─────────────────────────────────────
+let flashIdx=0;
+function renderFlash(){
+  const d=KANJI[flashIdx];
+  document.getElementById('fc-kanji').textContent=d.kanji;
+  document.getElementById('fc-hiragana').textContent=d.hiragana;
+  document.getElementById('fc-badge').textContent=d.badge;
+  document.getElementById('fc-hungarian').textContent=d.hungarian;
+  document.getElementById('flash-counter').textContent=`${flashIdx+1} / ${KANJI.length}`;
+  document.getElementById('flip-card').classList.remove('flipped');
+}
+function flipCard(){ document.getElementById('flip-card').classList.toggle('flipped'); }
+function flashNext(){ flashIdx=(flashIdx+1)%KANJI.length; renderFlash(); }
+function flashPrev(){ flashIdx=(flashIdx-1+KANJI.length)%KANJI.length; renderFlash(); }
+renderFlash();
+
+// ─── KVÍZ ──────────────────────────────────────────────
+let quizQuestions=[], quizIdx=0, quizScore=0;
+
+function initQuiz(){
+  quizScore=0; quizIdx=0;
+  quizQuestions=[...KANJI].sort(()=>Math.random()-0.5).map(q=>{
+    const others=KANJI.filter(d=>d.id!==q.id).sort(()=>Math.random()-0.5).slice(0,3);
+    const choices=[...others.map(o=>o.hungarian),q.hungarian].sort(()=>Math.random()-0.5);
+    return {...q,choices};
+  });
+  document.getElementById('quiz-score-badge').textContent='Pontok: 0';
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const cont=document.getElementById('quiz-content');
+  if(quizIdx>=quizQuestions.length){
+    const pct=Math.round(quizScore/quizQuestions.length*100);
+    cont.innerHTML=`<div class="done-screen">
+      <div class="big">${quizScore===quizQuestions.length?'🏆':quizScore>=quizQuestions.length*0.7?'🌸':'🦝'}</div>
+      <h2>Vége!</h2>
+      <p>Eredmény: <strong>${quizScore}</strong> / ${quizQuestions.length} (${pct}%)</p>
+      <br><button class="btn primary" onclick="initQuiz()">🔄 Újra</button>
+    </div>`;
+    return;
+  }
+  const q=quizQuestions[quizIdx];
+  cont.innerHTML=`
+    <div class="card-box" style="margin-bottom:4px">
+      <div class="kanji-big">${q.kanji}</div>
+      <div class="hiragana">${q.hiragana}</div>
+      <div class="reading-badge">${q.badge}</div>
+      <div class="card-label" style="margin-top:10px">Mit jelent magyarul?</div>
+    </div>
+    <div class="choices" id="quiz-choices">
+      ${q.choices.map(c=>`<button class="choice-btn" onclick="answerQuiz(this,'${c.replace(/'/g,"\\'")}','${q.hungarian.replace(/'/g,"\\'")}')"> ${c}</button>`).join('')}
+    </div>
+    <div class="info-text">Kérdés ${quizIdx+1}/${quizQuestions.length}</div>
+  `;
+}
+
+function answerQuiz(btn, choice, correct){
+  const isCorrect = choice === correct;
+  document.querySelectorAll('.choice-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent.trim()===correct.trim()) b.classList.add('correct');
+    else if(b===btn && !isCorrect) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  if(isCorrect){ quizScore++; playSuccess(); showFlowers(); }
+  else { playFail(); showTanuki(); }
+  document.getElementById('quiz-score-badge').textContent='Pontok: '+quizScore;
+  setTimeout(()=>{ quizIdx++; renderQuiz(); }, 1600);
+}
+
+// ─── MEMÓRIA ───────────────────────────────────────────
+let memCards=[], memFlipped=[], memMatched=[], memChecking=false;
+
+function initMemory(){
+  const subset=[...KANJI].sort(()=>Math.random()-0.5).slice(0,8);
+  memMatched=[]; memFlipped=[]; memChecking=false;
+  memCards=subset.flatMap(d=>[
+    {uid:`k${d.id}`,content:d.kanji+'\n'+d.hiragana,type:'jp',pairId:d.id},
+    {uid:`h${d.id}`,content:d.hungarian,type:'hu',pairId:d.id}
+  ]).sort(()=>Math.random()-0.5);
+  renderMemory();
+}
+
+function renderMemory(){
+  const grid=document.getElementById('memory-grid');
+  grid.innerHTML='';
+  memCards.forEach(card=>{
+    const scene=document.createElement('div');
+    scene.className='mem-scene';
+    scene.onclick=()=>flipMem(card.uid);
+    const mc=document.createElement('div');
+    mc.className='mem-card';
+    mc.id='mem-'+card.uid;
+    const isFlipped=memFlipped.includes(card.uid)||memMatched.includes(card.pairId);
+    const isMatched=memMatched.includes(card.pairId);
+    if(isFlipped) mc.classList.add('flipped');
+    mc.innerHTML=`
+      <div class="mem-front">🌸</div>
+      <div class="mem-back ${card.type==='jp'?'jp-side':''} ${isMatched?'matched':''}" style="white-space:pre-line">${card.content}</div>
+    `;
+    scene.appendChild(mc); grid.appendChild(scene);
+  });
+  document.getElementById('mem-info').textContent=`Párosítsd össze! ✅ ${memMatched.length}/8`;
+}
+
+function flipMem(uid){
+  if(memChecking) return;
+  const card=memCards.find(c=>c.uid===uid);
+  if(!card||memFlipped.includes(uid)||memMatched.includes(card.pairId)) return;
+  memFlipped.push(uid);
+  document.getElementById('mem-'+uid).classList.add('flipped');
+  if(memFlipped.length===2){
+    memChecking=true;
+    const [a,b]=memFlipped.map(id=>memCards.find(c=>c.uid===id));
+    if(a.pairId===b.pairId){
+      setTimeout(()=>{
+        memMatched.push(a.pairId);
+        memFlipped=[]; memChecking=false;
+        playSuccess(); showFlowers();
+        renderMemory();
+        if(memMatched.length===8){
+          setTimeout(()=>{ document.getElementById('mem-info').innerHTML='🎉 Gratulálok! Minden pár megvan! 🌸'; },300);
+        }
+      },700);
+    } else {
+      setTimeout(()=>{
+        memFlipped.forEach(id=>{ document.getElementById('mem-'+id).classList.remove('flipped'); });
+        memFlipped=[]; memChecking=false;
+        playFail(); showTanuki();
+      },900);
+    }
+  }
+}
+
+// ─── MONDATGYAKORLÁS ───────────────────────────────────
+let fillIdx=0, fillScore=0, fillAnswered=false;
+let fillOrder=[];
+
+function initFill(){
+  fillIdx=0; fillScore=0; fillAnswered=false;
+  fillOrder=[...KANJI].sort(()=>Math.random()-0.5);
+  renderFill();
+}
+
+function renderFill(){
+  const d=fillOrder[fillIdx];
+  const s=d.sentence;
+  fillAnswered=false;
+  document.getElementById('fill-score-badge').textContent='Pontok: '+fillScore;
+  const hint = s.blanks.length > 1
+    ? `<div style="font-size:12px;color:#c06090;margin-top:6px">✏️ hiragana vagy kanji is elfogadott: ${s.blanks.join(' / ')}</div>`
+    : '';
+  document.getElementById('fill-box').innerHTML=`
+    <div style="font-size:70px;line-height:1">${d.kanji}</div>
+    <div class="hiragana">${d.hiragana} <span class="reading-badge" style="font-size:10px">${d.badge}</span></div>
+    <div class="hiragana" style="margin-top:4px">= <strong style="color:var(--dark)">${d.hungarian}</strong></div>
+    <div class="sentence-jp" id="fill-jp">${s.jp.replace('___','＿＿＿')}</div>
+    <div class="sentence-hu">${s.hu}</div>
+    ${hint}
+  `;
+  document.getElementById('fill-btns').innerHTML=`
+    <input class="fill-input" id="fill-input" placeholder="hiragana vagy kanji…" onkeydown="if(event.key==='Enter')checkFill()">
+    <button class="btn" onclick="checkFill()">Ellenőriz ✓</button>
+  `;
+  document.getElementById('fill-result').innerHTML='';
+  setTimeout(()=>document.getElementById('fill-input')&&document.getElementById('fill-input').focus(),100);
+}
+
+function checkFill(){
+  if(fillAnswered) return;
+  const inp=document.getElementById('fill-input');
+  if(!inp) return;
+  const val=inp.value.trim();
+  const d=fillOrder[fillIdx];
+  const s=d.sentence;
+  const correct = s.blanks.includes(val);
+  const canonical = s.blanks[0]; // hiragana for display
+  fillAnswered=true;
+  inp.disabled=true;
+  inp.classList.add(correct?'correct-in':'wrong-in');
+  document.getElementById('fill-jp').textContent=s.jp.replace('___',`【${val||canonical}】`);
+  if(correct){
+    fillScore++;
+    playSuccess(); showFlowers();
+    document.getElementById('fill-result').innerHTML='<div class="result-msg">🌸 Helyes! Szuper! 🌸</div>';
+  } else {
+    playFail(); showTanuki();
+    document.getElementById('fill-result').innerHTML=`<div class="result-msg">🦝 Nem! A helyes: <strong>${s.blanks.join(' / ')}</strong></div>`;
+  }
+  document.getElementById('fill-score-badge').textContent='Pontok: '+fillScore;
+  document.getElementById('fill-btns').innerHTML=`<button class="btn primary" onclick="nextFill()">Következő →</button>`;
+}
+
+function nextFill(){
+  fillIdx=(fillIdx+1)%fillOrder.length;
+  if(fillIdx===0) fillOrder=[...KANJI].sort(()=>Math.random()-0.5);
+  renderFill();
+}
+
+// Init
+initQuiz();
+initMemory();
+initFill();
+</script>
+</body>
+</html>

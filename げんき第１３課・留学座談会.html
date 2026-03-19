@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>留学生座談会 · 練習問題</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Zen+Antique&family=Kosugi+Maru&display=swap" rel="stylesheet">
+<style>
+:root{
+  --y1:#6b4600;--y2:#a06800;--y3:#e6a800;--y4:#ffc533;--y5:#ffe082;
+  --y6:#fff8e1;--y7:#fffde7;
+  --text:#3a2800;--text2:rgba(58,40,0,.62);
+  --ok:#1b5e20;--err:#b71c1c;
+  --gc:rgba(255,248,200,.92);--border:rgba(170,110,0,.22);
+  --glass:rgba(255,240,150,.85);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;background:var(--y4);font-family:'Noto Sans JP',sans-serif;color:var(--text);overflow-x:hidden;}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.float-el{position:fixed;pointer-events:none;z-index:0;font-size:30px;animation:ffloat linear infinite;}
+@keyframes ffloat{0%{transform:translateY(-60px) rotate(-8deg);opacity:0;}8%{opacity:.65;}90%{opacity:.55;}100%{transform:translateY(108vh) rotate(18deg);opacity:0;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shakeb{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+@keyframes popIn{0%{transform:scale(.5);opacity:0;}80%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
+@keyframes petalfly{0%{transform:translate(0,0) scale(.5) rotate(0deg);opacity:1;}100%{transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(var(--dr));opacity:0;}}
+
+.app{position:relative;z-index:1;max-width:660px;margin:0 auto;padding:16px 14px 70px;animation:fadeUp .35s ease;}
+
+/* TITLE */
+.page-title{text-align:center;margin-bottom:18px;}
+.pt-badge{font-size:38px;display:block;margin-bottom:4px;}
+.pt-jp{font-family:'Zen Antique',serif;font-size:28px;color:var(--y1);text-shadow:0 2px 8px rgba(180,120,0,.18);}
+.pt-hu{font-size:12px;color:var(--text2);margin-top:4px;}
+
+/* SCORE */
+.score-bar{background:var(--gc);border:1.5px solid var(--border);border-radius:14px;padding:11px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(120,80,0,.1);}
+.score-bar .sv{font-family:'Zen Antique',serif;font-size:26px;color:var(--y1);}
+.score-bar .sl{font-size:10px;color:var(--text2);}
+.prog{flex:1;height:7px;background:rgba(180,120,0,.15);border-radius:4px;overflow:hidden;}
+.prog-f{height:100%;background:linear-gradient(90deg,var(--y3),var(--y4));border-radius:4px;transition:width .5s;}
+
+/* READING */
+.reading-panel{background:var(--gc);border:2px solid rgba(180,120,0,.28);border-radius:20px;padding:18px;margin-bottom:20px;box-shadow:0 4px 20px rgba(120,80,0,.14);}
+.reading-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.reading-toggle h2{font-family:'Zen Antique',serif;font-size:16px;color:var(--y1);}
+.tog-ic{font-size:20px;transition:transform .3s;}
+.tog-ic.open{transform:rotate(180deg);}
+.reading-body{display:none;}
+.reading-body.open{display:block;margin-top:12px;}
+.speaker-block{margin-bottom:14px;}
+.speaker-name{font-family:'Zen Antique',serif;font-size:15px;color:var(--y2);font-weight:700;margin-bottom:4px;}
+.speaker-text{font-family:'Noto Serif JP',serif;font-size:13.5px;line-height:2;color:var(--text);background:rgba(255,255,255,.5);border-radius:10px;padding:10px 12px;border:1px solid rgba(180,120,0,.12);}
+.speaker-text .kw{color:var(--y1);font-weight:700;}
+
+/* SEC */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin:20px 0 11px;}
+.sec-num{background:var(--y3);color:var(--y1);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;font-family:'Zen Antique',serif;}
+.sec-title{font-family:'Zen Antique',serif;font-size:16px;color:var(--y1);}
+.sec-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+
+/* QUESTION CARD */
+.q-card{background:var(--gc);border:1.5px solid var(--border);border-radius:16px;padding:15px 16px 13px;margin-bottom:11px;box-shadow:0 2px 10px rgba(120,80,0,.08);transition:border-color .2s,background .2s;}
+.q-card.ok{border-color:var(--ok);background:rgba(210,255,210,.85);}
+.q-card.err{border-color:var(--err);background:rgba(255,210,210,.85);}
+.q-num{font-size:9px;letter-spacing:3px;color:rgba(140,100,0,.45);margin-bottom:7px;}
+.q-sent{font-family:'Noto Serif JP',serif;font-size:17px;color:var(--text);line-height:2.1;display:flex;flex-wrap:wrap;align-items:center;gap:3px;}
+.q-hu{font-size:11.5px;color:var(--text2);margin-top:5px;font-style:italic;}
+
+/* BLANK */
+.blank{display:inline-flex;align-items:center;justify-content:center;min-width:50px;height:32px;border-radius:8px;border:2px dashed rgba(170,110,0,.4);background:rgba(255,255,255,.7);margin:0 2px;font-family:'Noto Serif JP',serif;font-size:16px;color:var(--y1);font-weight:700;cursor:pointer;transition:all .18s;}
+.blank:hover:not(.locked){border-color:var(--y3);background:var(--y5);}
+.blank.sel{border-color:var(--y3);background:var(--y5);border-style:solid;}
+.blank.c{border-color:var(--ok)!important;background:rgba(200,255,200,.85)!important;border-style:solid!important;color:var(--ok)!important;}
+.blank.w{border-color:var(--err)!important;background:rgba(255,200,200,.85)!important;border-style:solid!important;color:var(--err)!important;animation:shakeb .4s ease;}
+.blank.locked{cursor:default;}
+
+/* OPTIONS */
+.opts-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;}
+.opt-btn{padding:7px 15px;border-radius:20px;border:1.5px solid rgba(170,110,0,.28);background:rgba(255,255,255,.72);font-family:'Noto Serif JP',serif;font-size:15px;color:var(--text);cursor:pointer;transition:all .18s;font-weight:700;}
+.opt-btn:hover:not(:disabled){border-color:var(--y3);background:var(--y5);}
+.opt-btn:disabled{cursor:default;opacity:.45;}
+
+/* TYPE INPUT */
+.ti{background:rgba(255,255,255,.8);border:2px dashed rgba(170,110,0,.38);border-radius:8px;color:var(--y1);font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;width:72px;height:32px;text-align:center;outline:none;transition:all .2s;padding:0 3px;margin:0 2px;}
+.ti:focus{border-color:var(--y3);border-style:solid;background:#fffde7;}
+.ti.c{border-color:var(--ok)!important;border-style:solid!important;background:rgba(200,255,200,.85)!important;color:var(--ok)!important;}
+.ti.w{border-color:var(--err)!important;border-style:solid!important;background:rgba(255,200,200,.85)!important;color:var(--err)!important;animation:shakeb .4s ease;}
+
+/* FEEDBACK */
+.fb{margin-top:8px;font-size:12.5px;display:none;align-items:center;gap:7px;flex-wrap:wrap;}
+.fb.show{display:flex;}
+.fb.ok-f{color:var(--ok);}
+.fb.err-f{color:var(--err);}
+.fb .ca{font-family:'Noto Serif JP',serif;font-weight:700;}
+
+/* VOCAB CARD */
+.vocab-card{background:var(--gc);border:1.5px solid var(--border);border-radius:16px;padding:15px 16px;margin-bottom:11px;box-shadow:0 2px 10px rgba(120,80,0,.08);}
+.vocab-card .vc-q{font-size:11px;letter-spacing:2px;color:rgba(140,100,0,.45);margin-bottom:7px;}
+.vocab-card .vc-main{font-family:'Noto Serif JP',serif;font-size:30px;color:var(--y1);text-align:center;margin:6px 0;}
+.vocab-card .vc-read{font-size:14px;color:var(--y2);text-align:center;margin-bottom:10px;font-family:'Noto Serif JP',serif;}
+.vocab-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.vocab-opt{padding:11px 8px;border-radius:11px;border:1.5px solid rgba(170,110,0,.22);background:rgba(255,255,255,.72);font-size:13.5px;color:var(--text);cursor:pointer;transition:all .18s;text-align:center;line-height:1.35;}
+.vocab-opt:hover:not(:disabled){border-color:var(--y3);background:var(--y5);}
+.vocab-opt.c{background:rgba(210,255,210,.9)!important;border-color:var(--ok)!important;color:var(--ok)!important;}
+.vocab-opt.w{background:rgba(255,210,210,.9)!important;border-color:var(--err)!important;color:var(--err)!important;animation:shakeb .4s ease;}
+.vocab-opt.dim{opacity:.22;}
+.vocab-opt:disabled{cursor:default;}
+
+/* CHECK BTN */
+.check-btn{padding:9px 20px;border-radius:11px;border:none;background:var(--y3);color:var(--y1);font-family:'Kosugi Maru',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:9px;transition:all .2s;box-shadow:0 2px 8px rgba(180,120,0,.2);}
+.check-btn:hover{background:var(--y4);transform:translateY(-1px);}
+.check-btn:disabled{opacity:.45;cursor:default;transform:none;}
+
+/* TANUKI OVERLAY */
+#tanu{position:fixed;inset:0;z-index:990;display:none;align-items:center;justify-content:center;background:rgba(80,30,0,.32);backdrop-filter:blur(3px);}
+#tanu.show{display:flex;}
+.tanu-box{background:var(--gc);border:3px solid var(--err);border-radius:22px;padding:26px 24px 18px;text-align:center;max-width:280px;box-shadow:0 8px 30px rgba(0,0,0,.28);animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
+.tanu-box .te{font-size:76px;display:block;margin-bottom:6px;}
+.tanu-box .tm{font-family:'Kosugi Maru',sans-serif;font-size:15px;color:var(--err);margin-bottom:4px;}
+.tanu-box .th{font-family:'Noto Serif JP',serif;font-size:13px;color:var(--text2);margin-bottom:13px;}
+.tanu-box .tc{padding:9px 22px;border-radius:10px;border:none;background:var(--y3);color:var(--y1);font-family:'Kosugi Maru',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+
+/* FINAL */
+.final{text-align:center;background:var(--gc);border:2px solid var(--y3);border-radius:20px;padding:26px;margin-top:20px;display:none;}
+.final-emoji{font-size:58px;margin-bottom:8px;display:block;}
+.final-score{font-family:'Zen Antique',serif;font-size:50px;color:var(--y1);}
+.final-msg{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.6;}
+.final-btn{margin-top:16px;padding:12px 30px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--y3),var(--y4));color:var(--y1);font-family:'Kosugi Maru',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+
+/* FLOWER PETAL */
+.petal{position:fixed;pointer-events:none;z-index:999;font-size:22px;animation:petalfly .85s ease forwards;}
+
+.vocab-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.vocab-nav span{font-size:11px;color:var(--text2);}
+.vocab-score{font-family:'Zen Antique',serif;font-size:22px;color:var(--y1);}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div id="tanu">
+  <div class="tanu-box">
+    <span class="te">🦝</span>
+    <div class="tm" id="tm">もう一度！</div>
+    <div class="th" id="th"></div>
+    <button class="tc" onclick="closeTanu()">がんばります！</button>
+  </div>
+</div>
+
+<div class="app">
+
+  <div class="page-title">
+    <span class="pt-badge">🌍✈️🗾</span>
+    <div class="pt-jp">留学生座談会</div>
+    <div class="pt-hu">Külföldi diákok Japánról – Feladatlapok</div>
+  </div>
+
+  <div class="score-bar">
+    <div><div class="sv" id="sc-v">0</div><div class="sl">helyes</div></div>
+    <div class="prog"><div class="prog-f" id="sc-f" style="width:0%"></div></div>
+    <div style="font-size:11px;color:var(--text2)" id="sc-l">0/0</div>
+    <span style="font-size:26px">🌸</span>
+  </div>
+
+  <!-- READING -->
+  <div class="reading-panel">
+    <div class="reading-toggle" onclick="togRead()">
+      <h2>📖 留学生座談会 · Olvasmány</h2>
+      <span class="tog-ic" id="togic">▼</span>
+    </div>
+    <div class="reading-body" id="rbody">
+      <div class="speaker-block">
+        <div class="speaker-name">司会者（しかいしゃ）</div>
+        <div class="speaker-text">今日は留学生<span class="kw">に</span>日本の経験について聞きたいと思います。みなさん、三人は同じ大学<span class="kw">で</span>勉強しています。日本<span class="kw">に</span>来て何<span class="kw">に</span>びっくりしましたか。</div>
+      </div>
+      <div class="speaker-block">
+        <div class="speaker-name">オリバーさん（イギリス）</div>
+        <div class="speaker-text">電車<span class="kw">に</span>びっくりしましたね。イギリスでは電車はよく遅れましたが、日本ではいつも時間通りです。電車<span class="kw">が</span>三分<span class="kw">ごと</span>に来るんです。その時、電車のアナウンス<span class="kw">が</span>「すみません」と言いました。電車<span class="kw">の</span>アナウンスがびっくりしました。</div>
+      </div>
+      <div class="speaker-block">
+        <div class="speaker-name">アメリアさん（アメリカ）</div>
+        <div class="speaker-text">私はタクシー<span class="kw">に</span>びっくりしました。初めて日本<span class="kw">に</span>来て、空港<span class="kw">から</span>ホテル<span class="kw">まで</span>タクシー<span class="kw">に</span>乗りました。日本のタクシーはすごいですね。ドア<span class="kw">が</span>自動だし、チップ<span class="kw">も</span>いりません。</div>
+      </div>
+      <div class="speaker-block">
+        <div class="speaker-name">ワティさん（インドネシア）</div>
+        <div class="speaker-text">私はコンビニ<span class="kw">に</span>びっくりしました。日本のコンビニ<span class="kw">には</span>いろいろなデザートがあります。時々、昼<span class="kw">に</span>コンビニ<span class="kw">で</span>お弁当<span class="kw">と</span>デザート<span class="kw">を</span>買ったことがあります。コンビニのプリン<span class="kw">を</span>食べたことがありますか。世界<span class="kw">で</span>一番おいしいと思います。</div>
+      </div>
+      <div class="speaker-block">
+        <div class="speaker-name">オリバーさん</div>
+        <div class="speaker-text">コンビニは便利ですね。友だち<span class="kw">と</span>海<span class="kw">に</span>遊び<span class="kw">に</span>行ったんですが、水着<span class="kw">を</span>忘れたんです。でも近く<span class="kw">の</span>コンビニで水着<span class="kw">が</span>買えました。コンビニは本当<span class="kw">に</span>"convenient"だと思いました。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION A: PARTICLE SELECT -->
+  <div class="sec-hdr">
+    <div class="sec-num">A</div>
+    <div>
+      <div class="sec-title">パーティクル選択 · Partikulák kiválasztása</div>
+      <div class="sec-sub">Kattints a megfelelő partikulára!</div>
+    </div>
+  </div>
+  <div id="secA"></div>
+
+  <!-- SECTION B: WORD SELECTION -->
+  <div class="sec-hdr">
+    <div class="sec-num">B</div>
+    <div>
+      <div class="sec-title">言葉を選んでください · Szó kiválasztása</div>
+      <div class="sec-sub">Válaszd ki a mondatba illő szót/kifejezést!</div>
+    </div>
+  </div>
+  <div id="secB"></div>
+
+  <!-- SECTION C: TYPE PARTICLE -->
+  <div class="sec-hdr">
+    <div class="sec-num">C</div>
+    <div>
+      <div class="sec-title">パーティクル記入 · Partikulák beírása</div>
+      <div class="sec-sub">Írd be a hiányzó partikulát!</div>
+    </div>
+  </div>
+  <div id="secC"></div>
+
+  <!-- SECTION D: VOCAB QUIZ -->
+  <div class="sec-hdr">
+    <div class="sec-num">D</div>
+    <div>
+      <div class="sec-title">語彙練習 · Szógyakorlás</div>
+      <div class="sec-sub">Válaszd ki a helyes magyar jelentést!</div>
+    </div>
+  </div>
+  <div id="secD"></div>
+
+  <div class="final" id="final">
+    <span class="final-emoji">🌍🌸🗾</span>
+    <div class="final-score" id="fscore"></div>
+    <div class="final-msg" id="fmsg"></div>
+    <button class="final-btn" onclick="location.reload()">もう一度！ Újra!</button>
+  </div>
+
+</div>
+
+<script>
+// ── BG + FLOATS ──────────────────────────────────────────
+(function(){
+  const c=document.getElementById('bg'),ctx=c.getContext('2d');
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  resize();addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    const g=ctx.createLinearGradient(0,0,c.width,c.height);
+    g.addColorStop(0,'#ffd740');g.addColorStop(.55,'#ffca28');g.addColorStop(1,'#ffb300');
+    ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+    [[.08,.08,210,'rgba(255,255,255,.13)'],[.88,.09,150,'rgba(255,255,255,.09)'],[.04,.9,175,'rgba(170,110,0,.1)'],[.9,.86,190,'rgba(255,255,255,.1)'],[.5,.45,270,'rgba(255,248,200,.14)']].forEach(([fx,fy,r,col])=>{ctx.beginPath();ctx.arc(fx*c.width,fy*c.height,r,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();});
+  }
+  draw();addEventListener('resize',draw);
+  const fs=['✈️','🗾','🚃','🏪','🌸','🍱','🛺','🌍','🎌','🍡'];
+  function sp(){
+    const el=document.createElement('div');el.className='float-el';
+    const d=9+Math.random()*13,dl=Math.random()*-22;
+    el.textContent=fs[Math.floor(Math.random()*fs.length)];
+    el.style.cssText=`left:${Math.random()*100}vw;top:-65px;animation-duration:${d}s;animation-delay:${dl}s;`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),(d+Math.abs(dl))*1000+2000);
+  }
+  for(let i=0;i<20;i++)sp();setInterval(sp,1150);
+})();
+
+// ── AUDIO ────────────────────────────────────────────────
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+document.addEventListener('click',()=>AC.resume(),{once:true});
+function playHappy(){
+  [523,659,784,1047].forEach((f,i)=>{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0,AC.currentTime+i*.08);
+    g.gain.linearRampToValueAtTime(.26,AC.currentTime+i*.08+.04);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+i*.08+.34);
+    o.start(AC.currentTime+i*.08);o.stop(AC.currentTime+i*.08+.37);
+  });
+}
+function playSad(){
+  [392,349,330,294].forEach((f,i)=>{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.connect(g);g.connect(AC.destination);o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(0,AC.currentTime+i*.12);
+    g.gain.linearRampToValueAtTime(.2,AC.currentTime+i*.12+.05);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+i*.12+.38);
+    o.start(AC.currentTime+i*.12);o.stop(AC.currentTime+i*.12+.42);
+  });
+}
+
+// ── SCORE ─────────────────────────────────────────────────
+let total=0,correct=0,answered=0;
+function updScore(){
+  document.getElementById('sc-v').textContent=correct;
+  document.getElementById('sc-f').style.width=total?`${Math.round(correct/total*100)}%`:'0%';
+  document.getElementById('sc-l').textContent=`${correct}/${total}`;
+}
+
+// ── FLOWERS ───────────────────────────────────────────────
+function flowers(x,y){
+  const ps=['🌸','🌼','🌺','🌷','✿','🌻'];
+  for(let i=0;i<12;i++){
+    const el=document.createElement('div');el.className='petal';
+    const a=Math.random()*Math.PI*2,d=55+Math.random()*80;
+    el.textContent=ps[Math.floor(Math.random()*ps.length)];
+    el.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d-38}px;--dr:${Math.random()*700-350}deg;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+  }
+}
+
+// ── TANUKI ────────────────────────────────────────────────
+const msgs=[['もう一度！','Próbáld újra!'],['ざんねん！','Sajnos rossz…'],['がんばって！','Kitartás!'],['ちょっと待って！','Gondolkodj!']];
+function showTanu(hint){
+  const m=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('tm').textContent=m[0]+' '+m[1];
+  document.getElementById('th').innerHTML=hint?`Helyes: <b>${hint}</b>`:'';
+  document.getElementById('tanu').classList.add('show');
+}
+function closeTanu(){document.getElementById('tanu').classList.remove('show');}
+
+function togRead(){
+  const b=document.getElementById('rbody'),ic=document.getElementById('togic');
+  b.classList.toggle('open');ic.classList.toggle('open');
+}
+
+// ─────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────
+
+// Section A: Particle select
+const SEC_A=[
+  {
+    id:'a1',
+    parts:['三人は同じ大学','勉強しています。'],
+    blanks:[{pos:1,opts:['で','に','が','を'],ans:'で'}],
+    hu:'A három ember ugyanabban az egyetemen tanul.',hint:'で = -ban/-ben (helyszín, tevékenység)'
+  },
+  {
+    id:'a2',
+    parts:['日本','来て何','びっくりしましたか。'],
+    blanks:[{pos:1,opts:['に','で','へ','を'],ans:'に'},{pos:2,opts:['に','が','で','を'],ans:'に'}],
+    hu:'Mikor Japánba jött, mi lepte meg?',hint:'に来る = Japánba jön; ～にびっくりする = meglepte vmi'
+  },
+  {
+    id:'a3',
+    parts:['電車','三分ごと','来るんです。'],
+    blanks:[{pos:1,opts:['が','は','を','に'],ans:'が'},{pos:2,opts:['に','で','と','へ'],ans:'に'}],
+    hu:'A vonat hárompercentként jön.',hint:'が = alany; ごとに = -nként'
+  },
+  {
+    id:'a4',
+    parts:['ドア','自動だし、チップ','いりません。'],
+    blanks:[{pos:1,opts:['が','は','を','で'],ans:'が'},{pos:2,opts:['も','は','が','を'],ans:'も'}],
+    hu:'Az ajtó automatikus, és borravaló sem kell.',hint:'が = alany; も = sem (tagadásban = sem)'
+  },
+  {
+    id:'a5',
+    parts:['空港','ホテル','タクシー','乗りました。'],
+    blanks:[{pos:1,opts:['から','まで','に','で'],ans:'から'},{pos:2,opts:['まで','から','へ','に'],ans:'まで'},{pos:3,opts:['に','で','を','が'],ans:'に'}],
+    hu:'A reptértől a szállodáig taxival ment.',hint:'から = -tól/-től; まで = -ig; ～に乗る = felszállni vmire'
+  },
+  {
+    id:'a6',
+    parts:['コンビニのプリン','食べたことがありますか。世界','一番おいしいと思います。'],
+    blanks:[{pos:1,opts:['を','が','は','に'],ans:'を'},{pos:2,opts:['で','に','が','の'],ans:'で'}],
+    hu:'Ettél már konbini pudingot? Szerintem a világ legfinomabbja.',hint:'を食べる = megennivalót; 世界で一番 = a világon a legjobb'
+  },
+];
+
+// Section B: Word selection
+const SEC_B=[
+  {
+    id:'b1',
+    before:'イギリスでは電車はよく',
+    blank:'',after:'が、日本ではいつも時間通りです。',
+    opts:['遅れました','来ませんでした','びっくりしました','忘れました'],
+    ans:'遅れました',hu:'Az Egyesült Királyságban a vonatok sokszor késtek.',hint:'遅れる = késni'
+  },
+  {
+    id:'b2',
+    before:'電車のアナウンスが',
+    blank:'',after:'と言いました。',
+    opts:['「すみません」','「ありがとう」','「どうぞ」','「おはよう」'],
+    ans:'「すみません」',hu:'A vonat bejelentője azt mondta: „Elnézést."',hint:'すみません az ajtócsukódás előtt – figyelemfelkeltő'
+  },
+  {
+    id:'b3',
+    before:'友だちと海に遊びに行ったんですが、水着を',
+    blank:'',after:'。',
+    opts:['忘れたんです','なくしたんです','買ったんです','借りたんです'],
+    ans:'忘れたんです',hu:'Elmentek a tengerpartra, de elfelejtette az úszódresszét.',hint:'忘れる = elfelejteni'
+  },
+  {
+    id:'b4',
+    before:'でも近くのコンビニで水着が',
+    blank:'',after:'。コンビニは本当に"convenient"だと思いました。',
+    opts:['買えました','売れました','もらえました','見えました'],
+    ans:'買えました',hu:'De a közeli kényelmi boltban tudott úszódreszt venni.',hint:'買える (可能形) = tudott venni'
+  },
+  {
+    id:'b5',
+    before:'時々、昼にコンビニで',
+    blank:'',after:'を食べたことがあります。',
+    opts:['お弁当とデザート','おすしとラーメン','ケーキとコーヒー','うめぼしとのり'],
+    ans:'お弁当とデザート',hu:'Néha délben konbini bentozt desszerttel együtt.',hint:'A szövegből: お弁当とデザートを買った'
+  },
+  {
+    id:'b6',
+    before:'日本のコンビニには',
+    blank:'',after:'があります。',
+    opts:['いろいろなデザート','たくさんの電車','むずかしい映画','きれいな水着'],
+    ans:'いろいろなデザート',hu:'A japán kényelmi boltokban mindenféle desszert van.',hint:'いろいろな = mindenféle, különböző'
+  },
+];
+
+// Section C: Type particle
+const SEC_C=[
+  {
+    id:'c1',
+    parts:['電車のアナウンス','びっくりしました。'],
+    blanks:[{pos:1,ans:'に',hint:'～にびっくりする = meglepte vmi'}],
+    hu:'Meglepte a vonat bejelentője.'
+  },
+  {
+    id:'c2',
+    parts:['日本のタクシー','すごいですね。'],
+    blanks:[{pos:1,ans:'は',hint:'は = téma-partikula (kiemelés)'}],
+    hu:'A japán taxik igazán csodásak.'
+  },
+  {
+    id:'c3',
+    parts:['友だち','海に遊び','行ったんです。'],
+    blanks:[{pos:1,ans:'と',hint:'と = -val/-vel (társaság)'},{pos:2,ans:'に',hint:'遊びに行く = szórakozni menni'}],
+    hu:'A barátaival ment a tengerpartra szórakozni.'
+  },
+  {
+    id:'c4',
+    parts:['めずらしい物','興味がある','、なんでも食べてみます。'],
+    blanks:[{pos:1,ans:'に',hint:'に興味がある = érdekli vmi'},{pos:2,ans:'ので',hint:'ので = mivel, mert'}],
+    hu:'Mivel érdekli a ritka dolog, mindent megkóstol.'
+  },
+  {
+    id:'c5',
+    parts:['コンビニ','プリン','食べたことがありますか。'],
+    blanks:[{pos:1,ans:'の',hint:'コンビニの = a konbini…'},{pos:2,ans:'を',hint:'を食べる = megennivalót'}],
+    hu:'Ettél már konbini pudingot?'
+  },
+];
+
+// Section D: Vocab quiz
+const SEC_D=[
+  {jp:'びっくりする',read:'びっくりする',opts:['meglepődni','megköszönni','megfeledkezni','mosolyogni'],ans:'meglepődni'},
+  {jp:'時間通り',read:'じかんどおり',opts:['pontosan időre','lassan','elkésve','véletlenül'],ans:'pontosan időre'},
+  {jp:'自動',read:'じどう',opts:['automatikus','kézi','gyors','csendes'],ans:'automatikus'},
+  {jp:'チップ',read:'チップ',opts:['borravaló','érmepénz','számla','kedvezmény'],ans:'borravaló'},
+  {jp:'便利',read:'べんり',opts:['kényelmes, praktikus','drága','veszélyes','bonyolult'],ans:'kényelmes, praktikus'},
+  {jp:'遅れる',read:'おくれる',opts:['késni','sietni','megállni','elindulni'],ans:'késni'},
+  {jp:'忘れる',read:'わすれる',opts:['elfelejteni','elveszíteni','megtalálni','megvenni'],ans:'elfelejteni'},
+  {jp:'経験',read:'けいけん',opts:['tapasztalat, élmény','vélemény','szokás','érdeklődés'],ans:'tapasztalat, élmény'},
+  {jp:'世界で一番',read:'せかいでいちばん',opts:['a világon a legjobb','a városban a legolcsóbb','Japánban a legfontosabb','az egyetemen a legnépszerűbb'],ans:'a világon a legjobb'},
+  {jp:'プリン',read:'プリン',opts:['puding','sütemény','chips','jégkrém'],ans:'puding'},
+  {jp:'お弁当',read:'おべんとう',opts:['dobozos ebéd','reggeli','vacsora','snack'],ans:'dobozos ebéd'},
+  {jp:'留学生',read:'りゅうがくせい',opts:['külföldi diák','japán tanár','turistacsoport','vizsgabizottság'],ans:'külföldi diák'},
+];
+
+// ─────────────────────────────────────────────────────────
+// RENDER HELPERS
+// ─────────────────────────────────────────────────────────
+let doneCount=0;
+function markDone(){doneCount++;if(doneCount>=total)setTimeout(showFinal,700);}
+
+function feedback(qid,ok,hint,extra){
+  const card=document.getElementById('card-'+qid);
+  card.classList.add(ok?'ok':'err');
+  const fb=document.getElementById('fb-'+qid);
+  fb.className='fb show '+(ok?'ok-f':'err-f');
+  fb.innerHTML=ok?`✓ 正解！ Helyes! 🌸${extra?` <span style="font-size:11px">${extra}</span>`:''}`:
+    `✗ Nem jó. Helyes: <span class="ca">${hint}</span>${extra?` · <span style="font-size:11px">${extra}</span>`:''}`;
+  if(ok){
+    correct++;const rect=card.getBoundingClientRect();
+    flowers(rect.left+rect.width/2,rect.top+rect.height/2+scrollY);playHappy();
+  } else {playSad();showTanu(hint);}
+  updScore();markDone();
+}
+
+// ─────────────────────────────────────────────────────────
+// SECTION A
+// ─────────────────────────────────────────────────────────
+function renderA(){
+  const cont=document.getElementById('secA');
+  SEC_A.forEach((q,qi)=>{
+    total+=q.blanks.length;
+    const card=document.createElement('div');
+    card.className='q-card';card.id='card-'+q.id;
+    let sh='';
+    q.parts.forEach((p,pi)=>{
+      sh+=`<span>${p}</span>`;
+      if(pi<q.parts.length-1){
+        const bl=q.blanks.find(b=>b.pos===pi+1);
+        if(bl)sh+=`<span class="blank" id="bl-${q.id}-${bl.pos}">？</span>`;
+      }
+    });
+    const optsH=q.blanks.map(bl=>bl.opts.map(o=>`<button class="opt-btn" onclick="clickPartA('${q.id}',${bl.pos},'${o}')">${o}</button>`).join('')).join('');
+    card.innerHTML=`<div class="q-num">${qi+1}. feladat</div><div class="q-sent">${sh}</div><div class="q-hu">${q.hu}</div><div class="opts-row" id="opts-${q.id}">${optsH}</div><div class="fb" id="fb-${q.id}"></div>`;
+    cont.appendChild(card);
+  });
+  updScore();
+}
+
+const _aAnswered={};
+function clickPartA(qid,pos,chosen){
+  const q=SEC_A.find(q=>q.id===qid);if(!q)return;
+  const bl=q.blanks.find(b=>b.pos===pos);if(!bl||bl.done)return;
+  const el=document.getElementById(`bl-${qid}-${pos}`);
+  el.textContent=chosen;el.classList.add('sel');
+  // check when all filled
+  const allFilled=q.blanks.every(b=>{const e=document.getElementById(`bl-${qid}-${b.pos}`);return e&&e.textContent!=='？';});
+  if(!allFilled)return;
+  if(_aAnswered[qid])return;_aAnswered[qid]=true;
+  document.querySelectorAll(`#opts-${qid} .opt-btn`).forEach(b=>b.disabled=true);
+  let allOk=true;
+  q.blanks.forEach(b=>{
+    const e=document.getElementById(`bl-${qid}-${b.pos}`);
+    if(e.textContent.trim()===b.ans){e.classList.remove('sel');e.classList.add('c','locked');}
+    else{e.classList.remove('sel');e.classList.add('w','locked');e.textContent=b.ans;allOk=false;}
+    b.done=true;
+  });
+  const correctStr=q.blanks.map(b=>b.ans).join('、');
+  feedback(qid,allOk,correctStr,q.hint);
+}
+
+// ─────────────────────────────────────────────────────────
+// SECTION B
+// ─────────────────────────────────────────────────────────
+function renderB(){
+  const cont=document.getElementById('secB');
+  SEC_B.forEach((q,qi)=>{
+    total++;
+    const card=document.createElement('div');card.className='q-card';card.id='card-'+q.id;
+    const optsH=q.opts.map(o=>`<button class="opt-btn" onclick="clickWordB('${q.id}','${esc(o)}',this)">${o}</button>`).join('');
+    card.innerHTML=`<div class="q-num">${qi+1}. feladat</div>
+      <div class="q-sent"><span>${q.before}</span><span class="blank" id="bl-${q.id}" style="min-width:80px">　</span><span>${q.after}</span></div>
+      <div class="q-hu">${q.hu}</div>
+      <div class="opts-row">${optsH}</div>
+      <div class="fb" id="fb-${q.id}"></div>`;
+    cont.appendChild(card);
+  });updScore();
+}
+const _bDone={};
+function clickWordB(qid,chosen,btn){
+  if(_bDone[qid])return;_bDone[qid]=true;
+  const q=SEC_B.find(q=>q.id===qid);if(!q)return;
+  const c=chosen.replace(/&#39;/g,"'");
+  document.querySelectorAll(`#card-${qid} .opt-btn`).forEach(b=>b.disabled=true);
+  const bl=document.getElementById('bl-'+qid);bl.textContent=c;
+  if(c===q.ans){bl.classList.add('c');feedback(qid,true,q.ans,q.hint);}
+  else{bl.classList.add('w');bl.textContent=q.ans;feedback(qid,false,q.ans,q.hint);}
+}
+
+// ─────────────────────────────────────────────────────────
+// SECTION C (type-in)
+// ─────────────────────────────────────────────────────────
+function renderC(){
+  const cont=document.getElementById('secC');
+  SEC_C.forEach((q,qi)=>{
+    total+=q.blanks.length;
+    const card=document.createElement('div');card.className='q-card';card.id='card-'+q.id;
+    let sh='';
+    q.parts.forEach((p,pi)=>{
+      sh+=`<span>${p}</span>`;
+      if(pi<q.parts.length-1){
+        const bl=q.blanks.find(b=>b.pos===pi+1);
+        if(bl)sh+=`<input type="text" class="ti" id="ti-${q.id}-${bl.pos}" maxlength="3" autocomplete="off" placeholder="＿" data-ans="${bl.ans}" oninput="liveCheckC('${q.id}')">`;
+      }
+    });
+    card.innerHTML=`<div class="q-num">${qi+1}. feladat</div><div class="q-sent">${sh}</div><div class="q-hu">${q.hu}</div>
+      <button class="check-btn" id="cbtn-${q.id}" onclick="checkC('${q.id}')">✓ Ellenőrzés</button>
+      <div class="fb" id="fb-${q.id}"></div>`;
+    cont.appendChild(card);
+    setTimeout(()=>{q.blanks.forEach(bl=>{const inp=document.getElementById(`ti-${q.id}-${bl.pos}`);if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkC(q.id);});});},80);
+  });updScore();
+}
+const _cDone={};
+function liveCheckC(qid){
+  const q=SEC_C.find(q=>q.id===qid);if(!q||_cDone[qid])return;
+  const allFilled=q.blanks.every(bl=>{const e=document.getElementById(`ti-${qid}-${bl.pos}`);return e&&e.value.trim()!=='';});
+  if(allFilled)checkC(qid);
+}
+function checkC(qid){
+  if(_cDone[qid])return;
+  const q=SEC_C.find(q=>q.id===qid);if(!q)return;
+  const btn=document.getElementById('cbtn-'+qid);if(btn)btn.disabled=true;
+  _cDone[qid]=true;
+  let allOk=true;
+  q.blanks.forEach(bl=>{
+    const e=document.getElementById(`ti-${qid}-${bl.pos}`);if(!e)return;
+    if(e.value.trim()===bl.ans){e.classList.add('c');e.readOnly=true;}
+    else{e.classList.add('w');e.value=bl.ans;e.readOnly=true;allOk=false;}
+  });
+  const correctStr=q.blanks.map(b=>b.ans).join('、');
+  const hints=q.blanks.map(b=>b.hint).join(' | ');
+  feedback(qid,allOk,correctStr,hints);
+}
+
+// ─────────────────────────────────────────────────────────
+// SECTION D (vocab)
+// ─────────────────────────────────────────────────────────
+let vocabIdx=0,vocabScore=0;
+const vocabDeck=shuffle([...SEC_D]);
+function renderD(){
+  total+=vocabDeck.length;
+  showVocab();updScore();
+}
+function showVocab(){
+  const cont=document.getElementById('secD');cont.innerHTML='';
+  if(vocabIdx>=vocabDeck.length){
+    cont.innerHTML=`<div class="vocab-card" style="text-align:center"><div class="vc-q">SZÓGYAKORLÁS KÉSZ</div><div style="font-size:36px;margin:8px 0">🎉</div><div style="font-size:18px;font-family:'Zen Antique',serif;color:var(--y1)">${vocabScore}/${vocabDeck.length} helyes</div></div>`;
+    return;
+  }
+  const w=vocabDeck[vocabIdx];
+  const optsH=w.opts.map(o=>`<button class="vocab-opt" onclick="answerVocab('${esc(o)}','${esc(w.ans)}')">${o}</button>`).join('');
+  cont.innerHTML=`
+    <div class="vocab-nav">
+      <span>${vocabIdx+1} / ${vocabDeck.length}</span>
+      <span class="vocab-score">${vocabScore}</span>
+      <span>szógyakorlás</span>
+    </div>
+    <div class="vocab-card">
+      <div class="vc-q">JAPÁN → MAGYAR</div>
+      <div class="vc-main">${w.jp}</div>
+      <div class="vc-read">${w.read}</div>
+      <div class="vocab-opts">${optsH}</div>
+      <div class="fb" id="vfb" style="margin-top:8px"></div>
+    </div>`;
+}
+function answerVocab(chosen,correct){
+  const c=correct.replace(/&#39;/g,"'"),ch=chosen.replace(/&#39;/g,"'");
+  document.querySelectorAll('.vocab-opt').forEach(b=>b.disabled=true);
+  const ok=ch===c;
+  document.querySelectorAll('.vocab-opt').forEach(b=>{
+    if(b.textContent.trim()===c)b.classList.add('c');
+    else if(b.textContent.trim()===ch&&!ok)b.classList.add('w');
+    else b.classList.add('dim');
+  });
+  const fb=document.getElementById('vfb');
+  fb.className='fb show '+(ok?'ok-f':'err-f');
+  fb.innerHTML=ok?'✓ Helyes! 🌸':`✗ Helyes: <span class="ca">${c}</span>`;
+  if(ok){
+    vocabScore++;correct++;
+    const cont=document.getElementById('secD');const rect=cont.getBoundingClientRect();
+    flowers(rect.left+rect.width/2,rect.top+rect.height/2+scrollY);playHappy();
+  } else {playSad();showTanu(c);}
+  updScore();
+  setTimeout(()=>{vocabIdx++;showVocab();markDone();},1400);
+}
+
+// ─────────────────────────────────────────────────────────
+// FINAL
+// ─────────────────────────────────────────────────────────
+function showFinal(){
+  const pct=Math.round(correct/total*100);
+  const el=document.getElementById('final');el.style.display='block';
+  document.getElementById('fscore').textContent=`${correct}/${total}`;
+  document.getElementById('fmsg').textContent=
+    pct>=90?'素晴らしい！🌸 Kiváló eredmény! Igazi Japán-szakértő vagy!':
+    pct>=70?'よくできました！ Szép munka! Még egy kis gyakorlás!':
+    pct>=50?'がんばりました！ Jó próbálkozás! Olvasd el újra a szöveget!':
+    'もう一度やりましょう！ Olvasd el a szöveget és próbáld újra!';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  if(pct>=70)for(let i=0;i<6;i++)setTimeout(()=>flowers(innerWidth*Math.random(),innerHeight*Math.random()+scrollY),i*300);
+}
+
+// ─────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function esc(s){return s.replace(/'/g,"&#39;").replace(/"/g,'&quot;');}
+
+// ─────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────
+renderA();renderB();renderC();renderD();
+updScore();document.getElementById('sc-l').textContent=`0/${total}`;
+</script>
+</body>
+</html>

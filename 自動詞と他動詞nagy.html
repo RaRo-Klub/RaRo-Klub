@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 自動詞・他動詞 Képes Kártyák</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#3a006f;--bg2:#6a0dad;--bg3:#9b30d4;
+  --card-w:160px;--card-h:220px;
+  --gold:#ffd700;--teal:#00e5ff;--pink:#ff69b4;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg1) 100%);
+  font-family:'Noto Sans JP',sans-serif;
+  overflow-x:hidden;
+}
+/* ── BG stars ── */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;animation:twinkle 3s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:.9}}
+
+/* ── Header ── */
+header{text-align:center;padding:28px 16px 12px;position:relative;z-index:2;}
+h1{font-family:'Fredoka One',cursive;font-size:clamp(22px,5vw,46px);color:#fff;
+  text-shadow:0 3px 20px rgba(0,0,0,.4);letter-spacing:3px;}
+.subtitle{color:rgba(255,255,255,.75);font-size:14px;margin-top:6px;font-weight:700;}
+
+/* ── Set nav ── */
+.set-nav{display:flex;align-items:center;justify-content:center;gap:10px;
+  flex-wrap:wrap;padding:10px 16px 22px;position:relative;z-index:2;}
+.set-btn{padding:8px 18px;border-radius:50px;border:2px solid rgba(255,255,255,.6);
+  background:transparent;color:#fff;font-weight:800;font-size:13px;cursor:pointer;
+  transition:all .2s;font-family:'Noto Sans JP',sans-serif;}
+.set-btn.active{background:#fff;color:var(--bg2);box-shadow:0 4px 18px rgba(0,0,0,.25);transform:translateY(-2px);}
+.set-btn:hover:not(.active){background:rgba(255,255,255,.18);}
+
+/* ── Mode toggle ── */
+.mode-row{display:flex;gap:8px;justify-content:center;padding-bottom:18px;position:relative;z-index:2;}
+.mode-btn{padding:8px 20px;border-radius:50px;border:2px solid rgba(255,255,255,.5);
+  background:transparent;color:#fff;font-size:13px;font-weight:800;cursor:pointer;
+  transition:all .2s;font-family:'Noto Sans JP',sans-serif;}
+.mode-btn.active{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#3a006f;border-color:transparent;
+  box-shadow:0 3px 14px rgba(255,165,0,.5);}
+
+/* ── Cards grid ── */
+.cards-wrap{position:relative;z-index:2;padding:0 14px 40px;}
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(var(--card-w),1fr));
+  gap:14px;
+  max-width:900px;
+  margin:0 auto;
+}
+
+/* ── Single card ── */
+.card-scene{
+  width:100%;aspect-ratio:3/4;cursor:pointer;
+  perspective:900px;
+  position:relative;
+}
+.card-inner{
+  width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .65s cubic-bezier(.4,1.6,.6,1);
+  position:relative;
+}
+.card-scene.flipped .card-inner{transform:rotateY(180deg);}
+.card-face{
+  position:absolute;inset:0;border-radius:20px;
+  backface-visibility:hidden;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(0,0,0,.35);
+}
+.card-back-face{transform:rotateY(180deg);}
+
+/* ── Illustration area ── */
+.illus{
+  flex:0 0 52%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;font-size:0;
+}
+.illus .scene{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:2px;
+  position:relative;
+}
+.illus .emoji-big{font-size:clamp(30px,6vw,42px);line-height:1;z-index:1;position:relative;}
+.illus .emoji-sm{font-size:clamp(18px,3.5vw,24px);z-index:1;position:relative;}
+.illus .actor{font-size:clamp(22px,4.5vw,30px);z-index:1;position:relative;}
+.illus .arrow{font-size:16px;opacity:.8;z-index:1;position:relative;}
+
+/* Animated elements */
+.bounce{animation:bounce 1s ease-in-out infinite alternate;}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.spin{animation:spin 2.5s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.shake{animation:shake 1.2s ease-in-out infinite;}
+@keyframes shake{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.pulse{animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.float{animation:float 2s ease-in-out infinite alternate;}
+@keyframes float{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-10px) rotate(5deg)}}
+.wave{animation:wave 1.8s ease-in-out infinite;}
+@keyframes wave{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.6) scaleY(1.3)}}
+.glow{animation:glow 1.5s ease-in-out infinite alternate;}
+@keyframes glow{from{filter:brightness(1)}to{filter:brightness(1.6) drop-shadow(0 0 8px gold)}}
+.fall{animation:fall 1.5s ease-in infinite;}
+@keyframes fall{0%{transform:translateY(-10px) rotate(0)}100%{transform:translateY(15px) rotate(180deg);opacity:0}}
+.rise{animation:rise 1.5s ease-out infinite;}
+@keyframes rise{0%{transform:translateY(10px);opacity:.5}100%{transform:translateY(-10px);opacity:0}}
+
+/* ── Card text area ── */
+.card-text{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 10px 10px;gap:3px;
+}
+.particle-badge{
+  font-size:10px;font-weight:800;letter-spacing:1px;padding:2px 10px;border-radius:50px;
+  margin-bottom:2px;
+}
+.vi-badge{background:rgba(255,215,0,.25);color:#ffd700;border:1.5px solid #ffd700;}
+.vt-badge{background:rgba(0,229,255,.2);color:#00e5ff;border:1.5px solid #00e5ff;}
+.jp-main{font-size:clamp(13px,2.5vw,16px);font-weight:900;text-align:center;line-height:1.3;}
+.jp-read{font-size:clamp(10px,1.8vw,12px);opacity:.75;text-align:center;}
+.hu-text{font-size:clamp(10px,1.8vw,11px);text-align:center;margin-top:2px;font-weight:700;opacity:.9;}
+.tap-hint{font-size:9px;opacity:.45;margin-top:3px;letter-spacing:1px;}
+.pair-num{position:absolute;top:8px;left:10px;font-size:10px;opacity:.5;font-weight:700;color:#fff;}
+
+/* ── VI front: warm purple → gold ── */
+.vi-face{background:linear-gradient(160deg,#4a1080 0%,#7b2ab5 60%,#5c1e90 100%);}
+.vi-illus{background:linear-gradient(180deg,rgba(255,215,0,.18) 0%,rgba(74,16,128,.0) 100%);}
+
+/* ── VT back: deep blue-purple ── */
+.vt-face{background:linear-gradient(160deg,#1a0040 0%,#3d0070 60%,#5c1e90 100%);}
+.vt-illus{background:linear-gradient(180deg,rgba(0,229,255,.15) 0%,rgba(26,0,64,.0) 100%);}
+
+/* ── Info bar ── */
+.info-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:900px;margin:0 auto 14px;padding:0 4px;
+  color:rgba(255,255,255,.8);font-size:13px;font-weight:700;
+  position:relative;z-index:2;
+}
+.flip-all-btn{padding:7px 16px;border-radius:50px;
+  border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);
+  color:#fff;font-size:12px;font-weight:800;cursor:pointer;
+  font-family:'Noto Sans JP',sans-serif;transition:all .2s;}
+.flip-all-btn:hover{background:rgba(255,255,255,.25);}
+
+/* ── Quiz overlay ── */
+.quiz-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(20,0,50,.92);backdrop-filter:blur(10px);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  padding:20px;
+}
+.quiz-overlay.show{display:flex;}
+.quiz-card-big{
+  width:min(420px,95vw);background:linear-gradient(135deg,#3d0070,#6a0dad);
+  border-radius:24px;padding:28px;text-align:center;
+  border:2px solid rgba(255,255,255,.25);
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+.quiz-illus-big{
+  width:100%;height:160px;border-radius:16px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);font-size:60px;position:relative;overflow:hidden;
+}
+.quiz-q{font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;}
+.quiz-read{font-size:14px;color:rgba(255,255,255,.7);}
+.quiz-ask{font-size:14px;color:#ffd700;font-weight:800;margin-top:8px;}
+.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(420px,95vw);}
+.qc{
+  padding:14px 10px;border-radius:16px;border:2px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);color:#fff;font-weight:800;font-size:14px;
+  cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif;
+  text-align:center;line-height:1.4;
+}
+.qc:hover:not(:disabled){background:rgba(255,255,255,.25);transform:scale(1.03);}
+.qc.correct{background:#00c853!important;border-color:#00c853!important;color:#fff!important;}
+.qc.wrong{background:#e53935!important;border-color:#e53935!important;color:#fff!important;}
+.qc.dim{background:rgba(255,255,255,.05)!important;color:rgba(255,255,255,.35)!important;}
+.quiz-score-bar{color:#fff;font-weight:800;font-size:16px;}
+.quiz-close{padding:10px 28px;border-radius:50px;border:2px solid rgba(255,255,255,.5);
+  background:transparent;color:#fff;font-weight:800;cursor:pointer;
+  font-family:'Noto Sans JP',sans-serif;font-size:14px;transition:all .2s;}
+.quiz-close:hover{background:rgba(255,255,255,.2);}
+.quiz-prog-wrap{width:min(420px,95vw);height:6px;background:rgba(255,255,255,.15);border-radius:50px;overflow:hidden;}
+.quiz-prog{height:100%;background:linear-gradient(90deg,#ffd700,#ff69b4);border-radius:50px;transition:width .5s;}
+.result-line{font-size:16px;font-weight:900;color:#fff;min-height:22px;text-align:center;}
+
+/* ── Flower / Tanuki ── */
+#fr{position:fixed;inset:0;pointer-events:none;z-index:200;}
+.pt{position:absolute;top:-50px;animation:pf linear forwards;}
+@keyframes pf{to{transform:translateY(110vh) rotate(540deg);opacity:0;}}
+#tnk{position:fixed;bottom:18px;right:18px;font-size:72px;z-index:190;display:none;
+  animation:tb .4s ease infinite alternate;filter:drop-shadow(0 5px 12px rgba(0,0,0,.35));}
+@keyframes tb{from{transform:translateY(0) rotate(-12deg)}to{transform:translateY(-18px) rotate(12deg)}}
+</style>
+</head>
+<body>
+
+<!-- Stars bg -->
+<div class="stars" id="stars"></div>
+<div id="fr"></div>
+<div id="tnk">🦝</div>
+
+<header>
+  <h1>🌸 自動詞・他動詞 🌸</h1>
+  <p class="subtitle">Képes gyakorló kártyák — kattints a kártyára a fordításhoz!</p>
+</header>
+
+<!-- Set navigation -->
+<div class="set-nav">
+  <button class="set-btn active" onclick="loadSet(0,this)">Set 1 (1–20)</button>
+  <button class="set-btn" onclick="loadSet(1,this)">Set 2 (21–40)</button>
+  <button class="set-btn" onclick="loadSet(2,this)">Set 3 (41–60)</button>
+  <button class="set-btn" onclick="loadSet(3,this)">Set 4 (61–70)</button>
+</div>
+<div class="mode-row">
+  <button class="mode-btn active" id="browse-btn" onclick="setMode('browse')">🃏 Böngészés</button>
+  <button class="mode-btn" id="quiz-btn" onclick="setMode('quiz')">❓ Kvíz</button>
+</div>
+
+<div class="cards-wrap">
+  <div class="info-bar">
+    <span id="set-info">1–20 / 70 ige</span>
+    <button class="flip-all-btn" onclick="flipAllCards()">🔄 Mind fordítása</button>
+  </div>
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+
+<!-- Quiz overlay -->
+<div class="quiz-overlay" id="quiz-overlay">
+  <div class="quiz-score-bar" id="qs-bar">Pontok: 0 / 0</div>
+  <div class="quiz-prog-wrap"><div class="quiz-prog" id="qprog" style="width:0%"></div></div>
+  <div class="quiz-card-big" id="qcard">
+    <div class="quiz-illus-big" id="qillus"></div>
+    <div class="quiz-q" id="qq"></div>
+    <div class="quiz-read" id="qread"></div>
+    <div class="quiz-ask" id="qask"></div>
+  </div>
+  <div class="quiz-choices" id="qchoices"></div>
+  <div class="result-line" id="qresult"></div>
+  <button class="quiz-close" onclick="closeQuiz()">✕ Bezár</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA — 70 verb pairs with illustrated scenes
+// Each: vi(自動詞), vir(reading), vt(他動詞), vtr, hu_vi, hu_vt, scene object
+// scene: { bg, vi_emojis (HTML), vt_emojis (HTML) }
+// ═══════════════════════════════════════
+const VERBS = [
+  {id:1,  vi:"ドアが開きます",  vir:"あきます",   vt:"ドアを開けます",  vtr:"あけます",   hu_vi:"kinyílik",       hu_vt:"kinyitja",
+   bg:"linear-gradient(160deg,#1565c0,#1976d2)", vi_s:`<div class="emoji-big bounce">🚪</div><div class="arrow">↔️</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">→🚪</div>`},
+  {id:2,  vi:"ドアが閉まります",vir:"しまります",  vt:"ドアを閉めます",  vtr:"しめます",   hu_vi:"becsukódik",     hu_vt:"becsukja",
+   bg:"linear-gradient(160deg,#4a148c,#6a1b9a)", vi_s:`<div class="emoji-big shake">🚪</div><div class="arrow">❌</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🚪→🔒</div>`},
+  {id:3,  vi:"犬が出ます",      vir:"でます",      vt:"犬を出します",   vtr:"だします",   hu_vi:"kimegy",         hu_vt:"kiveszi",
+   bg:"linear-gradient(160deg,#1b5e20,#2e7d32)", vi_s:`<div class="emoji-big bounce">🐕</div><div class="arrow">🏠→</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🏠🐕→</div>`},
+  {id:4,  vi:"耳が動きます",    vir:"うごきます",  vt:"耳を動かします", vtr:"うごかします",hu_vi:"mozog",          hu_vt:"mozgatja",
+   bg:"linear-gradient(160deg,#e65100,#ef6c00)", vi_s:`<div class="emoji-big pulse">👂</div><div class="emoji-sm shake">✨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">→👂</div>`},
+  {id:5,  vi:"車が止まります",  vir:"とまります",  vt:"車を止めます",   vtr:"とめます",   hu_vi:"megáll",         hu_vt:"megállítja",
+   bg:"linear-gradient(160deg,#b71c1c,#c62828)", vi_s:`<div class="emoji-big">🚗</div><div class="arrow">🛑</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">✋🚗</div>`},
+  {id:6,  vi:"電気がつきます",  vir:"つきます",    vt:"電気をつけます", vtr:"つけます",   hu_vi:"felgyullad",     hu_vt:"bekapcsolja",
+   bg:"linear-gradient(160deg,#f57f17,#f9a825)", vi_s:`<div class="emoji-big glow">💡</div><div class="emoji-sm">ON✨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">→💡✨</div>`},
+  {id:7,  vi:"電気が消えます",  vir:"きえます",    vt:"電気を消します", vtr:"けします",   hu_vi:"kialszik",       hu_vt:"kikapcsolja",
+   bg:"linear-gradient(160deg,#212121,#424242)", vi_s:`<div class="emoji-big">💡</div><div class="arrow">→💤</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">💡→⬛</div>`},
+  {id:8,  vi:"予定が変わります",vir:"かわります",  vt:"予定を変えます", vtr:"かえます",   hu_vi:"megváltozik",    hu_vt:"megváltoztatja",
+   bg:"linear-gradient(160deg,#880e4f,#ad1457)", vi_s:`<div class="emoji-big">📅</div><div class="arrow">→📅✨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">📅✏️</div>`},
+  {id:9,  vi:"病気が治ります",  vir:"なおります",  vt:"病気を治します", vtr:"なおします", hu_vi:"meggyógyul",     hu_vt:"meggyógyítja",
+   bg:"linear-gradient(160deg,#004d40,#00695c)", vi_s:`<div class="emoji-big bounce">🤒</div><div class="arrow">→😊</div>`,
+   vt_s:`<div class="actor">👨‍⚕️</div><div class="emoji-sm">💊→😊</div>`},
+  {id:10, vi:"レッスンが始まります",vir:"はじまります",vt:"レッスンを始めます",vtr:"はじめます",hu_vi:"elkezdődik",   hu_vt:"elkezdi",
+   bg:"linear-gradient(160deg,#1a237e,#283593)", vi_s:`<div class="emoji-big pulse">📚</div><div class="emoji-sm">▶️</div>`,
+   vt_s:`<div class="actor">👩‍🏫</div><div class="emoji-sm">📚▶️</div>`},
+  {id:11, vi:"ペンが落ちます",  vir:"おちます",    vt:"ペンを落とします",vtr:"おとします", hu_vi:"leesik",         hu_vt:"leelejti",
+   bg:"linear-gradient(160deg,#33691e,#558b2f)", vi_s:`<div class="emoji-big fall">✏️</div><div class="arrow">↓</div>`,
+   vt_s:`<div class="actor">😱</div><div class="emoji-sm">✏️↓</div>`},
+  {id:12, vi:"音楽が聞こえます",vir:"きこえます",  vt:"音楽を聞きます", vtr:"ききます",   hu_vi:"hallható",       hu_vt:"meghallgatja",
+   bg:"linear-gradient(160deg,#4a148c,#7b1fa2)", vi_s:`<div class="emoji-big pulse">🎵</div><div class="emoji-sm">👂✨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🎧🎵</div>`},
+  {id:13, vi:"富士山が見えます",vir:"みえます",    vt:"富士山を見ます", vtr:"みます",     hu_vi:"látható",        hu_vt:"nézi",
+   bg:"linear-gradient(160deg,#006064,#00838f)", vi_s:`<div class="emoji-big">🗻</div><div class="emoji-sm">👁️✨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">👀→🗻</div>`},
+  {id:14, vi:"財布がなくなります",vir:"なくなります",vt:"財布をなくします",vtr:"なくします", hu_vi:"elvész",        hu_vt:"elveszíti",
+   bg:"linear-gradient(160deg,#b71c1c,#c62828)", vi_s:`<div class="emoji-big bounce">👛</div><div class="arrow">💨→❓</div>`,
+   vt_s:`<div class="actor">😱</div><div class="emoji-sm">👛💨</div>`},
+  {id:15, vi:"財布が見つかります",vir:"みつかります",vt:"財布を見つけます",vtr:"みつけます",hu_vi:"megtalálódik",  hu_vt:"megtalálja",
+   bg:"linear-gradient(160deg,#1b5e20,#388e3c)", vi_s:`<div class="emoji-big bounce">👛</div><div class="arrow">✅</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🔍→👛</div>`},
+  {id:16, vi:"予定が決まります",vir:"きまります",  vt:"予定を決めます", vtr:"きめます",   hu_vi:"eldől",          hu_vt:"eldönti",
+   bg:"linear-gradient(160deg,#880e4f,#c2185b)", vi_s:`<div class="emoji-big pulse">📋</div><div class="arrow">✅</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">📋✔️</div>`},
+  {id:17, vi:"風が入ります",    vir:"はいります",  vt:"風を入れます",   vtr:"いれます",   hu_vi:"bemegy (szél)",  hu_vt:"beengedi (szél)",
+   bg:"linear-gradient(160deg,#006064,#0097a7)", vi_s:`<div class="emoji-big wave">💨</div><div class="arrow">→🚪</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🪟→💨</div>`},
+  {id:18, vi:"お湯が沸きます",  vir:"わきます",    vt:"お湯を沸かします",vtr:"わかします", hu_vi:"forr",           hu_vt:"felfőzi",
+   bg:"linear-gradient(160deg,#bf360c,#d84315)", vi_s:`<div class="emoji-big pulse">♨️</div><div class="emoji-sm">🫧🫧</div>`,
+   vt_s:`<div class="actor">👩‍🍳</div><div class="emoji-sm">🔥→♨️</div>`},
+  {id:19, vi:"パンが焼けます",  vir:"やけます",    vt:"パンを焼きます", vtr:"やきます",   hu_vi:"megsül",         hu_vt:"megsüti",
+   bg:"linear-gradient(160deg,#e65100,#f57c00)", vi_s:`<div class="emoji-big bounce">🍞</div><div class="emoji-sm">→🤎✨</div>`,
+   vt_s:`<div class="actor">👩‍🍳</div><div class="emoji-sm">🍳🍞</div>`},
+  {id:20, vi:"肉が煮えます",    vir:"にえます",    vt:"肉を煮ます",     vtr:"にます",     hu_vi:"megfő",          hu_vt:"megfőzi",
+   bg:"linear-gradient(160deg,#4e342e,#6d4c41)", vi_s:`<div class="emoji-big pulse">🥩</div><div class="emoji-sm">🫧🔥</div>`,
+   vt_s:`<div class="actor">👩‍🍳</div><div class="emoji-sm">🥘🥩</div>`},
+  // 21-40
+  {id:21, vi:"カメラが壊れます",vir:"こわれます",  vt:"カメラを壊します",vtr:"こわします", hu_vi:"elromlik",       hu_vt:"eltöri",
+   bg:"linear-gradient(160deg,#37474f,#546e7a)", vi_s:`<div class="emoji-big shake">📷</div><div class="arrow">💥</div>`,
+   vt_s:`<div class="actor">😤</div><div class="emoji-sm">📷→💥</div>`},
+  {id:22, vi:"パソコンが直ります",vir:"なおります",vt:"パソコンを直します",vtr:"なおします",hu_vi:"megjavul",      hu_vt:"megjavítja",
+   bg:"linear-gradient(160deg,#1a237e,#303f9f)", vi_s:`<div class="emoji-big bounce">💻</div><div class="arrow">✅</div>`,
+   vt_s:`<div class="actor">👨‍💻</div><div class="emoji-sm">🔧💻</div>`},
+  {id:23, vi:"荷物が届きます",  vir:"とどきます",  vt:"荷物を届けます", vtr:"とどけます", hu_vi:"megérkezik",     hu_vt:"kézbesíti",
+   bg:"linear-gradient(160deg,#1b5e20,#2e7d32)", vi_s:`<div class="emoji-big bounce">📦</div><div class="arrow">🚚→🏠</div>`,
+   vt_s:`<div class="actor">🚚</div><div class="emoji-sm">📦→🚪</div>`},
+  {id:24, vi:"値段が上がります",vir:"あがります",  vt:"値段を上げます", vtr:"あげます",   hu_vi:"emelkedik",      hu_vt:"emeli",
+   bg:"linear-gradient(160deg,#b71c1c,#d32f2f)", vi_s:`<div class="emoji-big rise">💴</div><div class="arrow">📈</div>`,
+   vt_s:`<div class="actor">🏪</div><div class="emoji-sm">💴↑📈</div>`},
+  {id:25, vi:"値段が下がります",vir:"さがります",  vt:"値段を下げます", vtr:"さげます",   hu_vi:"csökken",        hu_vt:"csökkenti",
+   bg:"linear-gradient(160deg,#1a237e,#283593)", vi_s:`<div class="emoji-big fall">💴</div><div class="arrow">📉</div>`,
+   vt_s:`<div class="actor">🏪</div><div class="emoji-sm">💴↓📉</div>`},
+  {id:26, vi:"仕事が増えます",  vir:"ふえます",    vt:"仕事を増やします",vtr:"ふやします", hu_vi:"növekszik",      hu_vt:"növeli",
+   bg:"linear-gradient(160deg,#880e4f,#ad1457)", vi_s:`<div class="emoji-big pulse">📂📂</div><div class="emoji-sm">📂</div>`,
+   vt_s:`<div class="actor">👔</div><div class="emoji-sm">📂++</div>`},
+  {id:27, vi:"体重が減ります",  vir:"へります",    vt:"体重を減らします",vtr:"へらします", hu_vi:"fogy",           hu_vt:"csökkenti",
+   bg:"linear-gradient(160deg,#004d40,#00695c)", vi_s:`<div class="emoji-big bounce">⚖️</div><div class="arrow">↓</div>`,
+   vt_s:`<div class="actor">🏃</div><div class="emoji-sm">⚖️↓💪</div>`},
+  {id:28, vi:"レッスンが続きます",vir:"つづきます",vt:"レッスンを続けます",vtr:"つづけます",hu_vi:"folytatódik",   hu_vt:"folytatja",
+   bg:"linear-gradient(160deg,#1a237e,#283593)", vi_s:`<div class="emoji-big pulse">📚</div><div class="arrow">→→→</div>`,
+   vt_s:`<div class="actor">👩‍🎓</div><div class="emoji-sm">📚▶️▶️</div>`},
+  {id:29, vi:"子どもが助かります",vir:"たすかります",vt:"子どもを助けます",vtr:"たすけます",hu_vi:"megmenekül",    hu_vt:"megmenti",
+   bg:"linear-gradient(160deg,#e65100,#f57c00)", vi_s:`<div class="emoji-big bounce">🧒</div><div class="arrow">→😊</div>`,
+   vt_s:`<div class="actor">🦸</div><div class="emoji-sm">→🧒💪</div>`},
+  {id:30, vi:"テーブルが回ります",vir:"まわります",vt:"テーブルを回します",vtr:"まわします",hu_vi:"forog",         hu_vt:"forgatja",
+   bg:"linear-gradient(160deg,#4a148c,#6a1b9a)", vi_s:`<div class="emoji-big spin">🍽️</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm spin">🍽️</div>`},
+  {id:31, vi:"腕が曲がります",  vir:"まがります",  vt:"腕を曲げます",   vtr:"まげます",   hu_vi:"meghajlik",      hu_vt:"meghajlítja",
+   bg:"linear-gradient(160deg,#1b5e20,#2e7d32)", vi_s:`<div class="emoji-big">💪</div><div class="arrow">↩️</div>`,
+   vt_s:`<div class="actor">🏋️</div><div class="emoji-sm">💪↩️</div>`},
+  {id:32, vi:"足の骨が折れます",vir:"おれます",    vt:"足の骨を折ります",vtr:"おります",   hu_vi:"eltörik",        hu_vt:"eltöri",
+   bg:"linear-gradient(160deg,#37474f,#546e7a)", vi_s:`<div class="emoji-big shake">🦴</div><div class="arrow">💥</div>`,
+   vt_s:`<div class="actor">😬</div><div class="emoji-sm">🦴→💥</div>`},
+  {id:33, vi:"人が集まります",  vir:"あつまります",vt:"人を集めます",   vtr:"あつめます", hu_vi:"összegyűlik",    hu_vt:"összegyűjti",
+   bg:"linear-gradient(160deg,#880e4f,#c2185b)", vi_s:`<div class="emoji-big">👥</div><div class="emoji-sm">+👤+👤</div>`,
+   vt_s:`<div class="actor">📢</div><div class="emoji-sm">→👥</div>`},
+  {id:34, vi:"人が並びます",    vir:"ならびます",  vt:"人を並べます",   vtr:"ならべます", hu_vi:"sorba áll",      hu_vt:"sorba állítja",
+   bg:"linear-gradient(160deg,#006064,#00838f)", vi_s:`<div class="emoji-big">👤👤👤</div><div class="emoji-sm">一列</div>`,
+   vt_s:`<div class="actor">🚦</div><div class="emoji-sm">👤👤👤→</div>`},
+  {id:35, vi:"コーヒーがこぼれます",vir:"こぼれます",vt:"コーヒーをこぼします",vtr:"こぼします",hu_vi:"kiömlik", hu_vt:"kiönti",
+   bg:"linear-gradient(160deg,#4e342e,#6d4c41)", vi_s:`<div class="emoji-big shake">☕</div><div class="arrow">💧💧</div>`,
+   vt_s:`<div class="actor">😅</div><div class="emoji-sm">☕→💧</div>`},
+  {id:36, vi:"たまごが割れます",vir:"われます",    vt:"たまごを割ります",vtr:"わります",   hu_vi:"eltörik",        hu_vt:"feltöri",
+   bg:"linear-gradient(160deg,#f9a825,#f57f17)", vi_s:`<div class="emoji-big shake">🥚</div><div class="arrow">→🍳</div>`,
+   vt_s:`<div class="actor">👩‍🍳</div><div class="emoji-sm">🥚→🍳</div>`},
+  {id:37, vi:"ロープが切れます",vir:"きれます",    vt:"ロープを切ります",vtr:"きります",   hu_vi:"elvágódik",      hu_vt:"elvágja",
+   bg:"linear-gradient(160deg,#b71c1c,#c62828)", vi_s:`<div class="emoji-big bounce">🪢</div><div class="arrow">✂️💥</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">✂️→🪢</div>`},
+  {id:38, vi:"ごみが燃えます",  vir:"もえます",    vt:"ごみを燃やします",vtr:"もやします", hu_vi:"ég/lángol",      hu_vt:"eléget",
+   bg:"linear-gradient(160deg,#bf360c,#e64a19)", vi_s:`<div class="emoji-big pulse">🔥</div><div class="emoji-sm">🗑️</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🗑️→🔥</div>`},
+  {id:39, vi:"ボタンが取れます",vir:"とれます",    vt:"ボタンを取ります",vtr:"とります",   hu_vi:"leválik",        hu_vt:"leveszi",
+   bg:"linear-gradient(160deg,#37474f,#546e7a)", vi_s:`<div class="emoji-big fall">🔵</div><div class="arrow">👕→⬜</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">👕→🔵</div>`},
+  {id:40, vi:"ボタンが外れます",vir:"はずれます",  vt:"ボタンを外します",vtr:"はずします", hu_vi:"kiakadozik",     hu_vt:"kigombolja",
+   bg:"linear-gradient(160deg,#4a148c,#7b1fa2)", vi_s:`<div class="emoji-big shake">👔</div><div class="arrow">🔓</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">👔→🔓</div>`},
+  // 41-60
+  {id:41, vi:"ビールが売れます",vir:"うれます",    vt:"ビールを売ります",vtr:"うります",   hu_vi:"elkél",          hu_vt:"eladja",
+   bg:"linear-gradient(160deg,#f57f17,#ef6c00)", vi_s:`<div class="emoji-big bounce">🍺</div><div class="arrow">→💰</div>`,
+   vt_s:`<div class="actor">🏪</div><div class="emoji-sm">🍺→💴</div>`},
+  {id:42, vi:"書類が揃います",  vir:"そろいます",  vt:"書類を揃えます", vtr:"そろえます", hu_vi:"összegyűlik",    hu_vt:"összeállítja",
+   bg:"linear-gradient(160deg,#1a237e,#303f9f)", vi_s:`<div class="emoji-big">📄📄📄</div><div class="arrow">✅</div>`,
+   vt_s:`<div class="actor">👩‍💼</div><div class="emoji-sm">📄→📋</div>`},
+  {id:43, vi:"仕事が進みます",  vir:"すすみます",  vt:"仕事を進めます", vtr:"すすめます", hu_vi:"halad",          hu_vt:"előre viszi",
+   bg:"linear-gradient(160deg,#1b5e20,#2e7d32)", vi_s:`<div class="emoji-big bounce">📊</div><div class="arrow">→→</div>`,
+   vt_s:`<div class="actor">💼</div><div class="emoji-sm">📊→▶️</div>`},
+  {id:44, vi:"仕事が済みます",  vir:"すみます",    vt:"仕事を済ませます",vtr:"すませます", hu_vi:"befejeződik",    hu_vt:"befejezi",
+   bg:"linear-gradient(160deg,#004d40,#00695c)", vi_s:`<div class="emoji-big bounce">✅</div><div class="emoji-sm">🏁</div>`,
+   vt_s:`<div class="actor">💼</div><div class="emoji-sm">📋→✅</div>`},
+  {id:45, vi:"時間が過ぎます",  vir:"すぎます",    vt:"時間を過ごします",vtr:"すごします", hu_vi:"eltelik",        hu_vt:"tölti (idő)",
+   bg:"linear-gradient(160deg,#880e4f,#ad1457)", vi_s:`<div class="emoji-big spin">⏰</div><div class="arrow">→→</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">⏰☕😊</div>`},
+  {id:46, vi:"ストレスが溜まります",vir:"たまります",vt:"ストレスを溜めます",vtr:"ためます",hu_vi:"felhalmozódik", hu_vt:"felhalmozza",
+   bg:"linear-gradient(160deg,#4a148c,#6a1b9a)", vi_s:`<div class="emoji-big shake">😤</div><div class="emoji-sm">💢💢</div>`,
+   vt_s:`<div class="actor">😓</div><div class="emoji-sm">😤→😤😤</div>`},
+  {id:47, vi:"お金が貯まります",vir:"たまります",  vt:"お金を貯めます", vtr:"ためます",   hu_vi:"gyűlik (pénz)",  hu_vt:"gyűjti (pénz)",
+   bg:"linear-gradient(160deg,#f57f17,#e65100)", vi_s:`<div class="emoji-big bounce">🐷</div><div class="emoji-sm">💰+💰</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">💴→🐷</div>`},
+  {id:48, vi:"水が流れます",    vir:"ながれます",  vt:"水を流します",   vtr:"ながします", hu_vi:"folyik",         hu_vt:"folyatja",
+   bg:"linear-gradient(160deg,#006064,#0097a7)", vi_s:`<div class="emoji-big wave">🌊</div><div class="arrow">→→</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🚰→🌊</div>`},
+  {id:49, vi:"木が倒れます",    vir:"たおれます",  vt:"木を倒します",   vtr:"たおします", hu_vi:"ledől",          hu_vt:"ledönti",
+   bg:"linear-gradient(160deg,#1b5e20,#388e3c)", vi_s:`<div class="emoji-big fall">🌲</div><div class="arrow">→💥</div>`,
+   vt_s:`<div class="actor">🪓</div><div class="emoji-sm">🌲→💥</div>`},
+  {id:50, vi:"紙が破れます",    vir:"やぶれます",  vt:"紙を破ります",   vtr:"やぶります", hu_vi:"elszakad",       hu_vt:"elszakítja",
+   bg:"linear-gradient(160deg,#37474f,#546e7a)", vi_s:`<div class="emoji-big shake">📄</div><div class="arrow">→💥</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">📄→✌️</div>`},
+  {id:51, vi:"髪が乾きます",    vir:"かわきます",  vt:"髪を乾かします", vtr:"かわかします",hu_vi:"megszárad",      hu_vt:"megszárítja",
+   bg:"linear-gradient(160deg,#880e4f,#c2185b)", vi_s:`<div class="emoji-big bounce">💇</div><div class="arrow">→✨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">💨→💇</div>`},
+  {id:52, vi:"体が冷えます",    vir:"ひえます",    vt:"体を冷やします", vtr:"ひやします", hu_vi:"lehűl",          hu_vt:"lehűti",
+   bg:"linear-gradient(160deg,#006064,#00838f)", vi_s:`<div class="emoji-big shake">🥶</div><div class="emoji-sm">❄️❄️</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🧊→😌</div>`},
+  {id:53, vi:"体が温まります",  vir:"あたたまります",vt:"体を温めます",  vtr:"あたためます",hu_vi:"felmelegszik",   hu_vt:"felmelegíti",
+   bg:"linear-gradient(160deg,#bf360c,#d84315)", vi_s:`<div class="emoji-big bounce">🥰</div><div class="emoji-sm">♨️</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">♨️→😊</div>`},
+  {id:54, vi:"スープが冷めます",vir:"さめます",    vt:"スープを冷まします",vtr:"さまします",hu_vi:"kihűl",         hu_vt:"hagyja kihűlni",
+   bg:"linear-gradient(160deg,#4e342e,#6d4c41)", vi_s:`<div class="emoji-big">🍜</div><div class="arrow">→❄️</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🍜→💨</div>`},
+  {id:55, vi:"服が汚れます",    vir:"よごれます",  vt:"服を汚します",   vtr:"よごします", hu_vi:"beszennyeződik", hu_vt:"bepiszkolja",
+   bg:"linear-gradient(160deg,#1b5e20,#2e7d32)", vi_s:`<div class="emoji-big shake">👕</div><div class="arrow">→🟤</div>`,
+   vt_s:`<div class="actor">🍝</div><div class="emoji-sm">👕→💦🟤</div>`},
+  {id:56, vi:"子どもが起きます",vir:"おきます",    vt:"子どもを起こします",vtr:"おこします",hu_vi:"felkel",        hu_vt:"felkelti",
+   bg:"linear-gradient(160deg,#f57f17,#f9a825)", vi_s:`<div class="emoji-big bounce">🧒</div><div class="arrow">🌅</div>`,
+   vt_s:`<div class="actor">👪</div><div class="emoji-sm">👋→🧒</div>`},
+  {id:57, vi:"皮がむけます",    vir:"むけます",    vt:"皮をむきます",   vtr:"むきます",   hu_vi:"lehámlik",       hu_vt:"meghámolja",
+   bg:"linear-gradient(160deg,#e65100,#ef6c00)", vi_s:`<div class="emoji-big bounce">🍊</div><div class="arrow">→🟠</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🍊→皮</div>`},
+  {id:58, vi:"赤ちゃんが生まれます",vir:"うまれます",vt:"赤ちゃんを生みます",vtr:"うみます",hu_vi:"születik",     hu_vt:"megszüli",
+   bg:"linear-gradient(160deg,#880e4f,#ad1457)", vi_s:`<div class="emoji-big bounce">👶</div><div class="emoji-sm">🌟</div>`,
+   vt_s:`<div class="actor">👩</div><div class="emoji-sm">→👶</div>`},
+  {id:59, vi:"予定が延びます",  vir:"のびます",    vt:"予定を延ばします",vtr:"のばします", hu_vi:"csúszik/hosszabb",hu_vt:"elhalasztja",
+   bg:"linear-gradient(160deg,#4a148c,#7b1fa2)", vi_s:`<div class="emoji-big">📅</div><div class="arrow">→→📅</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">📅→📅✏️</div>`},
+  {id:60, vi:"犯人が捕まります",vir:"つかまります",vt:"犯人を捕まえます",vtr:"つかまえます",hu_vi:"elfogatik",    hu_vt:"elfogja",
+   bg:"linear-gradient(160deg,#1a237e,#283593)", vi_s:`<div class="emoji-big bounce">🦹</div><div class="arrow">→🔒</div>`,
+   vt_s:`<div class="actor">👮</div><div class="emoji-sm">👮→🦹</div>`},
+  // 61-70
+  {id:61, vi:"靴が脱げます",    vir:"ぬげます",    vt:"靴を脱ぎます",   vtr:"ぬぎます",   hu_vi:"lecsúszik",      hu_vt:"leveszi (cipő)",
+   bg:"linear-gradient(160deg,#37474f,#546e7a)", vi_s:`<div class="emoji-big fall">👟</div><div class="arrow">→💨</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">👟→🦶</div>`},
+  {id:62, vi:"子どもが寝ます",  vir:"ねます",      vt:"子どもを寝かせます",vtr:"ねかせます",hu_vi:"alszik",        hu_vt:"lefekteti",
+   bg:"linear-gradient(160deg,#1a237e,#283593)", vi_s:`<div class="emoji-big bounce">😴</div><div class="emoji-sm">💤💤</div>`,
+   vt_s:`<div class="actor">👪</div><div class="emoji-sm">🧒→😴</div>`},
+  {id:63, vi:"子どもが降ります",vir:"おります",    vt:"子どもを降ろします",vtr:"おろします",hu_vi:"leszáll",       hu_vt:"leszállítja",
+   bg:"linear-gradient(160deg,#1b5e20,#388e3c)", vi_s:`<div class="emoji-big bounce">🧒</div><div class="arrow">🚌→</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🚗🧒→</div>`},
+  {id:64, vi:"子どもが育ちます",vir:"そだちます",  vt:"子どもを育てます",vtr:"そだてます", hu_vi:"nő/fejlődik",    hu_vt:"felneveli",
+   bg:"linear-gradient(160deg,#004d40,#00695c)", vi_s:`<div class="emoji-big bounce">🌱→🌳</div>`,
+   vt_s:`<div class="actor">👪</div><div class="emoji-sm">🌱→🌳</div>`},
+  {id:65, vi:"一等が当たります",vir:"あたります",  vt:"一等を当てます", vtr:"あてます",   hu_vi:"talál/nyer",     hu_vt:"kitalálja",
+   bg:"linear-gradient(160deg,#f57f17,#f9a825)", vi_s:`<div class="emoji-big bounce">🎯</div><div class="emoji-sm">🎉WIN!</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">→🎯✅</div>`},
+  {id:66, vi:"お金が儲かります",vir:"もうかります",vt:"お金を儲けます", vtr:"もうけます", hu_vi:"nyereséges",     hu_vt:"nyereséget szerez",
+   bg:"linear-gradient(160deg,#1b5e20,#2e7d32)", vi_s:`<div class="emoji-big bounce">💹</div><div class="emoji-sm">💰💰</div>`,
+   vt_s:`<div class="actor">💼</div><div class="emoji-sm">💼→💰</div>`},
+  {id:67, vi:"メッセージが伝わります",vir:"つたわります",vt:"メッセージを伝えます",vtr:"つたえます",hu_vi:"átjut",hu_vt:"közli",
+   bg:"linear-gradient(160deg,#006064,#0097a7)", vi_s:`<div class="emoji-big pulse">💬</div><div class="arrow">→💡</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">📢→💬</div>`},
+  {id:68, vi:"髪が伸びます",    vir:"のびます",    vt:"髪を伸ばします", vtr:"のばします", hu_vi:"nő (haj)",       hu_vt:"meghosszabbítja",
+   bg:"linear-gradient(160deg,#880e4f,#c2185b)", vi_s:`<div class="emoji-big bounce">💇</div><div class="arrow">→👩</div>`,
+   vt_s:`<div class="actor">💇</div><div class="emoji-sm">✂️→長い</div>`},
+  {id:69, vi:"子どもが隠れます",vir:"かくれます",  vt:"子どもを隠します",vtr:"かくします", hu_vi:"elbújik",        hu_vt:"elrejti",
+   bg:"linear-gradient(160deg,#1a237e,#303f9f)", vi_s:`<div class="emoji-big bounce">🙈</div><div class="emoji-sm">🌲🧒🌲</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🧒→🫥</div>`},
+  {id:70, vi:"手が濡れます",    vir:"ぬれます",    vt:"手を濡らします", vtr:"ぬらします", hu_vi:"megázik",        hu_vt:"megáztatja",
+   bg:"linear-gradient(160deg,#006064,#00838f)", vi_s:`<div class="emoji-big shake">🖐️</div><div class="emoji-sm">💧💧</div>`,
+   vt_s:`<div class="actor">🧑</div><div class="emoji-sm">🖐️→💧</div>`},
+];
+
+// Split into sets of 20
+const SETS = [
+  VERBS.slice(0,20),
+  VERBS.slice(20,40),
+  VERBS.slice(40,60),
+  VERBS.slice(60,70),
+];
+
+let currentSet = 0;
+let mode = 'browse';
+let allFlipped = false;
+
+// ─── Stars ───────────────────────────────
+(()=>{
+  const s=document.getElementById('stars');
+  for(let i=0;i<70;i++){
+    const d=document.createElement('div');
+    d.className='star';
+    d.style.left=Math.random()*100+'%';
+    d.style.top=Math.random()*100+'%';
+    d.style.animationDelay=Math.random()*3+'s';
+    d.style.animationDuration=(2+Math.random()*3)+'s';
+    d.style.width=d.style.height=(1+Math.random()*2.5)+'px';
+    s.appendChild(d);
+  }
+})();
+
+// ─── Sound ───────────────────────────────
+function playOK(){
+  try{
+    const c=new(window.AudioContext||window.webkitAudioContext)();
+    [[523,0],[659,.12],[784,.24],[1047,.36]].forEach(([f,t])=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type="sine";
+      const T=c.currentTime+t;
+      g.gain.setValueAtTime(.25,T);g.gain.exponentialRampToValueAtTime(.001,T+.35);
+      o.start(T);o.stop(T+.35);
+    });
+  }catch(e){}
+}
+function playNG(){
+  try{
+    const c=new(window.AudioContext||window.webkitAudioContext)();
+    [[320,0],[260,.15],[200,.3]].forEach(([f,t])=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type="sawtooth";
+      const T=c.currentTime+t;
+      g.gain.setValueAtTime(.18,T);g.gain.exponentialRampToValueAtTime(.001,T+.3);
+      o.start(T);o.stop(T+.3);
+    });
+  }catch(e){}
+}
+
+// ─── Effects ─────────────────────────────
+function showFlowers(){
+  const r=document.getElementById('fr'); r.innerHTML='';
+  const em=['🌸','🌺','🌷','🌼','💮','⭐','✨'];
+  for(let i=0;i<26;i++){
+    const p=document.createElement('div'); p.className='pt';
+    p.textContent=em[Math.floor(Math.random()*em.length)];
+    p.style.left=Math.random()*100+'%';
+    p.style.fontSize=(12+Math.random()*16)+'px';
+    const dur=1.4+Math.random()*1.8;
+    p.style.animation=`pf ${dur}s linear ${Math.random()*.7}s forwards`;
+    r.appendChild(p);
+  }
+  setTimeout(()=>r.innerHTML='',3200);
+}
+function showTanuki(){
+  const t=document.getElementById('tnk');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',2200);
+}
+
+// ─── Render cards ─────────────────────────
+function loadSet(idx, btn){
+  currentSet=idx; allFlipped=false;
+  document.querySelectorAll('.set-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('browse-btn').classList.toggle('active',m==='browse');
+  document.getElementById('quiz-btn').classList.toggle('active',m==='quiz');
+  if(m==='quiz') startQuiz();
+}
+
+function renderCards(){
+  const grid=document.getElementById('cards-grid');
+  grid.innerHTML='';
+  const set=SETS[currentSet];
+  const start=currentSet*20+1;
+  const end=start+set.length-1;
+  document.getElementById('set-info').textContent=`${start}–${end} / 70 ige`;
+  set.forEach(v=>{
+    const scene=document.createElement('div');
+    scene.className='card-scene';
+    scene.id='cs-'+v.id;
+    scene.onclick=()=>flipCard(v.id);
+    scene.innerHTML=makeCard(v);
+    grid.appendChild(scene);
+  });
+}
+
+function makeCard(v){
+  return `
+  <div class="card-inner">
+    <!-- FRONT: VI -->
+    <div class="card-face vi-face">
+      <span class="pair-num">#${v.id}</span>
+      <div class="illus vi-illus">
+        <div class="scene" style="background:${v.bg}">
+          ${v.vi_s}
+        </div>
+      </div>
+      <div class="card-text" style="background:linear-gradient(180deg,#3a006f,#5c1e90)">
+        <div class="particle-badge vi-badge">自動詞 ～が…</div>
+        <div class="jp-main" style="color:#ffe082">${v.vi}</div>
+        <div class="jp-read" style="color:rgba(255,214,0,.65)">${v.vir}</div>
+        <div class="hu-text" style="color:#e8c5ff">${v.hu_vi}</div>
+        <div class="tap-hint" style="color:#fff">TAP →</div>
+      </div>
+    </div>
+    <!-- BACK: VT -->
+    <div class="card-face card-back-face vt-face">
+      <span class="pair-num" style="color:#00e5ff">#${v.id}</span>
+      <div class="illus vt-illus">
+        <div class="scene" style="background:${v.bg}">
+          ${v.vt_s}
+        </div>
+      </div>
+      <div class="card-text" style="background:linear-gradient(180deg,#1a0040,#2d006f)">
+        <div class="particle-badge vt-badge">他動詞 ～を…</div>
+        <div class="jp-main" style="color:#00e5ff">${v.vt}</div>
+        <div class="jp-read" style="color:rgba(0,229,255,.65)">${v.vtr}</div>
+        <div class="hu-text" style="color:#b3e5fc">${v.hu_vt}</div>
+        <div class="tap-hint" style="color:#fff">TAP →</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function flipCard(id){
+  const el=document.getElementById('cs-'+id);
+  if(el) el.classList.toggle('flipped');
+}
+
+function flipAllCards(){
+  const set=SETS[currentSet];
+  allFlipped=!allFlipped;
+  set.forEach(v=>{
+    const el=document.getElementById('cs-'+v.id);
+    if(el) el.classList.toggle('flipped',allFlipped);
+  });
+}
+
+// ─── Quiz ─────────────────────────────────
+let qData=[], qIdx=0, qScore=0;
+
+function startQuiz(){
+  const set=SETS[currentSet];
+  // Build 20 questions from current set — mix vi→vt and vt→vi
+  qData = shuffle([...set]).map(v=>{
+    const isVi2Vt = Math.random()<0.5;
+    const pool = VERBS.filter(x=>x.id!==v.id);
+    if(isVi2Vt){
+      const wrongs = shuffle(pool).slice(0,3).map(x=>({text:x.vt,read:x.vtr}));
+      return {
+        v, type:'vi2vt',
+        question: v.vi, qread: v.vir,
+        ask: '⬆️ Melyik a tárgyas (他動詞) párja?',
+        illus_s: v.vi_s, bg: v.bg,
+        correct: {text:v.vt,read:v.vtr},
+        choices: shuffle([{text:v.vt,read:v.vtr},...wrongs])
+      };
+    } else {
+      const wrongs = shuffle(pool).slice(0,3).map(x=>({text:x.vi,read:x.vir}));
+      return {
+        v, type:'vt2vi',
+        question: v.vt, qread: v.vtr,
+        ask: '⬆️ Melyik a tárgyatlan (自動詞) párja?',
+        illus_s: v.vt_s, bg: v.bg,
+        correct: {text:v.vi,read:v.vir},
+        choices: shuffle([{text:v.vi,read:v.vir},...wrongs])
+      };
+    }
+  });
+  qIdx=0; qScore=0;
+  document.getElementById('quiz-overlay').classList.add('show');
+  renderQuizQ();
+}
+
+function renderQuizQ(){
+  const total=qData.length;
+  if(qIdx>=total){
+    const pct=Math.round(qScore/total*100);
+    document.getElementById('qcard').innerHTML=`
+      <div style="font-size:70px">${qScore===total?'🏆':qScore>=total*.7?'🌸':'🦝'}</div>
+      <div style="font-family:'Fredoka One',cursive;font-size:32px;color:#fff;margin:10px 0">Vége!</div>
+      <div style="font-size:18px;color:rgba(255,255,255,.85)">${qScore} / ${total} pont (${pct}%)</div>`;
+    document.getElementById('qchoices').innerHTML='';
+    document.getElementById('qresult').textContent='';
+    document.getElementById('qs-bar').textContent=`✅ ${qScore} / ${total}`;
+    return;
+  }
+  const q=qData[qIdx];
+  document.getElementById('qs-bar').textContent=`Pontok: ${qScore} / ${qIdx}`;
+  document.getElementById('qprog').style.width=((qIdx/total)*100)+'%';
+  document.getElementById('qillus').style.background=q.bg;
+  document.getElementById('qillus').innerHTML=`<div style="font-size:48px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">${q.illus_s}</div>`;
+  document.getElementById('qq').textContent=q.question;
+  document.getElementById('qread').textContent=q.qread;
+  document.getElementById('qask').textContent=q.ask;
+  document.getElementById('qresult').textContent='';
+  document.getElementById('qchoices').innerHTML = q.choices.map((c,i)=>
+    `<button class="qc" onclick="answerQ(${i})">${c.text}<br><span style="font-size:11px;opacity:.65">${c.read}</span></button>`
+  ).join('');
+}
+
+function answerQ(choiceIdx){
+  const q=qData[qIdx];
+  const chosen=q.choices[choiceIdx];
+  const correct=chosen.text===q.correct.text;
+  document.querySelectorAll('.qc').forEach((b,i)=>{
+    b.disabled=true;
+    if(q.choices[i].text===q.correct.text) b.classList.add('correct');
+    else if(i===choiceIdx&&!correct) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const rl=document.getElementById('qresult');
+  if(correct){
+    qScore++;
+    playOK(); showFlowers();
+    rl.innerHTML='✅ Helyes! 🌸';
+  } else {
+    playNG(); showTanuki();
+    rl.innerHTML=`❌ Helyes: ${q.correct.text}`;
+  }
+  document.getElementById('qs-bar').textContent=`Pontok: ${qScore} / ${qIdx+1}`;
+  document.getElementById('qprog').style.width=(((qIdx+1)/qData.length)*100)+'%';
+  setTimeout(()=>{ qIdx++; renderQuizQ(); }, 1700);
+}
+
+function closeQuiz(){
+  document.getElementById('quiz-overlay').classList.remove('show');
+  document.getElementById('browse-btn').classList.add('active');
+  document.getElementById('quiz-btn').classList.remove('active');
+  mode='browse';
+}
+
+function shuffle(a){ return a.sort(()=>Math.random()-.5); }
+
+// Init
+renderCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>エイミーさんの話 · 練習問題</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=Zen+Antique&family=Kosugi+Maru&display=swap" rel="stylesheet">
+<style>
+:root{
+  --y1:#7a5500; --y2:#b87d00; --y3:#e6a800; --y4:#ffc533; --y5:#ffe082;
+  --y6:#fff8e1; --y7:#fffde7;
+  --shell:#8b6914; --turtle:#2d5a1b; --tlight:#4a8c2a;
+  --text:#3a2800; --text2:rgba(58,40,0,.65);
+  --ok:#2e7d32; --err:#b71c1c;
+  --glass:rgba(255,240,160,.82); --gc:rgba(255,248,200,.9);
+  --border:rgba(180,120,0,.25);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;background:var(--y4);font-family:'Noto Sans JP',sans-serif;color:var(--text);overflow-x:hidden;}
+
+/* ── CANVAS BG ── */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* ── FLOATS ── */
+.turtle-float{position:fixed;pointer-events:none;z-index:0;font-size:32px;animation:tfall linear infinite;}
+@keyframes tfall{0%{transform:translateY(-60px) rotate(-10deg);opacity:0;}8%{opacity:.7;}90%{opacity:.6;}100%{transform:translateY(108vh) rotate(20deg);opacity:0;}}
+
+/* ── LAYOUT ── */
+.app{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:16px 14px 70px;}
+
+/* ── READING PANEL ── */
+.reading-panel{background:var(--gc);border:2px solid rgba(180,120,0,.3);border-radius:20px;padding:20px 18px;margin-bottom:20px;box-shadow:0 4px 24px rgba(120,80,0,.18);}
+.reading-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.reading-toggle h2{font-family:'Zen Antique',serif;font-size:17px;color:var(--y1);}
+.reading-toggle .toggle-ic{font-size:20px;transition:transform .3s;}
+.reading-toggle .toggle-ic.open{transform:rotate(180deg);}
+.reading-body{display:none;margin-top:14px;}
+.reading-body.open{display:block;}
+.reading-text{font-family:'Noto Serif JP',serif;font-size:14px;line-height:2.1;color:var(--text);background:rgba(255,255,255,.6);border-radius:12px;padding:14px 16px;border:1px solid rgba(180,120,0,.15);}
+.reading-text .line-num{color:rgba(140,100,0,.4);font-size:11px;margin-right:6px;}
+.kw{color:var(--y1);font-weight:700;}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin:22px 0 12px;}
+.sec-hdr .s-num{background:var(--y3);color:var(--y1);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;font-family:'Zen Antique',serif;}
+.sec-hdr .s-title{font-family:'Zen Antique',serif;font-size:17px;color:var(--y1);}
+.sec-hdr .s-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+
+/* ── QUESTION CARD ── */
+.q-card{background:var(--gc);border:1.5px solid var(--border);border-radius:16px;padding:16px 16px 14px;margin-bottom:12px;box-shadow:0 2px 12px rgba(120,80,0,.1);transition:border-color .2s;}
+.q-card.answered-ok{border-color:var(--ok);background:rgba(220,255,220,.85);}
+.q-card.answered-err{border-color:var(--err);background:rgba(255,220,220,.85);}
+.q-num{font-size:10px;letter-spacing:3px;color:rgba(140,100,0,.5);margin-bottom:7px;}
+.q-sent{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--text);line-height:2;display:flex;flex-wrap:wrap;align-items:center;gap:2px;}
+.q-hu{font-size:12px;color:var(--text2);margin-top:5px;font-style:italic;}
+
+/* ── BLANK FIELD ── */
+.blank{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:34px;border-radius:8px;border:2px dashed rgba(180,120,0,.4);background:rgba(255,255,255,.7);margin:0 3px;font-family:'Noto Serif JP',serif;font-size:17px;color:var(--y1);font-weight:700;cursor:pointer;transition:all .18s;position:relative;}
+.blank:hover:not(.locked){border-color:var(--y3);background:#fffde7;}
+.blank.selected{border-color:var(--y3);background:var(--y5);border-style:solid;}
+.blank.correct-b{border-color:var(--ok)!important;background:rgba(200,255,200,.8)!important;border-style:solid!important;color:var(--ok)!important;}
+.blank.wrong-b{border-color:var(--err)!important;background:rgba(255,200,200,.8)!important;border-style:solid!important;color:var(--err)!important;animation:shakeb .4s ease;}
+.blank.locked{cursor:default;}
+
+/* ── PARTICLE OPTIONS ── */
+.part-opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.part-opt{padding:7px 16px;border-radius:20px;border:1.5px solid rgba(180,120,0,.3);background:rgba(255,255,255,.7);font-family:'Noto Serif JP',serif;font-size:16px;color:var(--text);cursor:pointer;transition:all .18s;font-weight:700;}
+.part-opt:hover:not(:disabled){border-color:var(--y3);background:var(--y5);}
+.part-opt.used{opacity:.3;cursor:default;}
+.part-opt:disabled{cursor:default;}
+
+/* ── TYPE INPUT ── */
+.type-wrap{display:inline-flex;align-items:center;margin:0 3px;}
+.type-inp{background:rgba(255,255,255,.8);border:2px dashed rgba(180,120,0,.4);border-radius:8px;color:var(--y1);font-family:'Noto Serif JP',serif;font-size:17px;font-weight:700;width:80px;height:34px;text-align:center;outline:none;transition:all .2s;padding:0 4px;}
+.type-inp:focus{border-color:var(--y3);border-style:solid;background:#fffde7;}
+.type-inp.correct-b{border-color:var(--ok)!important;border-style:solid!important;background:rgba(200,255,200,.8)!important;color:var(--ok)!important;}
+.type-inp.wrong-b{border-color:var(--err)!important;border-style:solid!important;background:rgba(255,200,200,.8)!important;color:var(--err)!important;animation:shakeb .4s ease;}
+.type-inp:read-only{cursor:default;}
+
+/* ── CHECK BTN ── */
+.check-btn{padding:9px 22px;border-radius:12px;border:none;background:var(--y3);color:var(--y1);font-family:'Kosugi Maru',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .2s;box-shadow:0 2px 8px rgba(180,120,0,.25);}
+.check-btn:hover{background:var(--y4);transform:translateY(-1px);}
+.check-btn:disabled{opacity:.5;cursor:default;transform:none;}
+
+/* ── FEEDBACK ROW ── */
+.fb-row{margin-top:8px;font-size:13px;display:none;align-items:center;gap:8px;}
+.fb-row.show{display:flex;}
+.fb-row.ok{color:var(--ok);}
+.fb-row.err{color:var(--err);}
+.fb-row .correct-ans{font-family:'Noto Serif JP',serif;font-weight:700;}
+
+/* ── TRUE/FALSE ── */
+.tf-opts{display:flex;gap:10px;margin-top:10px;}
+.tf-btn{flex:1;padding:11px;border-radius:12px;border:1.5px solid rgba(180,120,0,.3);background:rgba(255,255,255,.7);font-size:22px;cursor:pointer;transition:all .2s;font-family:'Kosugi Maru',sans-serif;}
+.tf-btn:hover:not(:disabled){border-color:var(--y3);background:var(--y5);transform:scale(1.04);}
+.tf-btn.correct-b{border-color:var(--ok)!important;background:rgba(200,255,200,.85)!important;}
+.tf-btn.wrong-b{border-color:var(--err)!important;background:rgba(255,200,200,.85)!important;animation:shakeb .4s ease;}
+.tf-btn:disabled{cursor:default;}
+
+/* ── SCORE BAR ── */
+.score-bar{background:var(--gc);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(120,80,0,.1);}
+.score-bar .sc-num{font-family:'Zen Antique',serif;font-size:28px;color:var(--y1);}
+.score-bar .sc-lbl{font-size:11px;color:var(--text2);}
+.score-bar .sc-prog{flex:1;height:8px;background:rgba(180,120,0,.15);border-radius:4px;overflow:hidden;}
+.score-bar .sc-fill{height:100%;background:linear-gradient(90deg,var(--y3),var(--y4));border-radius:4px;transition:width .5s;}
+
+/* ── FLOWER BURST ── */
+.flower-burst{position:fixed;pointer-events:none;z-index:999;display:flex;flex-wrap:wrap;justify-content:center;gap:4px;}
+.flower-petal{position:absolute;font-size:24px;animation:petalfly .9s ease forwards;}
+@keyframes petalfy{0%{transform:scale(0) rotate(0deg);opacity:1;}100%{transform:scale(1.4) rotate(360deg) translateY(-60px);opacity:0;}}
+@keyframes petalfly{0%{transform:translate(0,0) scale(0.5) rotate(0deg);opacity:1;}100%{transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(var(--dr));opacity:0;}}
+
+/* ── TANUKI ── */
+#tanuki-overlay{position:fixed;inset:0;z-index:990;display:none;align-items:center;justify-content:center;background:rgba(100,40,0,.35);backdrop-filter:blur(3px);}
+#tanuki-overlay.show{display:flex;}
+.tanuki-box{background:var(--gc);border:3px solid var(--err);border-radius:24px;padding:28px 28px 20px;text-align:center;max-width:280px;box-shadow:0 8px 32px rgba(0,0,0,.3);animation:tanupop .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes tanupop{0%{transform:scale(.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.tanuki-box .t-emoji{font-size:80px;display:block;margin-bottom:8px;}
+.tanuki-box .t-msg{font-family:'Kosugi Maru',sans-serif;font-size:16px;color:var(--err);margin-bottom:4px;}
+.tanuki-box .t-hint{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--text2);margin-bottom:14px;}
+.tanuki-box .t-close{padding:9px 24px;border-radius:10px;border:none;background:var(--y3);color:var(--y1);font-family:'Kosugi Maru',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* ── PROGRESS RING ── */
+.progress-ring-wrap{text-align:center;margin:20px 0 8px;}
+.final-score{font-family:'Zen Antique',serif;font-size:48px;color:var(--y1);}
+.final-msg{font-size:14px;color:var(--text2);margin-top:6px;}
+
+@keyframes shakeb{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.app{animation:fadeUp .4s ease;}
+
+/* ── TITLE ── */
+.page-title{text-align:center;margin-bottom:18px;}
+.page-title .pt-turtle{font-size:44px;display:block;margin-bottom:4px;}
+.page-title .pt-jp{font-family:'Zen Antique',serif;font-size:32px;color:var(--y1);text-shadow:0 2px 8px rgba(180,120,0,.2);}
+.page-title .pt-hu{font-size:13px;color:var(--text2);margin-top:4px;}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- TANUKI OVERLAY -->
+<div id="tanuki-overlay">
+  <div class="tanuki-box">
+    <span class="t-emoji">🦝</span>
+    <div class="t-msg" id="tanu-msg">もう一度！</div>
+    <div class="t-hint" id="tanu-hint"></div>
+    <button class="t-close" onclick="closeTanuki()">もう一度やってみます！</button>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <span class="pt-turtle">🐢</span>
+    <div class="pt-jp">エイミーさんの話</div>
+    <div class="pt-hu">Amy és a teknős – Olvasásértés + partikulák</div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="score-bar">
+    <div>
+      <div class="sc-num" id="score-num">0</div>
+      <div class="sc-lbl">helyes válasz</div>
+    </div>
+    <div style="flex:1">
+      <div class="sc-prog"><div class="sc-fill" id="sc-fill" style="width:0%"></div></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px" id="sc-label">0 / 30 kérdés</div>
+    </div>
+    <div style="font-size:28px">🌸</div>
+  </div>
+
+  <!-- READING -->
+  <div class="reading-panel">
+    <div class="reading-toggle" onclick="toggleReading()">
+      <h2>📖 エイミーさんの作文を読みましょう</h2>
+      <span class="toggle-ic" id="tog-ic">▼</span>
+    </div>
+    <div class="reading-body" id="reading-body">
+      <div class="reading-text">
+        <span class="line-num">1</span>私は日本料理<span class="kw">が</span>大好きです。特に天ぷら<span class="kw">や</span>焼き鳥<span class="kw">が</span>好きです。国<span class="kw">では</span>日本料理は安くない<span class="kw">から</span>、あまり食べられませんでした。今、毎日食べられる<span class="kw">ので</span>、とてもうれしいです。日本<span class="kw">には</span>めずらしい食べ物<span class="kw">が</span>たくさんあります。国では、うめぼし、のりなどを見たこと<span class="kw">も</span>聞いた
+        <br><span class="line-num">5</span>こと<span class="kw">も</span>ありませんでした。私はめずらしい物<span class="kw">に</span>興味があるので、おいしそうな食べ物は、なんでも食べてみます。
+        <br><br>&nbsp;&nbsp;ある日、ホストファミリー<span class="kw">と</span>晩ご飯を食べ<span class="kw">に</span>行きました。なべの中<span class="kw">に</span>野菜<span class="kw">や</span>肉<span class="kw">が</span>たくさんありました。私は「これは何の肉？鳥の肉？」<span class="kw">と</span>聞きました。お父さん<span class="kw">は</span>「食べてみて。おいしい<span class="kw">から</span>」<span class="kw">と</span>言いました。
+        <br><span class="line-num">10</span>「どう？おいしい？」「はい、とても。でも、何ですか？」みんなはニヤニヤして、何<span class="kw">も</span>言いません。私はちょっと不安<span class="kw">に</span>なりました。でも、おなか<span class="kw">が</span>すいていた<span class="kw">し</span>、おいしかった<span class="kw">ので</span>、たくさん食べました。「ごちそうさま」「エイミーさん、実は、これはすっぽんですよ」「すっぽん？」
+        <br><br>「すっぽんはかめです」「えっ！……」私は気分<span class="kw">が</span>悪くなりました。お
+        <br><span class="line-num">15</span>父さんはすっぽんは体<span class="kw">に</span>よくて、高い食べ物だ<span class="kw">と</span>言っていました。
+        <br><br>&nbsp;&nbsp;これは一生<span class="kw">に</span>一度のとてもおもしろい経験でした。国<span class="kw">に</span>帰って、友だち<span class="kw">に</span>「かめを食べたことがある」<span class="kw">と</span>言えます。かめはおいしかったです。でも、やっぱり、もうかめを食べたくないです。
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION A: PARTICLE SELECTION -->
+  <div class="sec-hdr">
+    <div class="s-num">A</div>
+    <div>
+      <div class="s-title">パーティクル選択 · Partikulák kiválasztása</div>
+      <div class="s-sub">Kattints a megfelelő partikula gombra!</div>
+    </div>
+  </div>
+  <div id="section-a"></div>
+
+  <!-- SECTION B: PARTICLE TYPE-IN -->
+  <div class="sec-hdr">
+    <div class="s-num">B</div>
+    <div>
+      <div class="s-title">パーティクル記入 · Partikulák beírása</div>
+      <div class="s-sub">Írd be a hiányzó partikulát!</div>
+    </div>
+  </div>
+  <div id="section-b"></div>
+
+  <!-- SECTION C: WORD SELECTION -->
+  <div class="sec-hdr">
+    <div class="s-num">C</div>
+    <div>
+      <div class="s-title">言葉を選んでください · Szó kiválasztása</div>
+      <div class="s-sub">Válaszd ki a mondatba illő szót!</div>
+    </div>
+  </div>
+  <div id="section-c"></div>
+
+  <!-- SECTION D: TRUE/FALSE -->
+  <div class="sec-hdr">
+    <div class="s-num">D</div>
+    <div>
+      <div class="s-title">○ か × · Igaz vagy Hamis?</div>
+      <div class="s-sub">A szöveg alapján: ○ = igaz, × = hamis</div>
+    </div>
+  </div>
+  <div id="section-d"></div>
+
+  <!-- FINAL -->
+  <div id="final-block" style="display:none;text-align:center;background:var(--gc);border:2px solid var(--y3);border-radius:20px;padding:28px;margin-top:20px;">
+    <div style="font-size:60px;margin-bottom:8px">🐢🌸🎉</div>
+    <div class="final-score" id="final-score"></div>
+    <div class="final-msg" id="final-msg"></div>
+    <button class="check-btn" style="margin-top:16px;font-size:16px;padding:12px 32px" onclick="location.reload()">もう一度！ Újra!</button>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════
+// BACKGROUND
+// ══════════════════════════════════════════
+(function(){
+  const c=document.getElementById('bg'),ctx=c.getContext('2d');
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  resize();addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    // gradient
+    const g=ctx.createLinearGradient(0,0,c.width,c.height);
+    g.addColorStop(0,'#ffd740');g.addColorStop(.5,'#ffca28');g.addColorStop(1,'#ffb300');
+    ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+    // soft circles
+    [[.1,.1,220,'rgba(255,255,255,.12)'],[.85,.1,160,'rgba(255,255,255,.08)'],[.05,.9,180,'rgba(180,120,0,.1)'],[.9,.85,200,'rgba(255,255,255,.1)'],[.5,.5,280,'rgba(255,248,200,.15)']].forEach(([fx,fy,r,col])=>{
+      ctx.beginPath();ctx.arc(fx*c.width,fy*c.height,r,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+    });
+  }
+  draw();addEventListener('resize',draw);
+  const floats=['🐢','🌸','🐢','🌿','🐢','🌼','🐢','🍵'];
+  function spawn(){
+    const el=document.createElement('div');el.className='turtle-float';
+    const dur=10+Math.random()*14,delay=Math.random()*-22;
+    el.textContent=floats[Math.floor(Math.random()*floats.length)];
+    el.style.cssText=`left:${Math.random()*100}vw;top:-70px;animation-duration:${dur}s;animation-delay:${delay}s;`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),(dur+Math.abs(delay))*1000+2000);
+  }
+  for(let i=0;i<20;i++)spawn();
+  setInterval(spawn,1200);
+})();
+
+// ══════════════════════════════════════════
+// AUDIO (Web Audio API)
+// ══════════════════════════════════════════
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+function playHappy(){
+  // Cheerful ascending chime
+  [523,659,784,1047].forEach((f,i)=>{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.connect(g);g.connect(AC.destination);
+    o.type='sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0,AC.currentTime+i*.08);
+    g.gain.linearRampToValueAtTime(.28,AC.currentTime+i*.08+.04);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+i*.08+.35);
+    o.start(AC.currentTime+i*.08);
+    o.stop(AC.currentTime+i*.08+.38);
+  });
+}
+function playSad(){
+  // Descending sad tone
+  [392,349,330,294].forEach((f,i)=>{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.connect(g);g.connect(AC.destination);
+    o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(0,AC.currentTime+i*.12);
+    g.gain.linearRampToValueAtTime(.22,AC.currentTime+i*.12+.05);
+    g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+i*.12+.4);
+    o.start(AC.currentTime+i*.12);
+    o.stop(AC.currentTime+i*.12+.45);
+  });
+}
+function unlockAudio(){AC.resume();}
+document.addEventListener('click',unlockAudio,{once:true});
+
+// ══════════════════════════════════════════
+// SCORE
+// ══════════════════════════════════════════
+let totalQ=0,correctQ=0;
+function updateScore(){
+  document.getElementById('score-num').textContent=correctQ;
+  document.getElementById('sc-fill').style.width=totalQ?`${Math.round(correctQ/totalQ*100)}%`:'0%';
+  document.getElementById('sc-label').textContent=`${correctQ} / ${totalQ} kérdés`;
+}
+
+// ══════════════════════════════════════════
+// FLOWER BURST
+// ══════════════════════════════════════════
+function flowerBurst(x,y){
+  const petals=['🌸','🌼','🌺','🌷','✿','🌻'];
+  for(let i=0;i<12;i++){
+    const el=document.createElement('div');
+    el.className='flower-petal';
+    el.textContent=petals[Math.floor(Math.random()*petals.length)];
+    const angle=Math.random()*Math.PI*2;
+    const dist=60+Math.random()*80;
+    el.style.cssText=`left:${x}px;top:${y}px;--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist-40}px;--dr:${Math.random()*720-360}deg;`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),900);
+  }
+}
+
+// ══════════════════════════════════════════
+// TANUKI
+// ══════════════════════════════════════════
+const tanukiMsgs=[
+  ['もう一度！','Próbáld újra!'],
+  ['ざんねん！','Sajnos nem jó…'],
+  ['がんばって！','Kitartás!'],
+  ['ちょっと待って！','Gondolkodj!'],
+];
+function showTanuki(hint){
+  const m=tanukiMsgs[Math.floor(Math.random()*tanukiMsgs.length)];
+  document.getElementById('tanu-msg').textContent=m[0]+' '+m[1];
+  document.getElementById('tanu-hint').innerHTML=hint?`Helyes válasz: <b>${hint}</b>`:'';
+  document.getElementById('tanuki-overlay').classList.add('show');
+}
+function closeTanuki(){document.getElementById('tanuki-overlay').classList.remove('show');}
+
+// ══════════════════════════════════════════
+// READING TOGGLE
+// ══════════════════════════════════════════
+function toggleReading(){
+  const b=document.getElementById('reading-body');
+  const ic=document.getElementById('tog-ic');
+  b.classList.toggle('open');
+  ic.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════
+// QUESTION BUILDERS
+// ══════════════════════════════════════════
+
+// A: Particle choice – render sentence with blanks, click option buttons
+const PART_SELECT=[
+  {
+    id:'a1',
+    parts:['私は日本料理','大好きです。'],
+    blanks:[{pos:1,opts:['が','を','に','は'],ans:'が'}],
+    hu:'Nagyon szeretem a japán ételeket.',
+    hint:'～が好きです・大好きです'
+  },
+  {
+    id:'a2',
+    parts:['特に天ぷら','焼き鳥','好きです。'],
+    blanks:[{pos:1,opts:['や','と','も','で'],ans:'や'},{pos:2,opts:['が','を','は','に'],ans:'が'}],
+    hu:'Különösen a tempura és a yakitori tetszik.',
+    hint:'や = és (felsorolás); が好き'
+  },
+  {
+    id:'a3',
+    parts:['国','日本料理は安くない','、あまり食べられませんでした。'],
+    blanks:[{pos:1,opts:['では','には','へは','での'],ans:'では'},{pos:2,opts:['から','ので','けど','し'],ans:'から'}],
+    hu:'Otthon a japán étel nem olcsó, ezért alig ettem.',
+    hint:'では = -ban/-ben (téma+hely); から = mert (ok)'
+  },
+  {
+    id:'a4',
+    parts:['毎日食べられる','、とてもうれしいです。'],
+    blanks:[{pos:1,opts:['ので','から','けど','が'],ans:'ので'}],
+    hu:'Mivel minden nap ehetem, nagyon boldog vagyok.',
+    hint:'ので = mivel, mert (magyarázat)'
+  },
+  {
+    id:'a5',
+    parts:['私はめずらしい物','興味があるので、なんでも食べてみます。'],
+    blanks:[{pos:1,opts:['に','が','を','で'],ans:'に'}],
+    hu:'Mivel érdekli a ritka dolog, mindent megkóstol.',
+    hint:'興味がある に = érdekli vmi (に興味がある)'
+  },
+  {
+    id:'a6',
+    parts:['ある日、ホストファミリー','晩ご飯を食べ','行きました。'],
+    blanks:[{pos:1,opts:['と','に','で','を'],ans:'と'},{pos:2,opts:['に','で','へ','を'],ans:'に'}],
+    hu:'Egy nap a fogadócsaláddal vacsorázni ment.',
+    hint:'と = -val/-vel (társaság); 食べに行く = enni menni'
+  },
+  {
+    id:'a7',
+    parts:['なべの中','野菜','肉がたくさんありました。'],
+    blanks:[{pos:1,opts:['に','で','が','を'],ans:'に'},{pos:2,opts:['や','と','も','か'],ans:'や'}],
+    hu:'A fazékban sok zöldség és hús volt.',
+    hint:'中に = -ban/-ben (helyhatározó); や = és (felsorolás)'
+  },
+  {
+    id:'a8',
+    parts:['「食べてみて。おいしい','」と言いました。'],
+    blanks:[{pos:1,opts:['から','ので','けど','が'],ans:'から'}],
+    hu:'"Kóstold meg. Mert finom."',
+    hint:'から = mert (közvetlen okadás, informális)'
+  },
+];
+
+// B: Type-in particles
+const PART_TYPE=[
+  {
+    id:'b1',
+    parts:['私はちょっと不安','なりました。'],
+    blanks:[{pos:1,ans:'に',hint:'～になる = vmivé válni'}],
+    hu:'Egy kicsit aggódni kezdett.',
+  },
+  {
+    id:'b2',
+    parts:['おなか','すいていたし、おいしかった','、たくさん食べました。'],
+    blanks:[{pos:1,ans:'が',hint:'おなかがすく = éhes lenni'},{pos:2,ans:'ので',hint:'ので = mivel/ezért'}],
+    hu:'Mivel éhes volt és finom volt, sokat evett.',
+  },
+  {
+    id:'b3',
+    parts:['すっぽんは体','よくて、高い食べ物だ','言っていました。'],
+    blanks:[{pos:1,ans:'に',hint:'体によい = jót tesz a testnek'},{pos:2,ans:'と',hint:'と言う = azt mondja, hogy'}],
+    hu:'A teknős jó az egészségnek, és drága étel – mondta.',
+  },
+  {
+    id:'b4',
+    parts:['これは一生','一度のとてもおもしろい経験でした。'],
+    blanks:[{pos:1,ans:'に',hint:'一生に一度 = életben egyszer'}],
+    hu:'Ez egy életre szóló élmény volt.',
+  },
+  {
+    id:'b5',
+    parts:['友だち','「かめを食べたことがある」','言えます。'],
+    blanks:[{pos:1,ans:'に',hint:'友だちに言う = barátnak mondani'},{pos:2,ans:'と',hint:'と言える = azt mondhatja'}],
+    hu:'A barátainak mondhatja: "Ettem teknőst."',
+  },
+  {
+    id:'b6',
+    parts:['みんなはニヤニヤして、何','言いません。'],
+    blanks:[{pos:1,ans:'も',hint:'何も〜ない = semmit sem'}],
+    hu:'Mindenki vigyorgott, és nem mondott semmit.',
+  },
+];
+
+// C: Word selection
+const WORD_SEL=[
+  {
+    id:'c1',
+    before:'国では、うめぼしやのりなどを',
+    blank:'',
+    after:'も聞いたこともありませんでした。',
+    opts:['見たこと','食べたこと','作ったこと','買ったこと'],
+    ans:'見たこと',
+    hu:'Otthon még csak látott sem… sem hallott ilyesmit.',
+    hint:'見たことも…ありません = soha nem látta'
+  },
+  {
+    id:'c2',
+    before:'おいしそうな食べ物は、',
+    blank:'',
+    after:'食べてみます。',
+    opts:['なんでも','なにも','どれも','どこでも'],
+    ans:'なんでも',
+    hu:'Minden finomnak látszó ételt megkóstol.',
+    hint:'なんでも = bármit, mindent'
+  },
+  {
+    id:'c3',
+    before:'私は気分が',
+    blank:'',
+    after:'なりました。',
+    opts:['悪く','よく','おかしく','うれしく'],
+    ans:'悪く',
+    hu:'Rosszul lett (hányingere lett).',
+    hint:'気分が悪くなる = rosszul lesz'
+  },
+  {
+    id:'c4',
+    before:'これは一生に一度のとても',
+    blank:'',
+    after:'経験でした。',
+    opts:['おもしろい','おいしい','たいへんな','かなしい'],
+    ans:'おもしろい',
+    hu:'Ez egy igazán érdekes életre szóló élmény volt.',
+    hint:'A szöveg szó szerint: おもしろい経験'
+  },
+  {
+    id:'c5',
+    before:'でも、やっぱり、もうかめを',
+    blank:'',
+    after:'。',
+    opts:['食べたくないです','食べたいです','食べられません','食べてみます'],
+    ans:'食べたくないです',
+    hu:'De mégis, nem akar többé teknőst enni.',
+    hint:'もう～たくない = már nem akar'
+  },
+];
+
+// D: True/False
+const TRUE_FALSE=[
+  {id:'d1',sent:'エイミーさんは日本料理は大好きだが、国ではあまり食べなかった。',ans:true, hu:'Amy imádja a japán ételt, de otthon alig ette.'},
+  {id:'d2',sent:'エイミーさんは、国でうめぼしを食べたことがある。',ans:false,hu:'Otthon még csak LÁTOTT sem (見たことも) umeoshit.'},
+  {id:'d3',sent:'エイミーさんは、めずらしい食べ物は何も食べられない。',ans:false,hu:'Éppen ellenkezőleg: mindent megkóstol (なんでも食べてみます).'},
+  {id:'d4',sent:'エイミーさんは、ホストファミリーとなべ料理を食べた。',ans:true, hu:'Igen, a fogadócsaláddal ment vacsorázni, ahol nabe volt.'},
+  {id:'d5',sent:'なべの中には鳥の肉があった。',ans:false,hu:'Nem madárhús volt – teknős (すっぽん＝かめ) volt.'},
+  {id:'d6',sent:'なべ料理はとてもおいしかった。',ans:true, hu:'Igen: 「はい、とても（おいしいです）」'},
+  {id:'d7',sent:'エイミーさんは、すっぽんはめずらしいから、たくさん食べた。',ans:false,hu:'Azért evett sokat, mert éhes volt ÉS finom volt (おなかがすいていたし、おいしかったので).'},
+  {id:'d8',sent:'エイミーさんは、またすっぽんを食べるつもりだ。',ans:false,hu:'もうかめを食べたくないです – már nem akar enni.'},
+];
+
+// ══════════════════════════════════════════
+// RENDER SECTION A
+// ══════════════════════════════════════════
+function renderSectionA(){
+  const cont=document.getElementById('section-a');
+  PART_SELECT.forEach((q,qi)=>{
+    totalQ+=q.blanks.length;
+    const card=document.createElement('div');
+    card.className='q-card';card.id='card-'+q.id;
+    // build sentence HTML
+    let sentHTML='';
+    q.parts.forEach((part,pi)=>{
+      sentHTML+=`<span>${part}</span>`;
+      if(pi<q.parts.length-1){
+        const bl=q.blanks.find(b=>b.pos===pi+1);
+        if(bl) sentHTML+=`<span class="blank" id="blank-${q.id}-${bl.pos}" data-ans="${bl.ans}" data-qid="${q.id}">？</span>`;
+      }
+    });
+    card.innerHTML=`
+      <div class="q-num">${qi+1}. feladat</div>
+      <div class="q-sent">${sentHTML}</div>
+      <div class="q-hu">${q.hu}</div>
+      <div class="part-opts" id="opts-${q.id}">
+        ${q.blanks.map(bl=>bl.opts.map(o=>`<button class="part-opt" onclick="selectPart('${q.id}',${bl.pos},'${o}',this)">${o}</button>`).join('')).join('')}
+      </div>
+      <div class="fb-row" id="fb-${q.id}"></div>
+    `;
+    cont.appendChild(card);
+  });
+  updateScore();
+}
+
+function selectPart(qid,pos,chosen,btn){
+  const q=PART_SELECT.find(q=>q.id===qid);
+  if(!q)return;
+  const bl=q.blanks.find(b=>b.pos===pos);
+  if(!bl||bl.answered)return;
+  const blankEl=document.getElementById(`blank-${qid}-${pos}`);
+  if(!blankEl||blankEl.classList.contains('locked'))return;
+  blankEl.textContent=chosen;
+  blankEl.classList.add('selected');
+  // check if all blanks answered
+  const allBlanks=q.blanks.map(b=>({b,el:document.getElementById(`blank-${qid}-${b.pos}`)}));
+  const filled=allBlanks.filter(({el})=>el&&el.textContent!=='？');
+  if(filled.length===q.blanks.length){
+    checkPartSelect(q);
+  }
+}
+
+function checkPartSelect(q){
+  let allOk=true;
+  q.blanks.forEach(bl=>{
+    const el=document.getElementById(`blank-${q.id}-${bl.pos}`);
+    if(!el)return;
+    if(el.textContent.trim()===bl.ans){
+      el.classList.remove('selected');el.classList.add('correct-b','locked');
+    } else {
+      el.classList.remove('selected');el.classList.add('wrong-b','locked');
+      allOk=false;
+    }
+    bl.answered=true;
+  });
+  const card=document.getElementById('card-'+q.id);
+  // disable opts
+  document.querySelectorAll(`#opts-${q.id} .part-opt`).forEach(b=>b.disabled=true);
+  if(allOk){
+    correctQ+=q.blanks.length;
+    card.classList.add('answered-ok');
+    playHappy();
+    const rect=card.getBoundingClientRect();
+    flowerBurst(rect.left+rect.width/2,rect.top+rect.height/2+scrollY);
+    const fb=document.getElementById('fb-'+q.id);
+    fb.className='fb-row show ok';fb.innerHTML='✓ 正解！ Helyes! 🌸 <span style="font-size:11px;color:var(--ok)">'+q.hint+'</span>';
+  } else {
+    // show correct answers
+    q.blanks.forEach(bl=>{
+      const el=document.getElementById(`blank-${q.id}-${bl.pos}`);
+      if(el&&el.classList.contains('wrong-b'))el.textContent=bl.ans;
+    });
+    playSad();
+    card.classList.add('answered-err');
+    const fb=document.getElementById('fb-'+q.id);
+    const correctStr=q.blanks.map(b=>b.ans).join('、');
+    fb.className='fb-row show err';fb.innerHTML=`✗ Nem jó. Helyes: <span class="correct-ans">${correctStr}</span> · ${q.hint}`;
+    showTanuki(correctStr);
+  }
+  updateScore();
+}
+
+// ══════════════════════════════════════════
+// RENDER SECTION B (type-in)
+// ══════════════════════════════════════════
+function renderSectionB(){
+  const cont=document.getElementById('section-b');
+  PART_TYPE.forEach((q,qi)=>{
+    totalQ+=q.blanks.length;
+    const card=document.createElement('div');
+    card.className='q-card';card.id='card-'+q.id;
+    let sentHTML='';
+    q.parts.forEach((part,pi)=>{
+      sentHTML+=`<span>${part}</span>`;
+      if(pi<q.parts.length-1){
+        const bl=q.blanks.find(b=>b.pos===pi+1);
+        if(bl) sentHTML+=`<span class="type-wrap"><input type="text" class="type-inp" id="ti-${q.id}-${bl.pos}" maxlength="4" autocomplete="off" autocorrect="off" placeholder="＿" data-ans="${bl.ans}" data-hint="${bl.hint}" oninput="typeCheck('${q.id}',${bl.pos},this)"></span>`;
+      }
+    });
+    card.innerHTML=`
+      <div class="q-num">${qi+1}. feladat</div>
+      <div class="q-sent">${sentHTML}</div>
+      <div class="q-hu">${q.hu}</div>
+      <div class="fb-row" id="fb-${q.id}"></div>
+    `;
+    cont.appendChild(card);
+    // enter key
+    setTimeout(()=>{
+      q.blanks.forEach(bl=>{
+        const inp=document.getElementById(`ti-${q.id}-${bl.pos}`);
+        if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')forceCheckType(q.id);});
+      });
+    },100);
+  });
+  updateScore();
+}
+
+function typeCheck(qid,pos,inp){
+  // live check when all filled
+  const q=PART_TYPE.find(q=>q.id===qid);
+  if(!q)return;
+  const allFilled=q.blanks.every(bl=>{
+    const el=document.getElementById(`ti-${qid}-${bl.pos}`);
+    return el&&el.value.trim()!==''&&!el.readOnly;
+  });
+  if(allFilled) forceCheckType(qid);
+}
+
+function forceCheckType(qid){
+  const q=PART_TYPE.find(q=>q.id===qid);
+  if(!q)return;
+  // check if already answered
+  const first=document.getElementById(`ti-${qid}-${q.blanks[0].pos}`);
+  if(first&&first.readOnly)return;
+  let allOk=true;
+  q.blanks.forEach(bl=>{
+    const el=document.getElementById(`ti-${qid}-${bl.pos}`);
+    if(!el)return;
+    const val=el.value.trim();
+    if(val===bl.ans){
+      el.classList.add('correct-b');el.readOnly=true;
+    } else {
+      el.classList.add('wrong-b');allOk=false;
+    }
+    el.readOnly=true;
+  });
+  const card=document.getElementById('card-'+q.id);
+  if(allOk){
+    correctQ+=q.blanks.length;
+    card.classList.add('answered-ok');
+    playHappy();
+    const rect=card.getBoundingClientRect();
+    flowerBurst(rect.left+rect.width/2,rect.top+rect.height/2+scrollY);
+    const fb=document.getElementById('fb-'+q.id);
+    fb.className='fb-row show ok';fb.innerHTML='✓ 正解！ Helyes! 🌸 <span style="font-size:11px;color:var(--ok)">'+q.blanks.map(b=>b.hint).join(' | ')+'</span>';
+  } else {
+    // show answers
+    q.blanks.forEach(bl=>{
+      const el=document.getElementById(`ti-${qid}-${bl.pos}`);
+      if(el&&el.classList.contains('wrong-b'))el.value=bl.ans;
+    });
+    playSad();
+    card.classList.add('answered-err');
+    const correctStr=q.blanks.map(b=>b.ans).join('、');
+    const fb=document.getElementById('fb-'+q.id);
+    fb.className='fb-row show err';fb.innerHTML=`✗ Nem jó. Helyes: <span class="correct-ans">${correctStr}</span> · ${q.blanks.map(b=>b.hint).join(' | ')}`;
+    showTanuki(correctStr);
+  }
+  updateScore();
+  checkAllDone();
+}
+
+// ══════════════════════════════════════════
+// RENDER SECTION C (word selection)
+// ══════════════════════════════════════════
+function renderSectionC(){
+  const cont=document.getElementById('section-c');
+  WORD_SEL.forEach((q,qi)=>{
+    totalQ++;
+    const card=document.createElement('div');
+    card.className='q-card';card.id='card-'+q.id;
+    const optsHTML=q.opts.map(o=>`<button class="part-opt" onclick="answerWordSel('${q.id}','${o.replace(/'/g,"&#39;")}',this)">${o}</button>`).join('');
+    card.innerHTML=`
+      <div class="q-num">${qi+1}. feladat · 言葉を選んでください</div>
+      <div class="q-sent" style="font-size:15px">${q.before}<span class="blank" id="blank-${q.id}" style="min-width:90px">　　</span>${q.after}</div>
+      <div class="q-hu">${q.hu}</div>
+      <div class="part-opts" id="opts-${q.id}" style="margin-top:10px">${optsHTML}</div>
+      <div class="fb-row" id="fb-${q.id}"></div>
+    `;
+    cont.appendChild(card);
+  });
+  updateScore();
+}
+function answerWordSel(qid,chosen,btn){
+  const q=WORD_SEL.find(q=>q.id===qid);
+  if(!q||q.answered)return;
+  q.answered=true;
+  document.querySelectorAll(`#opts-${qid} .part-opt`).forEach(b=>b.disabled=true);
+  const blankEl=document.getElementById('blank-'+qid);
+  const card=document.getElementById('card-'+qid);
+  blankEl.textContent=chosen;
+  if(chosen===q.ans){
+    blankEl.classList.add('correct-b');
+    correctQ++;card.classList.add('answered-ok');
+    playHappy();
+    const rect=card.getBoundingClientRect();
+    flowerBurst(rect.left+rect.width/2,rect.top+rect.height/2+scrollY);
+    const fb=document.getElementById('fb-'+qid);
+    fb.className='fb-row show ok';fb.innerHTML=`✓ 正解！ Helyes! 🌸 · ${q.hint}`;
+  } else {
+    blankEl.classList.add('wrong-b');blankEl.textContent=q.ans;
+    playSad();card.classList.add('answered-err');
+    const fb=document.getElementById('fb-'+qid);
+    fb.className='fb-row show err';fb.innerHTML=`✗ Nem jó. Helyes: <span class="correct-ans">${q.ans}</span> · ${q.hint}`;
+    showTanuki(q.ans);
+  }
+  updateScore();checkAllDone();
+}
+
+// ══════════════════════════════════════════
+// RENDER SECTION D (true/false)
+// ══════════════════════════════════════════
+function renderSectionD(){
+  const cont=document.getElementById('section-d');
+  TRUE_FALSE.forEach((q,qi)=>{
+    totalQ++;
+    const card=document.createElement('div');
+    card.className='q-card';card.id='card-'+q.id;
+    card.innerHTML=`
+      <div class="q-num">${qi+1}. feladat</div>
+      <div class="q-sent" style="font-size:16px;display:block">${q.sent}</div>
+      <div class="tf-opts">
+        <button class="tf-btn" onclick="answerTF('${q.id}',true,this)">○<br><span style="font-size:11px">igaz</span></button>
+        <button class="tf-btn" onclick="answerTF('${q.id}',false,this)">×<br><span style="font-size:11px">hamis</span></button>
+      </div>
+      <div class="fb-row" id="fb-${q.id}"></div>
+    `;
+    cont.appendChild(card);
+  });
+  updateScore();
+}
+function answerTF(qid,chosen,btn){
+  const q=TRUE_FALSE.find(q=>q.id===qid);
+  if(!q||q.answered)return;
+  q.answered=true;
+  const card=document.getElementById('card-'+qid);
+  card.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb-'+qid);
+  if(chosen===q.ans){
+    btn.classList.add('correct-b');
+    correctQ++;card.classList.add('answered-ok');
+    playHappy();
+    const rect=card.getBoundingClientRect();
+    flowerBurst(rect.left+rect.width/2,rect.top+rect.height/2+scrollY);
+    fb.className='fb-row show ok';fb.innerHTML=`✓ 正解！ Helyes! 🌸`;
+  } else {
+    btn.classList.add('wrong-b');
+    // highlight correct
+    card.querySelectorAll('.tf-btn').forEach(b=>{
+      const bval=b.textContent.trim().startsWith('○');
+      if(bval===q.ans)b.classList.add('correct-b');
+    });
+    playSad();card.classList.add('answered-err');
+    fb.className='fb-row show err';fb.innerHTML=`✗ Nem jó. ${q.ans?'○ igaz':'× hamis'} · <span style="font-size:12px;color:var(--err)">${q.hu}</span>`;
+    showTanuki(q.ans?'○（igaz）':'×（hamis）');
+  }
+  updateScore();checkAllDone();
+}
+
+// ══════════════════════════════════════════
+// CHECK ALL DONE
+// ══════════════════════════════════════════
+let answeredCount=0;
+function checkAllDone(){
+  answeredCount++;
+  if(answeredCount>=totalQ){
+    setTimeout(()=>{
+      const pct=Math.round(correctQ/totalQ*100);
+      const final=document.getElementById('final-block');
+      final.style.display='block';
+      document.getElementById('final-score').textContent=`${correctQ}/${totalQ}`;
+      document.getElementById('final-msg').textContent=
+        pct>=90?'素晴らしい！🐢 Fantasztikus eredmény! Igazi japán mester vagy!':
+        pct>=70?'よくできました！ Szép munka! Még egy kis gyakorlás és tökéletes!':
+        pct>=50?'がんばりました！ Jó próbálkozás! Olvasd el újra a szöveget!':
+        'もう一度やりましょう！ Olvasd el újra a szöveget és próbáld újra!';
+      final.scrollIntoView({behavior:'smooth',block:'center'});
+      if(pct>=70) for(let i=0;i<5;i++) setTimeout(()=>{
+        flowerBurst(innerWidth*Math.random(),innerHeight*Math.random()+scrollY);
+      },i*300);
+    },600);
+  }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderSectionA();
+renderSectionB();
+renderSectionC();
+renderSectionD();
+updateScore();
+document.getElementById('sc-label').textContent=`0 / ${totalQ} kérdés`;
+</script>
+</body>
+</html>

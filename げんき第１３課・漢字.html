@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>げんき 13 · 漢字練習</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@300;400&family=Zen+Antique&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-deep:   #0d2818;
+  --green-mid:    #1a4a2e;
+  --green-light:  #2d7a4a;
+  --green-pale:   #4caf78;
+  --sakura-green: #6fcf97;
+  --sakura-lime:  #a8e6c0;
+  --sakura-white: #e8f8ef;
+  --gold:         #c9b97a;
+  --gold-light:   #ede4b0;
+  --ink:          #0a1e12;
+  --glass:        rgba(13,40,24,0.82);
+  --glass-light:  rgba(26,74,46,0.55);
+  --glass-card:   rgba(16,50,30,0.88);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  min-height: 100vh;
+  background: var(--green-deep);
+  font-family: 'Noto Sans JP', sans-serif;
+  color: var(--sakura-white);
+  overflow-x: hidden;
+}
+
+/* ── SAKURA CANVAS BACKGROUND ── */
+#sakura-bg {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── MAIN LAYOUT ── */
+.app {
+  position: relative; z-index: 1;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  min-height: 100vh;
+}
+
+/* ── GLASS PANEL ── */
+.panel {
+  background: var(--glass);
+  border: 1px solid rgba(111,207,151,0.2);
+  border-radius: 24px;
+  padding: 28px 22px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(111,207,151,0.15);
+}
+
+/* ── HOME SCREEN ── */
+.home-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.home-header .eyebrow {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--sakura-green);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.home-header .title-jp {
+  font-family: 'Zen Antique', serif;
+  font-size: 52px;
+  color: var(--gold-light);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(201,185,122,0.4);
+}
+.home-header .subtitle {
+  font-size: 14px;
+  color: rgba(168,230,192,0.6);
+  margin-top: 8px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.stat-box {
+  background: rgba(45,122,74,0.25);
+  border: 1px solid rgba(111,207,151,0.15);
+  border-radius: 14px;
+  padding: 14px 8px;
+  text-align: center;
+}
+.stat-box .val {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: 'Zen Antique', serif;
+}
+.stat-box .lbl {
+  font-size: 10px;
+  color: rgba(168,230,192,0.5);
+  margin-top: 3px;
+  letter-spacing: 1px;
+}
+
+.mode-list { display: flex; flex-direction: column; gap: 10px; }
+.mode-btn {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 18px;
+  background: rgba(16,50,30,0.7);
+  border: 1px solid rgba(111,207,151,0.15);
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.22s;
+  color: var(--sakura-white);
+  width: 100%;
+}
+.mode-btn:hover {
+  border-color: var(--sakura-green);
+  background: rgba(45,122,74,0.35);
+  transform: translateX(4px);
+}
+.mode-btn .icon { font-size: 26px; flex-shrink: 0; }
+.mode-btn .mode-name { font-size: 17px; font-weight: 700; color: var(--gold-light); }
+.mode-btn .mode-sub { font-size: 12px; color: rgba(168,230,192,0.5); margin-top: 2px; }
+.mode-btn .arr { margin-left: auto; color: rgba(111,207,151,0.4); font-size: 20px; }
+
+/* ── SHARED COMPONENTS ── */
+.back-btn {
+  background: transparent;
+  border: 1px solid rgba(111,207,151,0.25);
+  border-radius: 8px;
+  color: rgba(168,230,192,0.6);
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.back-btn:hover { border-color: var(--sakura-green); color: var(--sakura-white); }
+
+.top-bar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 18px;
+}
+.top-bar .info { flex: 1; font-size: 12px; color: rgba(168,230,192,0.5); }
+
+.progress-bar {
+  height: 5px;
+  background: rgba(45,122,74,0.3);
+  border-radius: 3px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-light), var(--sakura-green));
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.big-card {
+  background: linear-gradient(135deg, rgba(13,74,36,0.9), rgba(10,30,18,0.95));
+  border: 1px solid rgba(111,207,151,0.2);
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  margin-bottom: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.big-card::before {
+  content: '';
+  position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(111,207,151,0.08), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.big-card .card-hint { font-size: 10px; letter-spacing: 3px; color: rgba(168,230,192,0.45); margin-bottom: 12px; }
+.big-card .card-jp { font-family: 'Zen Antique', serif; font-size: 68px; color: var(--gold-light); line-height: 1; text-shadow: 0 0 20px rgba(201,185,122,0.3); }
+.big-card .card-jp.small { font-size: 28px; font-family: inherit; color: var(--sakura-white); }
+.big-card .card-reading { font-family: 'Noto Serif JP', serif; font-size: 20px; color: var(--sakura-lime); margin-top: 10px; }
+.big-card .card-base { font-size: 11px; color: rgba(111,207,151,0.3); margin-top: 10px; letter-spacing: 2px; }
+
+.options-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 14px;
+}
+.opt-btn {
+  padding: 15px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(111,207,151,0.2);
+  background: rgba(16,50,30,0.7);
+  color: var(--sakura-white);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+  line-height: 1.35;
+}
+.opt-btn:hover:not(:disabled) { border-color: var(--sakura-green); background: rgba(45,122,74,0.3); }
+.opt-btn.correct { background: rgba(26,74,26,0.9); border-color: #4caf50; color: #81e581; }
+.opt-btn.wrong   { background: rgba(74,20,20,0.9); border-color: #e57373; color: #e57373; }
+.opt-btn.dimmed  { opacity: 0.25; }
+.opt-btn.jp-opt  { font-family: 'Zen Antique', serif; font-size: 26px; }
+.opt-btn:disabled { cursor: default; }
+
+.next-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--green-light), var(--green-pale));
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(45,122,74,0.4);
+}
+.next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(45,122,74,0.55); }
+
+.result-screen { text-align: center; padding: 20px 0; }
+.result-screen .big-emoji { font-size: 72px; margin-bottom: 16px; }
+.result-screen .score-num { font-family: 'Zen Antique', serif; font-size: 56px; color: var(--gold-light); }
+.result-screen .score-pct { font-size: 18px; color: var(--sakura-green); margin-top: 4px; }
+.result-screen .score-msg { font-size: 14px; color: rgba(168,230,192,0.6); margin-top: 10px; line-height: 1.5; }
+.result-screen .replay-btn {
+  margin-top: 24px;
+  padding: 14px 36px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--green-light), var(--green-pale));
+  color: var(--ink); font-weight: 700; font-size: 16px;
+  font-family: inherit; cursor: pointer;
+  transition: all 0.2s;
+}
+.result-screen .replay-btn:hover { transform: translateY(-2px); }
+
+/* ── FLASHCARD ── */
+.flash-card-wrap {
+  perspective: 1000px;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+.flash-card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  border-radius: 20px;
+  min-height: 220px;
+}
+.flash-card-inner.flipped { transform: rotateY(180deg); }
+.flash-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 28px 20px;
+  border: 1px solid rgba(111,207,151,0.2);
+}
+.flash-front { background: linear-gradient(135deg, rgba(13,74,36,0.92), rgba(10,30,18,0.96)); }
+.flash-back  { background: linear-gradient(135deg, rgba(10,30,40,0.92), rgba(5,20,30,0.96)); transform: rotateY(180deg); }
+.flash-face .face-label { font-size: 10px; letter-spacing: 4px; color: rgba(168,230,192,0.4); margin-bottom: 14px; }
+.flash-face .face-jp { font-family: 'Zen Antique', serif; font-size: 72px; color: var(--gold-light); text-shadow: 0 0 24px rgba(201,185,122,0.3); }
+.flash-face .face-reading { font-family: 'Noto Serif JP', serif; font-size: 26px; color: var(--sakura-lime); }
+.flash-face .face-meaning { font-size: 22px; color: var(--sakura-white); text-align: center; }
+.flash-face .face-base { font-size: 11px; color: rgba(111,207,151,0.3); margin-top: 10px; }
+.flash-face .tap-hint { font-size: 10px; color: rgba(168,230,192,0.3); margin-top: 16px; letter-spacing: 2px; }
+
+.flash-actions { display: flex; gap: 12px; }
+.flash-actions button {
+  flex: 1; padding: 14px; border-radius: 12px;
+  border: 1px solid; font-family: inherit; font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.flash-actions .dont-know { background: rgba(74,20,20,0.6); border-color: rgba(229,115,115,0.4); color: #e57373; }
+.flash-actions .know-it   { background: rgba(20,60,20,0.6); border-color: rgba(76,175,120,0.4); color: #81e581; }
+.flash-actions .dont-know:hover { background: rgba(100,20,20,0.8); }
+.flash-actions .know-it:hover   { background: rgba(20,80,20,0.8); }
+
+/* ── MATCH MODE ── */
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.match-col { display: flex; flex-direction: column; gap: 7px; }
+.match-item {
+  padding: 13px 10px;
+  border-radius: 11px;
+  border: 2px solid rgba(111,207,151,0.18);
+  background: rgba(16,50,30,0.65);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s;
+  text-align: center;
+  color: var(--sakura-white);
+  width: 100%;
+}
+.match-item:hover:not(.matched):not(:disabled) { border-color: var(--sakura-green); background: rgba(45,122,74,0.3); }
+.match-item.selected { border-color: var(--gold); background: rgba(50,40,10,0.7); color: var(--gold-light); }
+.match-item.matched  { border-color: rgba(76,175,80,0.4); background: rgba(20,60,20,0.6); color: rgba(129,229,129,0.6); cursor: default; opacity: 0.55; }
+.match-item.shake    { animation: shake 0.45s ease; }
+.match-item.kanji-item { font-family: 'Zen Antique', serif; font-size: 24px; }
+.match-item.meaning-item { font-size: 12px; line-height: 1.35; }
+.match-item .m-reading { font-size: 10px; color: rgba(168,230,192,0.45); margin-top: 3px; }
+
+/* ── SPEED MODE ── */
+.lives { font-size: 20px; }
+.streak-badge { background: rgba(201,185,122,0.15); border: 1px solid rgba(201,185,122,0.3); border-radius: 20px; padding: 3px 12px; font-size: 13px; color: var(--gold); }
+.speed-flash-correct { animation: flashGreen 0.5s ease; }
+.speed-flash-wrong   { animation: flashRed   0.5s ease; }
+
+/* ── BROWSE MODE ── */
+.browse-group { margin-bottom: 24px; }
+.group-title {
+  font-size: 10px; letter-spacing: 4px; color: var(--sakura-green);
+  border-bottom: 1px solid rgba(111,207,151,0.15);
+  padding-bottom: 6px; margin-bottom: 10px;
+}
+.compound-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.compound-card {
+  background: rgba(16,50,30,0.7);
+  border: 1px solid rgba(111,207,151,0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 110px;
+  transition: all 0.18s;
+  cursor: default;
+}
+.compound-card:hover { border-color: rgba(111,207,151,0.4); background: rgba(26,74,46,0.7); }
+.compound-card .c-kanji { font-family: 'Zen Antique', serif; font-size: 22px; color: var(--gold-light); }
+.compound-card .c-reading { font-size: 12px; color: var(--sakura-lime); margin-top: 3px; }
+.compound-card .c-meaning { font-size: 11px; color: rgba(168,230,192,0.6); margin-top: 2px; }
+
+/* ── QUIZ TYPE TABS ── */
+.quiz-tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap; }
+.quiz-tab {
+  padding: 6px 12px; border-radius: 20px;
+  border: 1px solid rgba(111,207,151,0.2);
+  background: transparent;
+  color: rgba(168,230,192,0.5);
+  font-size: 11px; font-family: inherit;
+  cursor: pointer; transition: all 0.18s;
+}
+.quiz-tab.active { background: var(--green-light); border-color: var(--sakura-green); color: var(--sakura-white); }
+
+/* ── ANIMATIONS ── */
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+@keyframes flashGreen {
+  0%,100%{background:var(--glass)}
+  40%{background:rgba(30,80,30,0.85)}
+}
+@keyframes flashRed {
+  0%,100%{background:var(--glass)}
+  40%{background:rgba(80,20,20,0.85)}
+}
+@keyframes petal-fall {
+  0%   { transform: translateY(-40px) rotate(0deg) translateX(0); opacity: 0; }
+  10%  { opacity: 0.85; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(110vh) rotate(720deg) translateX(60px); opacity: 0; }
+}
+@keyframes sway {
+  0%,100%{ margin-left: 0; }
+  50%   { margin-left: 40px; }
+}
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.app { animation: fadeIn 0.5s ease; }
+
+/* petal element */
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  animation: petal-fall linear infinite, sway ease-in-out infinite;
+}
+</style>
+</head>
+<body>
+
+<canvas id="sakura-bg"></canvas>
+
+<div class="app">
+  <div class="panel" id="main-panel"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════
+const COMPOUNDS = [
+  {kanji:"食べ物",reading:"たべもの",meaning:"étel, ennivaló",base:"物"},
+  {kanji:"飲み物",reading:"のみもの",meaning:"ital, innivaló",base:"物"},
+  {kanji:"買い物",reading:"かいもの",meaning:"bevásárlás",base:"物"},
+  {kanji:"動物",reading:"どうぶつ",meaning:"állat",base:"物"},
+  {kanji:"物価",reading:"ぶっか",meaning:"árak, árszint",base:"物"},
+  {kanji:"焼き鳥",reading:"やきとり",meaning:"grillezett csirke",base:"鳥"},
+  {kanji:"白鳥",reading:"はくちょう",meaning:"hattyú",base:"鳥"},
+  {kanji:"料理",reading:"りょうり",meaning:"főzés, étel",base:"料"},
+  {kanji:"料金",reading:"りょうきん",meaning:"díj, illeték",base:"料"},
+  {kanji:"授業料",reading:"じゅぎょうりょう",meaning:"tandíj",base:"料"},
+  {kanji:"給料",reading:"きゅうりょう",meaning:"fizetés, bér",base:"料"},
+  {kanji:"理由",reading:"りゆう",meaning:"ok, indok",base:"理"},
+  {kanji:"地理",reading:"ちり",meaning:"földrajz",base:"理"},
+  {kanji:"無理",reading:"むり",meaning:"lehetetlen, túl sok",base:"理"},
+  {kanji:"特別",reading:"とくべつ",meaning:"különleges",base:"特"},
+  {kanji:"特徴",reading:"とくちょう",meaning:"jellemző, tulajdonság",base:"特"},
+  {kanji:"特急",reading:"とっきゅう",meaning:"szuperexpressz",base:"特"},
+  {kanji:"安全",reading:"あんぜん",meaning:"biztonságos",base:"安"},
+  {kanji:"安心",reading:"あんしん",meaning:"megkönnyebbülés",base:"安"},
+  {kanji:"不安",reading:"ふあん",meaning:"szorongás, aggodalom",base:"安"},
+  {kanji:"安い",reading:"やすい",meaning:"olcsó",base:"安"},
+  {kanji:"ご飯",reading:"ごはん",meaning:"rizs, étkezés",base:"飯"},
+  {kanji:"朝ご飯",reading:"あさごはん",meaning:"reggeli",base:"飯"},
+  {kanji:"昼ご飯",reading:"ひるごはん",meaning:"ebéd",base:"飯"},
+  {kanji:"晩ご飯",reading:"ばんごはん",meaning:"vacsora",base:"飯"},
+  {kanji:"牛肉",reading:"ぎゅうにく",meaning:"marhahús",base:"肉"},
+  {kanji:"豚肉",reading:"ぶたにく",meaning:"sertéshús",base:"肉"},
+  {kanji:"肉屋",reading:"にくや",meaning:"hentesüzlet",base:"肉"},
+  {kanji:"筋肉",reading:"きんにく",meaning:"izom",base:"肉"},
+  {kanji:"最悪",reading:"さいあく",meaning:"a legrosszabb",base:"悪"},
+  {kanji:"悪魔",reading:"あくま",meaning:"ördög, démon",base:"悪"},
+  {kanji:"悪い",reading:"わるい",meaning:"rossz",base:"悪"},
+  {kanji:"体重",reading:"たいじゅう",meaning:"testsúly",base:"体"},
+  {kanji:"体操",reading:"たいそう",meaning:"torna, gimnasztika",base:"体"},
+  {kanji:"同僚",reading:"どうりょう",meaning:"munkatárs, kolléga",base:"同"},
+  {kanji:"同級生",reading:"どうきゅうせい",meaning:"osztálytárs",base:"同"},
+  {kanji:"同時",reading:"どうじ",meaning:"egyidejűleg",base:"同"},
+  {kanji:"同じ",reading:"おなじ",meaning:"ugyanolyan, azonos",base:"同"},
+  {kanji:"着物",reading:"きもの",meaning:"kimonó",base:"着"},
+  {kanji:"水着",reading:"みずぎ",meaning:"fürdőruha",base:"着"},
+  {kanji:"着く",reading:"つく",meaning:"megérkezni",base:"着"},
+  {kanji:"空港",reading:"くうこう",meaning:"repülőtér",base:"空"},
+  {kanji:"空気",reading:"くうき",meaning:"levegő",base:"空"},
+  {kanji:"空手",reading:"からて",meaning:"karate",base:"空"},
+  {kanji:"空",reading:"そら",meaning:"ég, égbolt",base:"空"},
+  {kanji:"神戸港",reading:"こうべこう",meaning:"Kobe kikötő",base:"港"},
+  {kanji:"港",reading:"みなと",meaning:"kikötő",base:"港"},
+  {kanji:"昼寝",reading:"ひるね",meaning:"szunyókálás",base:"昼"},
+  {kanji:"昼休み",reading:"ひるやすみ",meaning:"ebédszünet",base:"昼"},
+  {kanji:"昼食",reading:"ちゅうしょく",meaning:"ebéd (formális)",base:"昼"},
+  {kanji:"海外",reading:"かいがい",meaning:"külföld (tengerentúl)",base:"海"},
+  {kanji:"海岸",reading:"かいがん",meaning:"tengerpart",base:"海"},
+  {kanji:"日本海",reading:"にほんかい",meaning:"Japán-tenger",base:"海"},
+  {kanji:"北海道",reading:"ほっかいどう",meaning:"Hokkaidó",base:"海"},
+];
+
+// ═══════════════════════════════════════════════════════════
+//  SAKURA CANVAS (green tones)
+// ═══════════════════════════════════════════════════════════
+(function initSakura() {
+  const canvas = document.getElementById('sakura-bg');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Draw a 5-petal sakura flower
+  function drawFlower(ctx, x, y, r, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y);
+    for (let i = 0; i < 5; i++) {
+      ctx.save();
+      ctx.rotate((i * 2 * Math.PI) / 5);
+      ctx.beginPath();
+      ctx.ellipse(0, -r * 0.6, r * 0.38, r * 0.62, 0, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.18, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(201,185,122,0.6)';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Static background flowers
+  const greenTones = [
+    'rgba(45,122,74,0.18)',
+    'rgba(111,207,151,0.12)',
+    'rgba(168,230,192,0.10)',
+    'rgba(26,74,46,0.22)',
+    'rgba(76,175,120,0.14)',
+    'rgba(200,240,210,0.08)',
+  ];
+
+  function drawBg() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Background gradient
+    const grad = ctx.createRadialGradient(
+      canvas.width*0.3, canvas.height*0.2, 0,
+      canvas.width*0.3, canvas.height*0.2, canvas.width*0.8
+    );
+    grad.addColorStop(0, '#132d1a');
+    grad.addColorStop(1, '#0d2818');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Static large flowers in background
+    const staticFlowers = [
+      {x:0.08,y:0.05,r:55}, {x:0.92,y:0.08,r:42},
+      {x:0.15,y:0.88,r:48}, {x:0.82,y:0.82,r:60},
+      {x:0.5,y:0.04,r:35},  {x:0.05,y:0.45,r:38},
+      {x:0.95,y:0.5,r:44},  {x:0.35,y:0.95,r:32},
+      {x:0.65,y:0.92,r:50}, {x:0.72,y:0.2,r:30},
+      {x:0.25,y:0.25,r:22}, {x:0.88,y:0.35,r:28},
+      {x:0.12,y:0.65,r:26}, {x:0.55,y:0.5,r:18},
+    ];
+    staticFlowers.forEach((f, i) => {
+      const tone = greenTones[i % greenTones.length];
+      drawFlower(ctx, f.x * canvas.width, f.y * canvas.height, f.r, tone, 1);
+    });
+  }
+  drawBg();
+  window.addEventListener('resize', drawBg);
+
+  // ── Falling petals (DOM based for simplicity & performance)
+  const colors = [
+    'rgba(111,207,151,0.75)',
+    'rgba(168,230,192,0.7)',
+    'rgba(76,175,120,0.65)',
+    'rgba(200,240,215,0.6)',
+    'rgba(45,140,80,0.55)',
+  ];
+
+  function createPetal() {
+    const el = document.createElement('div');
+    el.className = 'petal';
+    const size = 8 + Math.random() * 16;
+    const x = Math.random() * 100;
+    const dur = 6 + Math.random() * 10;
+    const sway = 3 + Math.random() * 5;
+    const delay = Math.random() * -18;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    // Draw petal as inline SVG
+    el.innerHTML = `<svg width="${size*2.5}" height="${size*2.5}" viewBox="-12 -12 24 24" xmlns="http://www.w3.org/2000/svg">
+      <g fill="${color}">
+        ${[0,1,2,3,4].map(i => {
+          const a = (i * 72 * Math.PI) / 180;
+          const px = Math.cos(a - Math.PI/2) * 5;
+          const py = Math.sin(a - Math.PI/2) * 5;
+          return `<ellipse cx="${px}" cy="${py}" rx="3.5" ry="5.5" transform="rotate(${i*72})" />`;
+        }).join('')}
+        <circle r="1.5" fill="rgba(201,185,122,0.5)"/>
+      </g>
+    </svg>`;
+
+    el.style.cssText = `
+      left: ${x}vw;
+      top: -40px;
+      animation-duration: ${dur}s, ${sway}s;
+      animation-delay: ${delay}s, ${delay * 0.7}s;
+      transform-origin: center;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (dur + Math.abs(delay)) * 1000 + 2000);
+  }
+
+  // Spawn petals
+  for (let i = 0; i < 22; i++) createPetal();
+  setInterval(createPetal, 900);
+})();
+
+// ═══════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════
+function shuffle(a) {
+  const b = [...a];
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+}
+function pick(arr, n) { return shuffle(arr).slice(0, n); }
+function wrongOptions(correct, field, n=3) {
+  return pick(COMPOUNDS.filter(c => c.kanji !== correct.kanji), n).map(c => c[field]);
+}
+
+const panel = document.getElementById('main-panel');
+function render(html) { panel.innerHTML = html; panel.style.animation='none'; requestAnimationFrame(()=>{ panel.style.animation='fadeIn 0.35s ease'; }); }
+
+// ═══════════════════════════════════════════════════════════
+//  HOME SCREEN
+// ═══════════════════════════════════════════════════════════
+function showHome() {
+  render(`
+    <div class="home-header">
+      <div class="eyebrow">GENKI I · 13. LECKE</div>
+      <div class="title-jp">漢字練習</div>
+      <div class="subtitle">Kanji összetett szó játékok · ${COMPOUNDS.length} összetétel</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="val">${COMPOUNDS.length}</div><div class="lbl">Összetétel</div></div>
+      <div class="stat-box"><div class="val">16</div><div class="lbl">Alap kanji</div></div>
+      <div class="stat-box"><div class="val">5</div><div class="lbl">Játékmód</div></div>
+    </div>
+    <div class="mode-list">
+      <button class="mode-btn" onclick="showBrowse()"><span class="icon">📖</span><div><div class="mode-name">Szótár</div><div class="mode-sub">Összes összetétel kanji szerint</div></div><span class="arr">›</span></button>
+      <button class="mode-btn" onclick="showFlash()"><span class="icon">🃏</span><div><div class="mode-name">Kártyák</div><div class="mode-sub">Flip flashcard – 3 oldal</div></div><span class="arr">›</span></button>
+      <button class="mode-btn" onclick="showQuiz()"><span class="icon">❓</span><div><div class="mode-name">Kvíz</div><div class="mode-sub">4 lehetséges válasz</div></div><span class="arr">›</span></button>
+      <button class="mode-btn" onclick="showMatch()"><span class="icon">🔗</span><div><div class="mode-name">Párosítás</div><div class="mode-sub">Kanji ↔ Jelentés</div></div><span class="arr">›</span></button>
+      <button class="mode-btn" onclick="showSpeed()"><span class="icon">⚡</span><div><div class="mode-name">Speed</div><div class="mode-sub">3 élet, pontszám, streak</div></div><span class="arr">›</span></button>
+    </div>
+  `);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BROWSE
+// ═══════════════════════════════════════════════════════════
+function showBrowse() {
+  const groups = {};
+  COMPOUNDS.forEach(c => {
+    if (!groups[c.base]) groups[c.base] = [];
+    groups[c.base].push(c);
+  });
+  let html = `<div class="top-bar"><button class="back-btn" onclick="showHome()">← Vissza</button><div class="info">${COMPOUNDS.length} összetétel · 16 alap kanji</div></div>`;
+  Object.entries(groups).forEach(([base, items]) => {
+    html += `<div class="browse-group"><div class="group-title">${base}　·　${items.length} összetétel</div><div class="compound-grid">`;
+    items.forEach(c => {
+      html += `<div class="compound-card"><div class="c-kanji">${c.kanji}</div><div class="c-reading">${c.reading}</div><div class="c-meaning">${c.meaning}</div></div>`;
+    });
+    html += `</div></div>`;
+  });
+  render(html);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FLASHCARD
+// ═══════════════════════════════════════════════════════════
+let flashDeck, flashIdx, flashKnown, flashFace;
+
+function showFlash() {
+  flashDeck = shuffle(COMPOUNDS);
+  flashIdx = 0;
+  flashKnown = new Set();
+  flashFace = 0; // 0=kanji,1=reading,2=meaning
+  renderFlash();
+}
+
+function renderFlash() {
+  const c = flashDeck[flashIdx];
+  const faces = [
+    {label:'漢字',content:`<div class="face-jp">${c.kanji}</div>`, hint:'– kattints a fordításhoz –'},
+    {label:'Olvasat',content:`<div class="face-reading">${c.reading}</div><div class="face-base">alap kanji: ${c.base}</div>`, hint:'– kattints a jelentéshez –'},
+    {label:'Jelentés',content:`<div class="face-meaning">${c.meaning}</div><div class="face-reading" style="font-size:16px;margin-top:8px">${c.reading}</div>`, hint:'– kattints a kanjihoz –'},
+  ];
+  const f = faces[flashFace];
+  render(`
+    <div class="top-bar">
+      <button class="back-btn" onclick="showHome()">← Vissza</button>
+      <div class="info">${flashIdx+1} / ${flashDeck.length} · ✓ ${flashKnown.size} ismert</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${((flashIdx+1)/flashDeck.length)*100}%"></div></div>
+    <div class="flash-card-wrap" onclick="flashNextFace()">
+      <div class="flash-card-inner" id="fci">
+        <div class="flash-face flash-front">
+          <div class="face-label">${f.label}</div>
+          ${f.content}
+          <div class="tap-hint">${f.hint}</div>
+        </div>
+      </div>
+    </div>
+    <div class="flash-actions">
+      <button class="dont-know" onclick="flashNext(false)">✗ Még nem tudom</button>
+      <button class="know-it"   onclick="flashNext(true)">✓ Tudom!</button>
+    </div>
+  `);
+}
+
+function flashNextFace() {
+  flashFace = (flashFace + 1) % 3;
+  const c = flashDeck[flashIdx];
+  const faces = [
+    {label:'漢字',content:`<div class="face-jp">${c.kanji}</div>`, hint:'– kattints a fordításhoz –'},
+    {label:'Olvasat',content:`<div class="face-reading">${c.reading}</div><div class="face-base">alap kanji: ${c.base}</div>`, hint:'– kattints a jelentéshez –'},
+    {label:'Jelentés',content:`<div class="face-meaning">${c.meaning}</div><div class="face-reading" style="font-size:16px;margin-top:8px">${c.reading}</div>`, hint:'– kattints a kanjihoz –'},
+  ];
+  const f = faces[flashFace];
+  const fci = document.querySelector('.flash-card-inner');
+  if (!fci) return;
+  fci.style.transition = 'transform 0.25s';
+  fci.style.transform = 'rotateY(90deg)';
+  setTimeout(() => {
+    fci.querySelector('.flash-front').innerHTML = `<div class="face-label">${f.label}</div>${f.content}<div class="tap-hint">${f.hint}</div>`;
+    fci.style.transition = 'transform 0.25s';
+    fci.style.transform = 'rotateY(0deg)';
+  }, 250);
+}
+
+function flashNext(know) {
+  if (know) flashKnown.add(flashIdx);
+  flashFace = 0;
+  if (flashIdx + 1 >= flashDeck.length) {
+    render(`
+      <div class="result-screen">
+        <div class="big-emoji">🌸</div>
+        <div class="score-num">${flashKnown.size}/${flashDeck.length}</div>
+        <div class="score-pct">kártya ismert</div>
+        <div class="score-msg">Folytasd a gyakorlást a tökéletes eredményért!</div>
+        <button class="replay-btn" onclick="showFlash()">Újra →</button>
+        <br><button class="back-btn" style="margin-top:12px" onclick="showHome()">← Főmenü</button>
+      </div>`);
+    return;
+  }
+  flashIdx++;
+  renderFlash();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════════════════
+let quizDeck, quizIdx, quizScore, quizType, quizTotal;
+const QUIZ_TOTAL = 15;
+
+function showQuiz() {
+  quizDeck = shuffle(COMPOUNDS);
+  quizIdx = 0; quizScore = 0; quizType = 0; quizTotal = QUIZ_TOTAL;
+  renderQuiz();
+}
+
+function setQuizType(t) { quizType = t; renderQuiz(); }
+
+function renderQuiz() {
+  if (quizIdx >= quizTotal) { showQuizResult(); return; }
+  const c = quizDeck[quizIdx];
+  const typeLabels = ['漢字 → Jelentés','Olvasat → Kanji','漢字 → Olvasat'];
+  const fieldMap = [
+    {prompt: c.kanji, promptLabel:'Jelentése?', answerField:'meaning', promptType:'jp'},
+    {prompt: c.meaning, promptLabel:'Melyik a kanji?', answerField:'kanji', promptType:'text'},
+    {prompt: c.kanji, promptLabel:'Hogyan olvassuk?', answerField:'reading', promptType:'jp'},
+  ];
+  const fm = fieldMap[quizType];
+  const correct = c[fm.answerField];
+  const wrongs = wrongOptions(c, fm.answerField, 3);
+  const options = shuffle([correct, ...wrongs]);
+
+  const isJpOpt = fm.answerField === 'kanji';
+
+  let tabs = `<div class="quiz-tabs">`;
+  typeLabels.forEach((t,i) => tabs += `<button class="quiz-tab${quizType===i?' active':''}" onclick="setQuizType(${i})">${t}</button>`);
+  tabs += `</div>`;
+
+  let opts = `<div class="options-grid">`;
+  options.forEach(opt => {
+    opts += `<button class="opt-btn${isJpOpt?' jp-opt':''}" onclick="quizAnswer(this,'${escQ(opt)}','${escQ(correct)}')">${opt}</button>`;
+  });
+  opts += `</div>`;
+
+  render(`
+    <div class="top-bar">
+      <button class="back-btn" onclick="showHome()">← Vissza</button>
+      <div class="info">${quizIdx+1}/${quizTotal} · ✓ ${quizScore}</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${(quizIdx/quizTotal)*100}%"></div></div>
+    ${tabs}
+    <div class="big-card">
+      <div class="card-hint">${fm.promptLabel}</div>
+      <div class="card-jp${fm.promptType==='text'?' small':''}">${fm.prompt}</div>
+      ${fm.promptType==='jp' && quizType!==2 ? `<div class="card-reading">${c.reading}</div>` : ''}
+      <div class="card-base">base: ${c.base}</div>
+    </div>
+    ${opts}
+    <div id="quiz-next-wrap"></div>
+  `);
+}
+
+function escQ(s) { return s.replace(/'/g,"\\'"); }
+
+function quizAnswer(btn, chosen, correct) {
+  if (btn.disabled) return;
+  document.querySelectorAll('.opt-btn').forEach(b => { b.disabled = true; });
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    quizScore++;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.textContent.trim() === correct) b.classList.add('correct');
+      else if (!b.classList.contains('wrong')) b.classList.add('dimmed');
+    });
+  }
+  const wrap = document.getElementById('quiz-next-wrap');
+  if (!wrap) return;
+  const isLast = quizIdx + 1 >= quizTotal;
+  wrap.innerHTML = `<button class="next-btn" onclick="quizNext()">${isLast ? 'Eredmény →' : 'Következő →'}</button>`;
+}
+
+function quizNext() { quizIdx++; renderQuiz(); }
+
+function showQuizResult() {
+  const pct = Math.round((quizScore / quizTotal) * 100);
+  const emoji = pct >= 87 ? '🏆' : pct >= 67 ? '⭐' : '📚';
+  const msg = pct >= 87 ? 'Kiváló! Igazi kanji mester vagy!' : pct >= 67 ? 'Szép munka! Még egy kis gyakorlás és tökéletes lesz!' : 'Ne csüggedj! Próbáld meg még egyszer!';
+  render(`
+    <div class="result-screen">
+      <div class="big-emoji">${emoji}</div>
+      <div class="score-num">${quizScore}/${quizTotal}</div>
+      <div class="score-pct">${pct}% helyes</div>
+      <div class="score-msg">${msg}</div>
+      <button class="replay-btn" onclick="showQuiz()">Újra →</button>
+      <br><button class="back-btn" style="margin-top:12px" onclick="showHome()">← Főmenü</button>
+    </div>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MATCH
+// ═══════════════════════════════════════════════════════════
+let matchBatch, matchRights, matchMatched, matchErrors, matchSelected, matchRound;
+
+function showMatch() {
+  matchRound = 0;
+  startMatchRound();
+}
+
+function startMatchRound() {
+  const pool = shuffle(COMPOUNDS);
+  matchBatch = pool.slice((matchRound * 8) % COMPOUNDS.length, ((matchRound * 8) % COMPOUNDS.length) + 8);
+  if (matchBatch.length < 4) matchBatch = shuffle(COMPOUNDS).slice(0, 8);
+  matchRights = shuffle([...matchBatch]);
+  matchMatched = new Set();
+  matchErrors = 0;
+  matchSelected = null;
+  renderMatch();
+}
+
+function renderMatch() {
+  let left = '', right = '';
+  matchBatch.forEach((item, i) => {
+    const isMatched = matchMatched.has(item.kanji);
+    const isSel = matchSelected && matchSelected.type === 'kanji' && matchSelected.item.kanji === item.kanji;
+    left += `<button class="match-item kanji-item${isMatched?' matched':''}${isSel?' selected':''}" id="ml_${i}" onclick="matchClick('kanji',${i})" ${isMatched?'disabled':''}>${isMatched?'✓':item.kanji}</button>`;
+  });
+  matchRights.forEach((item, i) => {
+    const isMatched = matchMatched.has(item.kanji);
+    const isSel = matchSelected && matchSelected.type === 'meaning' && matchSelected.item.kanji === item.kanji;
+    right += `<button class="match-item meaning-item${isMatched?' matched':''}${isSel?' selected':''}" id="mr_${i}" onclick="matchClick('meaning',${i})" ${isMatched?'disabled':''}>${isMatched?'✓':item.meaning}<div class="m-reading">${isMatched?'':item.reading}</div></button>`;
+  });
+
+  render(`
+    <div class="top-bar">
+      <button class="back-btn" onclick="showHome()">← Vissza</button>
+      <div class="info">Kör ${matchRound+1} · ${matchMatched.size}/${matchBatch.length} kész · ✗ ${matchErrors}</div>
+    </div>
+    <div style="font-size:12px;color:rgba(168,230,192,0.4);text-align:center;margin-bottom:12px">Kattints egy kanjira, majd a megfelelő jelentésre!</div>
+    <div class="match-grid">
+      <div class="match-col">${left}</div>
+      <div class="match-col">${right}</div>
+    </div>
+  `);
+}
+
+function matchClick(type, idx) {
+  const item = type === 'kanji' ? matchBatch[idx] : matchRights[idx];
+  if (matchMatched.has(item.kanji)) return;
+
+  if (!matchSelected) {
+    matchSelected = { type, item };
+    renderMatch(); return;
+  }
+  if (matchSelected.type === type) {
+    matchSelected = { type, item };
+    renderMatch(); return;
+  }
+
+  const kanjiItem   = type === 'kanji'   ? item : matchSelected.item;
+  const meaningItem = type === 'meaning' ? item : matchSelected.item;
+
+  if (kanjiItem.kanji === meaningItem.kanji) {
+    matchMatched.add(kanjiItem.kanji);
+    matchSelected = null;
+    if (matchMatched.size >= matchBatch.length) {
+      setTimeout(() => {
+        render(`
+          <div class="result-screen">
+            <div class="big-emoji">🎉</div>
+            <div class="score-num">Kör kész!</div>
+            <div class="score-pct">${matchErrors} hiba</div>
+            <div class="score-msg">Folytasd a következő körrel!</div>
+            <button class="replay-btn" onclick="matchRound++;startMatchRound()">Következő kör →</button>
+            <br><button class="back-btn" style="margin-top:12px" onclick="showHome()">← Főmenü</button>
+          </div>`);
+      }, 400);
+      return;
+    }
+    renderMatch();
+  } else {
+    matchErrors++;
+    matchSelected = null;
+    // Shake effect
+    renderMatch();
+    const allBtns = document.querySelectorAll('.match-item');
+    allBtns.forEach(b => { if (b.textContent.trim() === kanjiItem.kanji || b.textContent.trim() === meaningItem.meaning) b.classList.add('shake'); });
+    setTimeout(() => document.querySelectorAll('.shake').forEach(b => b.classList.remove('shake')), 500);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SPEED
+// ═══════════════════════════════════════════════════════════
+let speedItems, speedIdx, speedScore, speedLives, speedStreak, speedTotal;
+const SPEED_TOTAL = 20;
+
+function showSpeed() {
+  const all = [];
+  COMPOUNDS.forEach(c => {
+    all.push({kanji:c.kanji, prompt:c.reading, answer:c.meaning, type:'reading→meaning'});
+    all.push({kanji:c.kanji, prompt:c.meaning, answer:c.kanji,   type:'meaning→kanji'});
+    all.push({kanji:c.kanji, prompt:c.kanji,   answer:c.meaning, type:'kanji→meaning'});
+  });
+  speedItems = shuffle(all);
+  speedIdx = 0; speedScore = 0; speedLives = 3; speedStreak = 0;
+  speedTotal = SPEED_TOTAL;
+  renderSpeed();
+}
+
+function renderSpeed() {
+  if (speedIdx >= speedTotal || speedLives <= 0) { showSpeedResult(); return; }
+  const q = speedItems[speedIdx];
+  const field = q.type === 'meaning→kanji' ? 'kanji' : 'meaning';
+  const wrongs = wrongOptions({kanji:q.kanji}, field, 3);
+  const options = shuffle([q.answer, ...wrongs]);
+  const isJp = field === 'kanji';
+
+  let opts = `<div class="options-grid">`;
+  options.forEach(opt => {
+    opts += `<button class="opt-btn${isJp?' jp-opt':''}" onclick="speedAnswer(this,'${escQ(opt)}','${escQ(q.answer)}')">${opt}</button>`;
+  });
+  opts += `</div>`;
+
+  render(`
+    <div class="top-bar">
+      <button class="back-btn" onclick="showHome()">← Vissza</button>
+      <div class="lives">${'❤️'.repeat(speedLives)}${'🖤'.repeat(3-speedLives)}</div>
+      <div class="streak-badge">🔥 ${speedStreak}</div>
+      <div style="color:var(--gold);font-weight:700">💎 ${speedScore}</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${(speedIdx/speedTotal)*100}%"></div></div>
+    <div class="big-card">
+      <div class="card-hint">${q.type==='reading→meaning'?'Olvasat → Jelentés':q.type==='meaning→kanji'?'Jelentés → 漢字':'漢字 → Jelentés'}</div>
+      <div class="card-jp${q.type==='meaning→kanji'?'':''}">${q.type==='meaning→kanji'?'<span style="font-size:22px;font-family:inherit">'+q.prompt+'</span>':'<span>'+q.kanji+'</span>'}</div>
+      ${q.type!=='meaning→kanji'?`<div class="card-reading">${q.prompt}</div>`:''}
+    </div>
+    ${opts}
+    <div id="speed-next"></div>
+  `);
+}
+
+function speedAnswer(btn, chosen, correct) {
+  if (btn.disabled) return;
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  const panel2 = document.getElementById('main-panel');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    speedStreak++;
+    speedScore += 1 + Math.floor(speedStreak / 3);
+    panel2.style.animation = 'flashGreen 0.5s ease';
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent.trim() === correct) b.classList.add('correct'); else if(!b.classList.contains('wrong')) b.classList.add('dimmed'); });
+    speedStreak = 0;
+    speedLives--;
+    panel2.style.animation = 'flashRed 0.5s ease';
+    if (speedLives <= 0) { setTimeout(() => showSpeedResult(), 700); return; }
+  }
+  const nw = document.getElementById('speed-next');
+  if (nw) {
+    speedIdx++;
+    const isLast = speedIdx >= speedTotal;
+    nw.innerHTML = `<button class="next-btn" onclick="renderSpeed()">${isLast?'Eredmény →':'Következő →'}</button>`;
+  }
+}
+
+function showSpeedResult() {
+  const emoji = speedScore >= 22 ? '🔥' : speedScore >= 14 ? '⭐' : '📚';
+  render(`
+    <div class="result-screen">
+      <div class="big-emoji">${emoji}</div>
+      <div class="score-num">${speedScore} pont</div>
+      <div class="score-pct">${speedIdx} kérdés · ${3-speedLives} hiba</div>
+      <div class="score-msg">${speedScore>=22?'Tűzgyors! Mesterfokú kanji tudás!':speedScore>=14?'Jó munka! Még gyorsabban is megy majd!':'Próbálj meg minél több streakot összegyűjteni!'}</div>
+      <button class="replay-btn" onclick="showSpeed()">Újra →</button>
+      <br><button class="back-btn" style="margin-top:12px" onclick="showHome()">← Főmenü</button>
+    </div>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  START
+// ═══════════════════════════════════════════════════════════
+showHome();
+</script>
+</body>
+</html>

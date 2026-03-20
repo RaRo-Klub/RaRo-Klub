@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>条件形 ば・なら 練習</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:12px;
+  background:linear-gradient(160deg,#E8F5E9 0%,#C8E6C9 40%,#DCEDC8 100%)}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cellipse cx='28' cy='16' rx='5' ry='12' fill='%23FF6B9D' opacity='.22' transform='rotate(0 28 28)'/%3E%3Cellipse cx='28' cy='16' rx='5' ry='12' fill='%23FF8FAB' opacity='.2' transform='rotate(72 28 28)'/%3E%3Cellipse cx='28' cy='16' rx='5' ry='12' fill='%23FFB7C5' opacity='.2' transform='rotate(144 28 28)'/%3E%3Cellipse cx='28' cy='16' rx='5' ry='12' fill='%23FF6B9D' opacity='.2' transform='rotate(216 28 28)'/%3E%3Cellipse cx='28' cy='16' rx='5' ry='12' fill='%23FFB7C5' opacity='.2' transform='rotate(288 28 28)'/%3E%3Ccircle cx='28' cy='28' r='4' fill='%23FFFDE7' opacity='.5'/%3E%3C/svg%3E");
+  background-size:56px 56px;opacity:0.55;pointer-events:none;z-index:0}
+
+#app{position:relative;z-index:1;max-width:900px;margin:0 auto}
+
+.hdr{background:linear-gradient(135deg,#2E7D32,#388E3C,#43A047);border-radius:20px;
+  padding:14px 20px;margin-bottom:12px;text-align:center;color:#fff;
+  box-shadow:0 4px 20px rgba(46,125,50,.4)}
+.hdr h1{font-size:22px;font-weight:700}
+.hdr small{font-size:12px;opacity:.88;display:block;margin-top:2px}
+
+.score-bar{background:linear-gradient(135deg,#2E7D32,#43A047);color:#fff;
+  border-radius:14px;padding:9px 16px;display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:8px;font-weight:700;font-size:14px}
+.prog-wrap{background:#A5D6A7;border-radius:20px;height:7px;margin-bottom:12px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,#43A047,#AED581);
+  border-radius:20px;transition:width .5s}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.tb{padding:8px 13px;border:2.5px solid #2E7D32;border-radius:22px;cursor:pointer;
+  font-size:12px;font-weight:700;color:#2E7D32;background:#fff;transition:all .18s}
+.tb:hover{background:#E8F5E9}.tb.act{background:#2E7D32;color:#fff}
+
+.section{display:none}.section.vis{display:block}
+.panel{background:#fff;border-radius:18px;border:2px solid #C8E6C9;padding:16px;
+  margin-bottom:12px;box-shadow:0 2px 12px rgba(46,125,50,.12)}
+.s-title{font-size:15px;font-weight:700;color:#2E7D32;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px}
+
+.btn{padding:8px 16px;border:2.5px solid #2E7D32;border-radius:22px;cursor:pointer;
+  font-size:12px;font-weight:700;color:#2E7D32;background:#fff;transition:all .18s}
+.btn:hover{background:#E8F5E9}
+.btn.bl{border-color:#1565C0;color:#1565C0}.btn.bl:hover{background:#E3F2FD}
+.btn.rd{border-color:#C62828;color:#C62828}.btn.rd:hover{background:#FFEBEE}
+.center{text-align:center;margin:8px 0}
+
+/* ── FURIGANA ── */
+ruby{ruby-align:center}
+rt{font-size:0.55em;color:#555}
+
+/* ── GRAMMAR BOX ── */
+.gram-box{border-radius:14px;padding:14px;margin-bottom:12px;background:#E8F5E9;border:2px solid #66BB6A}
+.gram-title{font-size:17px;font-weight:700;color:#1B5E20;margin-bottom:8px}
+.gram-pattern{font-size:13px;font-weight:700;padding:7px 13px;border-radius:10px;
+  background:#fff;color:#2E7D32;border:1.5px solid #66BB6A;display:inline-block;margin-bottom:8px}
+.gram-note{font-size:13px;color:#333;line-height:1.8;margin-bottom:10px}
+.gram-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px}
+.gram-tbl th{background:#2E7D32;color:#fff;padding:8px;text-align:center}
+.gram-tbl td{padding:7px 10px;border:1px solid #C8E6C9;text-align:center}
+.gram-tbl tr:nth-child(even) td{background:#F1F8E9}
+.hl{color:#C62828;font-weight:700;background:#FFEBEE;padding:1px 5px;border-radius:4px}
+.hlg{color:#1B5E20;font-weight:700;background:#E8F5E9;padding:1px 5px;border-radius:4px}
+.gram-ex{background:rgba(255,255,255,.7);border-radius:10px;padding:9px 12px;margin-bottom:6px;
+  font-size:15px;line-height:1.8}
+
+/* ── CONJ TABLE ── */
+.cj-wrap{overflow-x:auto;margin-bottom:10px}
+.cj-tbl{border-collapse:collapse;min-width:600px;width:100%;font-size:14px}
+.cj-tbl th{background:#2E7D32;color:#fff;padding:10px 8px;text-align:center;font-size:13px}
+.cj-tbl td{padding:7px 8px;border:1px solid #C8E6C9;vertical-align:middle}
+.cj-tbl tr:nth-child(even) td{background:#F1F8E9}
+.dict-cell{font-weight:700;color:#1B5E20;font-size:15px;min-width:90px}
+.badge{font-size:10px;padding:2px 6px;border-radius:8px;font-weight:700;white-space:nowrap}
+.b1{background:#E3F2FD;color:#1565C0}
+.b2{background:#E8F5E9;color:#2E7D32}
+.b3{background:#EDE7F6;color:#6A1B9A}
+.bi{background:#FFF8E1;color:#E65100}
+.bn{background:#FCE4EC;color:#880E4F}
+.bm{background:#F3E5F5;color:#6A1B9A}
+.cj-inp{border:2px solid #C8E6C9;border-radius:8px;padding:5px 9px;font-size:14px;
+  width:100%;font-family:inherit;outline:none;transition:border-color .15s;
+  min-width:140px;background:#fff}
+.cj-inp:focus{border-color:#43A047}
+.cj-inp.ok{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20}
+.cj-inp.no{border-color:#C62828;background:#FFEBEE}
+.cj-res{font-size:11px;margin-top:2px;padding:2px 7px;border-radius:5px;font-weight:600;display:none}
+.cj-res.vis{display:inline-block}
+.cj-res.ok{background:#E8F5E9;color:#1B5E20}
+.cj-res.no{background:#FFEBEE;color:#C62828}
+.cj-hint{font-size:11px;color:#888;margin-top:2px}
+.check-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+
+/* ── EXERCISE ITEMS ── */
+.ex-item{background:#fff;border-radius:14px;border:1.5px solid #C8E6C9;
+  padding:13px;margin-bottom:10px}
+.ex-num{font-size:11px;color:#2E7D32;font-weight:700;margin-bottom:5px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.etag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+.t-sel{background:#E8F5E9;color:#2E7D32;border:1px solid #C8E6C9}
+.t-fil{background:#E3F2FD;color:#1565C0;border:1px solid #BBDEFB}
+.t-par{background:#FCE4EC;color:#880E4F;border:1px solid #F8BBD9}
+.ex-sent{font-size:17px;line-height:2.5;color:#1a1a1a;margin-bottom:7px}
+.ex-clue{font-size:12px;color:#2E7D32;font-weight:600;margin-bottom:7px;
+  background:#E8F5E9;padding:4px 10px;border-radius:8px;display:inline-block}
+.blank{display:inline-block;min-width:80px;border-bottom:3px solid #43A047;
+  text-align:center;padding:0 4px;margin:0 2px;color:#2E7D32;font-weight:700;
+  vertical-align:bottom;transition:all .2s}
+.blank.ok{border-bottom-color:#2E7D32;color:#1B5E20;background:#E8F5E9;border-radius:4px 4px 0 0}
+.blank.no{border-bottom-color:#C62828;color:#7F0000;background:#FFEBEE;border-radius:4px 4px 0 0}
+.p-blank{display:inline-block;min-width:36px;border-bottom:3px solid #880E4F;
+  text-align:center;padding:0 3px;margin:0 2px;color:#880E4F;font-weight:700;vertical-align:bottom}
+.p-blank.ok{border-bottom-color:#2E7D32;color:#1B5E20;background:#E8F5E9;border-radius:4px 4px 0 0}
+.p-blank.no{border-bottom-color:#C62828;color:#7F0000;background:#FFEBEE;border-radius:4px 4px 0 0}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.opt{padding:8px 14px;border:2px solid #C8E6C9;border-radius:18px;cursor:pointer;
+  font-size:14px;background:#fff;color:#1a1a1a;transition:all .15s;font-weight:500}
+.opt:hover:not(:disabled){border-color:#43A047;background:#E8F5E9}
+.opt.ok{border-color:#2E7D32!important;background:#E8F5E9!important;color:#1B5E20!important;font-weight:700}
+.opt.no{border-color:#C62828!important;background:#FFEBEE!important;color:#7F0000!important}
+
+.txt-inp{border:2px solid #C8E6C9;border-radius:10px;padding:7px 12px;
+  font-size:15px;font-family:inherit;outline:none;transition:border-color .15s;min-width:130px}
+.txt-inp:focus{border-color:#43A047}
+.txt-inp.ok{border-color:#2E7D32;background:#E8F5E9}
+.txt-inp.no{border-color:#C62828;background:#FFEBEE}
+
+.p-opt{padding:7px 13px;border:2px solid #F8BBD9;border-radius:18px;cursor:pointer;
+  font-size:14px;background:#fff;color:#880E4F;transition:all .15s;font-weight:700}
+.p-opt:hover:not(:disabled){border-color:#880E4F;background:#FCE4EC}
+.p-opt.ok{border-color:#2E7D32!important;background:#E8F5E9!important;color:#1B5E20!important}
+.p-opt.no{border-color:#C62828!important;background:#FFEBEE!important;color:#7F0000!important}
+
+.ex-res{font-size:12px;margin-top:5px;padding:5px 10px;border-radius:8px;
+  font-weight:600;display:none;line-height:1.7}
+.ex-res.vis{display:block}
+.ex-res.ok{background:#E8F5E9;color:#1B5E20}
+.ex-res.no{background:#FFEBEE;color:#7F0000}
+.inp-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:9999;overflow:hidden}
+.p-item{position:absolute;top:-60px;animation:pfall linear forwards}
+@keyframes pfall{
+  0%  {transform:translateY(0)   rotate(0deg)   translateX(0px); opacity:1}
+  30% {transform:translateY(30vh) rotate(90deg)  translateX(15px); opacity:.95}
+  60% {transform:translateY(65vh) rotate(200deg) translateX(-10px); opacity:.8}
+  100%{transform:translateY(110vh) rotate(360deg) translateX(8px); opacity:.05}}
+.banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;
+  border-radius:20px;padding:20px 36px;font-size:19px;font-weight:700;z-index:10000;
+  text-align:center;box-shadow:0 10px 38px rgba(0,0,0,.2);animation:bIn .3s ease}
+@keyframes bIn{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="particles"></div>
+
+<div class="hdr">
+  <h1>🌷 条件形 ば・なら 練習 🌷</h1>
+  <small>形の練習 · 4択問題 · 記入問題 · 助詞選択</small>
+</div>
+<div class="score-bar">
+  <span>🌷 <span id="tot-s">0</span> / <span id="tot-m">0</span></span>
+  <span id="tot-pct">— %</span>
+</div>
+<div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+<div class="tabs">
+  <button class="tb act"  onclick="showTab('gram',this)">📚 説明</button>
+  <button class="tb" onclick="showTab('conj',this)">🔧 形の練習</button>
+  <button class="tb" onclick="showTab('sel',this)">🔘 4択問題</button>
+  <button class="tb" onclick="showTab('fill',this)">✏️ 記入問題</button>
+  <button class="tb" onclick="showTab('part',this)">🔴 助詞選択</button>
+</div>
+
+<!-- ══════════ GRAMMAR ══════════ -->
+<div id="s-gram" class="section vis">
+  <div class="gram-box">
+    <div class="gram-title">条件形 〜ば / 〜なら の作り方</div>
+
+    <table class="gram-tbl">
+      <tr>
+        <th>種類</th><th>辞書形 (例)</th><th>〜ば（肯定）</th><th>〜なければ（否定）</th>
+      </tr>
+      <tr><td><span class="badge b1">動詞Ⅰ</span></td><td><ruby>行<rt>い</rt></ruby>く</td>
+        <td><span class="hl">行けば</span></td><td>行か<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge b1">動詞Ⅰ</span></td><td><ruby>飲<rt>の</rt></ruby>む</td>
+        <td><span class="hl">飲めば</span></td><td>飲ま<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge b2">動詞Ⅱ</span></td><td><ruby>見<rt>み</rt></ruby>る</td>
+        <td><span class="hl">見れば</span></td><td>見<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge b2">動詞Ⅱ</span></td><td><ruby>晴<rt>は</rt></ruby>れる</td>
+        <td><span class="hl">晴れれば</span></td><td>晴れ<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge b3">動詞Ⅲ</span></td><td>する</td>
+        <td><span class="hl">すれば</span></td><td>し<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge b3">動詞Ⅲ</span></td><td><ruby>来<rt>く</rt></ruby>る</td>
+        <td><span class="hl">くれば</span></td><td>来<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge bi">い形容詞</span></td><td><ruby>高<rt>たか</rt></ruby>い</td>
+        <td><span class="hl">高ければ</span></td><td>高く<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge bi">い形容詞</span></td><td>いい</td>
+        <td><span class="hl">よければ</span></td><td>よく<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge bn">な形容詞</span></td><td><ruby>暇<rt>ひま</rt></ruby>だ</td>
+        <td><span class="hl">暇なら</span></td><td>暇じゃ<span class="hl">なければ</span></td></tr>
+      <tr><td><span class="badge bm">名詞</span></td><td><ruby>雨<rt>あめ</rt></ruby></td>
+        <td><span class="hl">雨なら</span></td><td>雨じゃ<span class="hl">なければ</span></td></tr>
+    </table>
+
+    <div style="font-size:13px;color:#1B5E20;font-weight:700;margin-bottom:6px">▶ 例文</div>
+    <div class="gram-ex">
+      <ruby>説明書<rt>せつめいしょ</rt></ruby>を<span class="hl">読めば</span>、<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>がわかります。
+    </div>
+    <div class="gram-ex">
+      ボールペンが<span class="hl">なければ</span>、えんぴつで<ruby>書<rt>か</rt></ruby>いてもいいです。
+    </div>
+    <div class="gram-ex">
+      <ruby>暇<rt>ひま</rt></ruby><span class="hl">なら</span>、いっしょに<ruby>遊<rt>あそ</rt></ruby>びに<ruby>行<rt>い</rt></ruby>きませんか。
+    </div>
+    <div class="gram-ex">
+      <ruby>秋<rt>あき</rt></ruby>に<span class="hl">なれば</span>、<ruby>木<rt>き</rt></ruby>の<ruby>葉<rt>は</rt></ruby>の<ruby>色<rt>いろ</rt></ruby>が<ruby>変<rt>か</rt></ruby>わります。
+    </div>
+    <div class="gram-ex">
+      <ruby>許可<rt>きょか</rt></ruby>が<span class="hl">なければ</span>、ここでは<ruby>写真<rt>しゃしん</rt></ruby>が<ruby>撮<rt>と</rt></ruby>れません。
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CONJUGATION ══════════ -->
+<div id="s-conj" class="section">
+  <div class="panel">
+    <div class="s-title">🔧 形の練習 — 条件形を作ってください</div>
+    <p style="font-size:13px;color:#555;margin-bottom:10px">
+      辞書形を見て、<strong>「〜ば」（肯定）</strong>と<strong>「〜なければ」（否定）</strong>の形を入力してください。
+    </p>
+    <div class="cj-wrap">
+      <table class="cj-tbl" id="cj-tbl">
+        <thead><tr>
+          <th>種類</th><th>辞書形</th><th>〜ば（肯定）</th><th>〜なければ（否定）</th>
+        </tr></thead>
+        <tbody id="cj-body"></tbody>
+      </table>
+    </div>
+    <div class="check-row">
+      <button class="btn bl" onclick="cjCheckAll()">✔ 全部確認</button>
+      <button class="btn" onclick="cjInit()">⇌ やり直し</button>
+      <button class="btn rd" onclick="cjShowAll()">👁 答えを見る</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SELECTION ══════════ -->
+<div id="s-sel" class="section">
+  <div class="panel">
+    <div class="s-title">🔘 4択問題 — 正しい形を選んでください</div>
+    <div id="sel-wrap"></div>
+    <div class="center" style="margin-top:10px"><button class="btn" onclick="selInit()">⇌ やり直し</button></div>
+  </div>
+</div>
+
+<!-- ══════════ FILL IN ══════════ -->
+<div id="s-fill" class="section">
+  <div class="panel">
+    <div class="s-title">✏️ 記入問題 — 条件形を書いてください</div>
+    <div id="fill-wrap"></div>
+    <div class="center" style="margin-top:10px"><button class="btn" onclick="fillInit()">⇌ やり直し</button></div>
+  </div>
+</div>
+
+<!-- ══════════ PARTICLES ══════════ -->
+<div id="s-part" class="section">
+  <div class="panel">
+    <div class="s-title">🔴 助詞選択 — 正しい助詞を選んでください</div>
+    <div id="part-wrap"></div>
+    <div class="center" style="margin-top:10px"><button class="btn" onclick="partInit()">⇌ やり直し</button></div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ══════════ SCORE ══════════ */
+var tS=0,tM=0;
+function addScore(e,m){
+  tS+=e;tM+=m;
+  document.getElementById('tot-s').textContent=tS;
+  document.getElementById('tot-m').textContent=tM;
+  var p=tM>0?Math.round(tS/tM*100):0;
+  document.getElementById('tot-pct').textContent=p+'%';
+  document.getElementById('prog-bar').style.width=p+'%';
+}
+
+/* ══════════ TAB ══════════ */
+var tabInited={};
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('vis');s.style.display='none';});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('act');});
+  document.getElementById('s-'+id).style.display='block';
+  document.getElementById('s-'+id).classList.add('vis');
+  btn.classList.add('act');
+  if(!tabInited[id]){tabInited[id]=true;
+    if(id==='conj')cjInit();
+    if(id==='sel')selInit();
+    if(id==='fill')fillInit();
+    if(id==='part')partInit();
+  }
+}
+
+/* ══════════ CONJUGATION DATA ══════════ */
+var CJ=[
+  {d:'行く',    r:'いく',    t:'動Ⅰ',bt:'b1', pos:'行けば',    neg:'行かなければ'},
+  {d:'言う',    r:'いう',    t:'動Ⅰ',bt:'b1', pos:'言えば',    neg:'言わなければ'},
+  {d:'聞く',    r:'きく',    t:'動Ⅰ',bt:'b1', pos:'聞けば',    neg:'聞かなければ'},
+  {d:'急ぐ',    r:'いそぐ',  t:'動Ⅰ',bt:'b1', pos:'急げば',    neg:'急がなければ'},
+  {d:'押す',    r:'おす',    t:'動Ⅰ',bt:'b1', pos:'押せば',    neg:'押さなければ'},
+  {d:'待つ',    r:'まつ',    t:'動Ⅰ',bt:'b1', pos:'待てば',    neg:'待たなければ'},
+  {d:'呼ぶ',    r:'よぶ',    t:'動Ⅰ',bt:'b1', pos:'呼べば',    neg:'呼ばなければ'},
+  {d:'住む',    r:'すむ',    t:'動Ⅰ',bt:'b1', pos:'住めば',    neg:'住まなければ'},
+  {d:'ある',    r:'ある',    t:'動Ⅰ',bt:'b1', pos:'あれば',    neg:'なければ'},
+  {d:'なる',    r:'なる',    t:'動Ⅰ',bt:'b1', pos:'なれば',    neg:'ならなければ'},
+  {d:'話す',    r:'はなす',  t:'動Ⅰ',bt:'b1', pos:'話せば',    neg:'話さなければ'},
+  {d:'買う',    r:'かう',    t:'動Ⅰ',bt:'b1', pos:'買えば',    neg:'買わなければ'},
+  {d:'寝る',    r:'ねる',    t:'動Ⅱ',bt:'b2', pos:'寝れば',    neg:'寝なければ'},
+  {d:'晴れる',  r:'はれる',  t:'動Ⅱ',bt:'b2', pos:'晴れれば',  neg:'晴れなければ'},
+  {d:'見る',    r:'みる',    t:'動Ⅱ',bt:'b2', pos:'見れば',    neg:'見なければ'},
+  {d:'できる',  r:'できる',  t:'動Ⅱ',bt:'b2', pos:'できれば',  neg:'できなければ'},
+  {d:'食べる',  r:'たべる',  t:'動Ⅱ',bt:'b2', pos:'食べれば',  neg:'食べなければ'},
+  {d:'する',    r:'する',    t:'動Ⅲ',bt:'b3', pos:'すれば',    neg:'しなければ'},
+  {d:'修理する',r:'しゅうりする',t:'動Ⅲ',bt:'b3',pos:'修理すれば',neg:'修理しなければ'},
+  {d:'来る',    r:'くる',    t:'動Ⅲ',bt:'b3', pos:'くれば',    neg:'来なければ'},
+  {d:'高い',    r:'たかい',  t:'い形',bt:'bi', pos:'高ければ',  neg:'高くなければ'},
+  {d:'正しい',  r:'ただしい',t:'い形',bt:'bi', pos:'正しければ',neg:'正しくなければ'},
+  {d:'いい',    r:'いい',    t:'い形',bt:'bi', pos:'よければ',  neg:'よくなければ'},
+  {d:'おもしろい',r:'おもしろい',t:'い形',bt:'bi',pos:'おもしろければ',neg:'おもしろくなければ'},
+  {d:'安い',    r:'やすい',  t:'い形',bt:'bi', pos:'安ければ',  neg:'安くなければ'},
+  {d:'暇だ',    r:'ひまだ',  t:'な形',bt:'bn', pos:'暇なら',    neg:'暇じゃなければ'},
+  {d:'簡単だ',  r:'かんたんだ',t:'な形',bt:'bn',pos:'簡単なら',neg:'簡単じゃなければ'},
+  {d:'だめだ',  r:'だめだ',  t:'な形',bt:'bn', pos:'だめなら',  neg:'だめじゃなければ'},
+  {d:'独身だ',  r:'どくしんだ',t:'な形',bt:'bn',pos:'独身なら',neg:'独身じゃなければ'},
+  {d:'天気だ',  r:'てんきだ',t:'名詞',bt:'bm', pos:'天気なら',  neg:'天気じゃなければ'},
+  {d:'雨',      r:'あめ',    t:'名詞',bt:'bm', pos:'雨なら',    neg:'雨じゃなければ'},
+  {d:'無料',    r:'むりょう',t:'名詞',bt:'bm', pos:'無料なら',  neg:'無料じゃなければ'},
+];
+
+var cjDone={};
+function cjInit(){
+  cjDone={};
+  var tb=document.getElementById('cj-body'); tb.innerHTML='';
+  CJ.forEach(function(c,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="text-align:center"><span class="badge '+c.bt+'">'+c.t+'</span></td>'+
+      '<td class="dict-cell">'+c.d+'<br><span style="font-size:11px;color:#888">'+c.r+'</span></td>'+
+      '<td><input type="text" class="cj-inp" id="cp'+i+'" placeholder="〜ば / 〜なら" autocomplete="off" oninput="cjLive('+i+',\'pos\')">'+
+        '<div class="cj-res" id="cr_p'+i+'"></div>'+
+        '<div class="cj-hint" id="ch_p'+i+'"></div></td>'+
+      '<td><input type="text" class="cj-inp" id="cn'+i+'" placeholder="〜なければ" autocomplete="off" oninput="cjLive('+i+',\'neg\')">'+
+        '<div class="cj-res" id="cr_n'+i+'"></div>'+
+        '<div class="cj-hint" id="ch_n'+i+'"></div></td>';
+    tb.appendChild(tr);
+  });
+}
+function norm(s){return s.replace(/\s/g,'').replace(/　/g,'');}
+function cjLive(i,side){
+  var c=CJ[i];
+  var inpId=side==='pos'?'cp'+i:'cn'+i;
+  var v=norm(document.getElementById(inpId).value);
+  var ans=norm(side==='pos'?c.pos:c.neg);
+  if(v===ans){
+    document.getElementById(inpId).className='cj-inp ok';
+    var res=document.getElementById('cr_'+side.charAt(0)+i);
+    res.textContent='✓'; res.className='cj-res ok vis';
+    document.getElementById('ch_'+side.charAt(0)+i).textContent='';
+    var key=i+'_'+side;
+    if(!cjDone[key]){cjDone[key]=true;addScore(1,1);playOK();rain(true);}
+  } else {
+    document.getElementById(inpId).className='cj-inp';
+    document.getElementById('cr_'+side.charAt(0)+i).className='cj-res';
+  }
+}
+function cjCheckAll(){
+  var allOk=true;
+  CJ.forEach(function(c,i){
+    ['pos','neg'].forEach(function(side){
+      var inpId=side==='pos'?'cp'+i:'cn'+i;
+      var v=norm(document.getElementById(inpId).value);
+      var ans=norm(side==='pos'?c.pos:c.neg);
+      var res=document.getElementById('cr_'+side.charAt(0)+i);
+      if(v===ans){
+        document.getElementById(inpId).className='cj-inp ok';
+        res.textContent='✓'; res.className='cj-res ok vis';
+        var key=i+'_'+side; if(!cjDone[key]){cjDone[key]=true;addScore(1,1);}
+      } else {
+        allOk=false;
+        document.getElementById(inpId).className='cj-inp no';
+        if(v){res.textContent='✗ → '+ans;}
+        else{res.textContent='→ '+ans;}
+        res.className='cj-res no vis';
+        document.getElementById('ch_'+side.charAt(0)+i).textContent='';
+      }
+    });
+  });
+  if(allOk){playOK();rain(true);showBanner('🌷 全問正解！',true);}
+  else{playFail();rain(false);}
+}
+function cjShowAll(){
+  CJ.forEach(function(c,i){
+    ['pos','neg'].forEach(function(side){
+      var inpId=side==='pos'?'cp'+i:'cn'+i;
+      var ans=side==='pos'?c.pos:c.neg;
+      document.getElementById(inpId).value=ans;
+      document.getElementById(inpId).className='cj-inp ok';
+    });
+  });
+}
+
+/* ══════════ SELECTION DATA ══════════ */
+var SEL=[
+  {sent:['<ruby>説明書<rt>せつめいしょ</rt></ruby>を','__','、<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>がわかります。'],
+   clue:'（読みます）',
+   ans:'読めば',opts:['読めば','読むば','読みば','読んだば'],
+   exp:'読む(動Ⅰ)：む→め + ば → 読めば'},
+  {sent:['<ruby>山田<rt>やまだ</rt></ruby>さんに','__','、<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>がわかります。'],
+   clue:'（聞きます）',
+   ans:'聞けば',opts:['聞けば','聞くば','聞きば','聞かば'],
+   exp:'聞く(動Ⅰ)：く→け + ば → 聞けば'},
+  {sent:['ボールペンが','__','、えんぴつで<ruby>書<rt>か</rt></ruby>いてもいいです。'],
+   clue:'（ありません）',
+   ans:'なければ',opts:['なければ','ないば','ありなければ','なかったば'],
+   exp:'ある の否定ば形：ない → なければ（特殊）'},
+  {sent:['6<ruby>時<rt>じ</rt></ruby>に','__','、<ruby>会社<rt>かいしゃ</rt></ruby>に<ruby>遅<rt>おく</rt></ruby>れます。'],
+   clue:'（起きません）',
+   ans:'起きなければ',opts:['起きなければ','起きなければ','起きなかったば','起きなかれば'],
+   exp:'起きる(動Ⅱ)：起き + なければ → 起きなければ'},
+  {sent:['<ruby>部長<rt>ぶちょう</rt></ruby>に','__','、<ruby>決<rt>き</rt></ruby>められません。'],
+   clue:'（相談しません）',
+   ans:'相談しなければ',opts:['相談しなければ','相談なければ','相談しなかったば','相談するなければ'],
+   exp:'する系(動Ⅲ)：し + なければ → しなければ'},
+  {sent:['<ruby>暑<rt>あつ</rt></ruby>い','__','、エアコンをつけてください。'],
+   clue:'（暑いです）',
+   ans:'暑ければ',opts:['暑ければ','暑いば','暑くば','暑なら'],
+   exp:'い形容詞：い → ければ → 暑ければ'},
+  {sent:['あした いい<ruby>天気<rt>てんき</rt></ruby>','__','、ハイキングに<ruby>行<rt>い</rt></ruby>きます。'],
+   clue:'（いい天気です）',
+   ans:'なら',opts:['なら','ならば','であれば','なれば'],
+   exp:'名詞/な形：名詞 + なら → 天気なら（いい天気なら）'},
+  {sent:['<ruby>京都<rt>きょうと</rt></ruby>','__','、4<ruby>月<rt>がつ</rt></ruby>がいいですよ。'],
+   clue:'（京都・話題）',
+   ans:'なら',opts:['なら','ならば','であれば','だったら'],
+   exp:'名詞 + なら → 京都なら（話題の提示）'},
+  {sent:['<ruby>許可<rt>きょか</rt></ruby>が','__','、ここでは<ruby>写真<rt>しゃしん</rt></ruby>が<ruby>撮<rt>と</rt></ruby>れません。'],
+   clue:'（ありません）',
+   ans:'なければ',opts:['なければ','ないば','ないなら','なかったば'],
+   exp:'ある否定 → なければ'},
+  {sent:['<ruby>電池<rt>でんち</rt></ruby>を','__','、まだ<ruby>使<rt>つか</rt></ruby>えます。'],
+   clue:'（換えます）',
+   ans:'換えれば',opts:['換えれば','換えれば','換えたば','換えればば'],
+   exp:'換える(動Ⅱ)：る → れば → 換えれば'},
+  {sent:['<ruby>薬<rt>くすり</rt></ruby>を','__','、<ruby>元気<rt>げんき</rt></ruby>になりますよ。'],
+   clue:'（飲みます）',
+   ans:'飲めば',opts:['飲めば','飲むば','飲みば','飲もば'],
+   exp:'飲む(動Ⅰ)：む→め + ば → 飲めば'},
+  {sent:['パソコン','__','、パワー<ruby>電気<rt>でんき</rt></ruby>のがいいですよ。'],
+   clue:'（パソコン・話題）',
+   ans:'なら',opts:['なら','ならば','ければ','であれば'],
+   exp:'名詞 + なら → パソコンなら（話題の提示）'},
+  {sent:['このボタンを<ruby>押<rt>お</rt></ruby>','__','、つきますよ。'],
+   clue:'（押します）',
+   ans:'せば',opts:['せば','すば','せれば','したば'],
+   exp:'押す(動Ⅰ)：す→せ + ば → 押せば (「押せば」から最後の「押」は文中に含まれる)'},
+  {sent:['<ruby>急<rt>いそ</rt></ruby>','__','、9<ruby>時<rt>じ</rt></ruby>の<ruby>新幹線<rt>しんかんせん</rt></ruby>に<ruby>間<rt>ま</rt></ruby>に<ruby>合<rt>あ</rt></ruby>うでしょう。'],
+   clue:'（急ぎます）',
+   ans:'急げば',opts:['急げば','急ぐば','急ぎば','急ごば'],
+   exp:'急ぐ(動Ⅰ)：ぐ→げ + ば → 急げば'},
+  {sent:['<ruby>安<rt>やす</rt></ruby>','__','、<ruby>自転車<rt>じてんしゃ</rt></ruby>を<ruby>買<rt>か</rt></ruby>います。'],
+   clue:'（値段が安いです）',
+   ans:'安ければ',opts:['安ければ','安いば','安くば','安なら'],
+   exp:'い形容詞：い → ければ → 安ければ'},
+  {sent:['<ruby>天気<rt>てんき</rt></ruby>が','__','、<ruby>富士山<rt>ふじさん</rt></ruby>が<ruby>見<rt>み</rt></ruby>えます。'],
+   clue:'（いいです）',
+   ans:'よければ',opts:['よければ','いいば','いければ','よいなら'],
+   exp:'いい → よければ（特殊変化）'},
+  {sent:['<ruby>土曜日<rt>どようび</rt></ruby>','__','、テニスでもしませんか。'],
+   clue:'（暇です）',
+   ans:'暇なら',opts:['暇なら','暇だば','暇ければ','暇であれば'],
+   exp:'な形容詞：語幹 + なら → 暇なら'},
+  {sent:['<ruby>大阪<rt>おおさか</rt></ruby>から<ruby>東京<rt>とうきょう</rt></ruby>まで','__','、3<ruby>時間<rt>じかん</rt></ruby>で<ruby>行<rt>い</rt></ruby>けます。'],
+   clue:'（新幹線です）',
+   ans:'新幹線なら',opts:['新幹線なら','新幹線ならば','新幹線ければ','新幹線だったら'],
+   exp:'名詞 + なら → 新幹線なら'},
+  {sent:['<ruby>来週<rt>らいしゅう</rt></ruby>に','__','、<ruby>桜<rt>さくら</rt></ruby>が<ruby>咲<rt>さ</rt></ruby>くと<ruby>思<rt>おも</rt></ruby>います。'],
+   clue:'（なります）',
+   ans:'なれば',opts:['なれば','なるば','なりば','なったば'],
+   exp:'なる(動Ⅰ)：る→れ + ば → なれば'},
+  {sent:['この<ruby>仕事<rt>しごと</rt></ruby>は<ruby>経験<rt>けいけん</rt></ruby>が','__','、できません。'],
+   clue:'（ありません）',
+   ans:'なければ',opts:['なければ','ないば','なかったば','なかれば'],
+   exp:'ある否定 → なければ'},
+];
+
+var selDone={};
+function selInit(){
+  selDone={};
+  var w=document.getElementById('sel-wrap'); w.innerHTML='';
+  SEL.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    // build sentence with blank
+    var parts=ex.sent;
+    var sentHtml=parts[0]+'<span class="blank" id="sb'+i+'">　　　</span>'+parts[2];
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="etag t-sel">4択</span></div>'+
+      '<div class="ex-sent">'+sentHtml+'</div>'+
+      '<div class="ex-clue">'+ex.clue+'</div>'+
+      '<div class="opts" id="so'+i+'"></div>'+
+      '<div class="ex-res" id="sr'+i+'"></div>';
+    w.appendChild(d);
+    var oo=document.getElementById('so'+i);
+    shuffle(ex.opts.slice()).forEach(function(opt){
+      var b=document.createElement('button'); b.className='opt'; b.textContent=opt;
+      b.onclick=(function(ii,o,btn){return function(){selCheck(ii,o,btn,SEL[ii]);};})(i,opt,b);
+      oo.appendChild(b);
+    });
+  });
+}
+function selCheck(i,ans,btn,ex){
+  if(selDone[i])return; selDone[i]=true;
+  var oo=document.querySelectorAll('#so'+i+' .opt');
+  oo.forEach(function(b){b.disabled=true;if(b.textContent===ex.ans)b.classList.add('ok');});
+  var ok=(ans===ex.ans);
+  var blk=document.getElementById('sb'+i);
+  blk.textContent=ans; blk.className='blank '+(ok?'ok':'no');
+  var res=document.getElementById('sr'+i);
+  res.textContent=(ok?'✓ 正解！ ':'✗ 正解は「'+ex.ans+'」\n')+ex.exp;
+  res.className='ex-res '+(ok?'ok':'no')+' vis';
+  addScore(ok?1:0,1);
+  if(ok){playOK();rain(true);}else{btn.classList.add('no');playFail();rain(false);}
+}
+
+/* ══════════ FILL IN DATA ══════════ */
+var FILL=[
+  {parts:['','__','、<ruby>村<rt>むら</rt></ruby>の<ruby>生活<rt>せいかつ</rt></ruby>はもっと<ruby>便利<rt>べんり</rt></ruby>になります。'],
+   clue:'道ができます',ans:'道ができれば',acc:['道ができれば','みちができれば'],
+   exp:'できる(動Ⅱ)：れば形 → できれば'},
+  {parts:['<ruby>眼鏡<rt>めがね</rt></ruby>を','__','、<ruby>辞書<rt>じしょ</rt></ruby>の<ruby>字<rt>じ</rt></ruby>が<ruby>読<rt>よ</rt></ruby>めません。'],
+   clue:'かけません',ans:'かけなければ',acc:['かけなければ'],
+   exp:'かける(動Ⅱ)：かけ + なければ → かけなければ'},
+  {parts:['<ruby>英語<rt>えいご</rt></ruby>が','__','、<ruby>海外旅行<rt>かいがいりょこう</rt></ruby>のとき、<ruby>困<rt>こま</rt></ruby>ります。'],
+   clue:'話せません',ans:'話せなければ',acc:['話せなければ','はなせなければ'],
+   exp:'話せる(可能形/動Ⅱ)：話せ + なければ'},
+  {parts:['','__','、おじいさんの<ruby>昔<rt>むかし</rt></ruby>のことがわかります。'],
+   clue:'おじいさんに聞きます',ans:'おじいさんに聞けば',acc:['おじいさんに聞けば','おじいさんにきけば'],
+   exp:'聞く(動Ⅰ)：く→け + ば → 聞けば'},
+  {parts:['','__','、アフリカへ<ruby>行<rt>い</rt></ruby>きたいです。'],
+   clue:'機会があります',ans:'機会があれば',acc:['機会があれば','きかいがあれば'],
+   exp:'ある(動Ⅰ)：あれば (ば形)'},
+  {parts:['ネクタイを','__','、あのレストランに<ruby>入<rt>はい</rt></ruby>れません。'],
+   clue:'しません',ans:'しなければ',acc:['しなければ'],
+   exp:'する(動Ⅲ)：し + なければ → しなければ'},
+  {parts:['','__','、<ruby>次<rt>つぎ</rt></ruby>の<ruby>電車<rt>でんしゃ</rt></ruby>に<ruby>間<rt>ま</rt></ruby>に<ruby>合<rt>あ</rt></ruby>います。'],
+   clue:'急ぎます',ans:'急げば',acc:['急げば','いそげば'],
+   exp:'急ぐ(動Ⅰ)：ぐ→げ + ば → 急げば'},
+  {parts:['<ruby>答<rt>こた</rt></ruby>えが','__','、<ruby>丸<rt>まる</rt></ruby>をつけてください。'],
+   clue:'正しいです',ans:'正しければ',acc:['正しければ','ただしければ'],
+   exp:'正しい(い形)：い → ければ → 正しければ'},
+  {parts:['この<ruby>方法<rt>ほうほう</rt></ruby>が','__','、あの<ruby>方法<rt>ほうほう</rt></ruby>でやりましょう。'],
+   clue:'だめです',ans:'だめなら',acc:['だめなら'],
+   exp:'な形容詞：語幹 + なら → だめなら'},
+  {parts:['50メートルぐらい','__','、<ruby>泳<rt>およ</rt></ruby>げます。'],
+   clue:'（距離が）いいです（よければ）',ans:'よければ',acc:['よければ'],
+   exp:'いい → よければ（特殊変化）'},
+  {parts:['<ruby>財布<rt>さいふ</rt></ruby>を<ruby>拾<rt>ひろ</rt></ruby>ったんですが、どう','__','いいですか。'],
+   clue:'すれば',ans:'すれば',acc:['すれば'],
+   exp:'する(動Ⅲ)：すれば'},
+  {parts:['<ruby>洗濯機<rt>せんたくき</rt></ruby>が<ruby>動<rt>うご</rt></ruby>かないんですが。ふたを','__','、<ruby>動<rt>うご</rt></ruby>きますよ。'],
+   clue:'閉めます',ans:'閉めれば',acc:['閉めれば','しめれば'],
+   exp:'閉める(動Ⅱ)：め + れば → 閉めれば'},
+];
+
+var fillDone={};
+function fillInit(){
+  fillDone={};
+  var w=document.getElementById('fill-wrap'); w.innerHTML='';
+  FILL.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="etag t-fil">記入</span></div>'+
+      '<div class="ex-sent">'+ex.parts[0]+'<span class="blank" id="fb'+i+'">　　　　</span>'+ex.parts[2]+'</div>'+
+      '<div class="ex-clue">'+ex.clue+'</div>'+
+      '<div class="inp-row">'+
+        '<input type="text" class="txt-inp" id="fi'+i+'" placeholder="条件形" autocomplete="off">'+
+        '<button class="btn bl" onclick="fillCheck('+i+')">確認</button>'+
+      '</div>'+
+      '<div class="ex-res" id="fr'+i+'"></div>';
+    w.appendChild(d);
+  });
+}
+function fillCheck(i){
+  if(fillDone[i])return; fillDone[i]=true;
+  var ex=FILL[i];
+  var v=norm(document.getElementById('fi'+i).value);
+  var ok=ex.acc.some(function(a){return norm(a)===v;});
+  document.getElementById('fi'+i).disabled=true;
+  document.getElementById('fi'+i).className='txt-inp '+(ok?'ok':'no');
+  var blk=document.getElementById('fb'+i);
+  blk.textContent=ex.ans; blk.className='blank '+(ok?'ok':'no');
+  var res=document.getElementById('fr'+i);
+  res.textContent=(ok?'✓ 正解！ ':'✗ 正解は「'+ex.ans+'」\n')+ex.exp;
+  res.className='ex-res '+(ok?'ok':'no')+' vis';
+  addScore(ok?1:0,1);
+  if(ok){playOK();rain(true);}else{playFail();rain(false);}
+}
+
+/* ══════════ PARTICLE DATA ══════════ */
+var PART=[
+  {
+    segs:['<ruby>説明書<rt>せつめいしょ</rt></ruby>','_0','<ruby>読<rt>よ</rt></ruby>めば、<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>','_1','わかります。'],
+    blanks:[{id:'_0',ans:'を',opts:['を','が','は','に']},{id:'_1',ans:'が',opts:['が','を','は','に']}],
+    exp:'説明書【を】読む (を＝目的語) / 使い方【が】わかる (が＝主語)'
+  },
+  {
+    segs:['<ruby>英語<rt>えいご</rt></ruby>','_0','<ruby>話<rt>はな</rt></ruby>せなければ、<ruby>海外旅行<rt>かいがいりょこう</rt></ruby>','_1','とき、<ruby>困<rt>こま</rt></ruby>ります。'],
+    blanks:[{id:'_0',ans:'が',opts:['が','を','は','に']},{id:'_1',ans:'の',opts:['の','を','が','に']}],
+    exp:'英語【が】話せる (能力のが) / 海外旅行【の】とき (名詞修飾のの)'
+  },
+  {
+    segs:['<ruby>許可<rt>きょか</rt></ruby>','_0','なければ、ここでは<ruby>写真<rt>しゃしん</rt></ruby>','_1','<ruby>撮<rt>と</rt></ruby>れません。'],
+    blanks:[{id:'_0',ans:'が',opts:['が','を','は','に']},{id:'_1',ans:'が',opts:['が','を','は','に']}],
+    exp:'許可【が】なければ (存在のが) / 写真【が】撮れない (可能のが)'
+  },
+  {
+    segs:['ボールペン','_0','なければ、えんぴつ','_1','<ruby>書<rt>か</rt></ruby>いてもいいです。'],
+    blanks:[{id:'_0',ans:'が',opts:['が','を','は','に']},{id:'_1',ans:'で',opts:['で','を','が','に']}],
+    exp:'ボールペン【が】なければ (存在のが) / えんぴつ【で】書く (手段ので)'
+  },
+  {
+    segs:['<ruby>急<rt>いそ</rt></ruby>げば、9<ruby>時<rt>じ</rt></ruby>','_0','<ruby>新幹線<rt>しんかんせん</rt></ruby>','_1','<ruby>間<rt>ま</rt></ruby>に<ruby>合<rt>あ</rt></ruby>うでしょう。'],
+    blanks:[{id:'_0',ans:'の',opts:['の','に','を','が']},{id:'_1',ans:'に',opts:['に','を','が','で']}],
+    exp:'9時【の】新幹線 (名詞修飾のの) / 新幹線【に】間に合う (到達のに)'
+  },
+  {
+    segs:['<ruby>暑<rt>あつ</rt></ruby>ければ、エアコン','_0','つけてください。'],
+    blanks:[{id:'_0',ans:'を',opts:['を','が','は','に']}],
+    exp:'エアコン【を】つける (を＝目的語)'
+  },
+  {
+    segs:['<ruby>財布<rt>さいふ</rt></ruby>','_0','<ruby>拾<rt>ひろ</rt></ruby>ったんですが、どうすれば','_1','いいですか。'],
+    blanks:[{id:'_0',ans:'を',opts:['を','が','は','に']},{id:'_1',ans:'いい',opts:['いい','よければ','ならば','なら']}],
+    exp:'財布【を】拾う (を＝目的語) / どうすれば【いい】ですか (慣用表現)'
+  },
+  {
+    segs:['<ruby>機会<rt>きかい</rt></ruby>','_0','あれば、アフリカ','_1','<ruby>行<rt>い</rt></ruby>きたいです。'],
+    blanks:[{id:'_0',ans:'が',opts:['が','を','は','に']},{id:'_1',ans:'へ',opts:['へ','を','が','に']}],
+    exp:'機会【が】ある (存在のが) / アフリカ【へ】行く (方向のへ)'
+  },
+  {
+    segs:['パソコン','_0','<ruby>使<rt>つか</rt></ruby>えば<ruby>使<rt>つか</rt></ruby>うほど、<ruby>操作<rt>そうさ</rt></ruby>','_1','<ruby>便利<rt>べんり</rt></ruby>です。'],
+    blanks:[{id:'_0',ans:'は',opts:['は','が','を','に']},{id:'_1',ans:'が',opts:['が','を','は','に']}],
+    exp:'パソコン【は】(テーマのは) / 操作【が】便利 (が＝主語・性質の対象)'
+  },
+  {
+    segs:['<ruby>洗濯機<rt>せんたくき</rt></ruby>','_0','<ruby>動<rt>うご</rt></ruby>かないんですが、ふた','_1','<ruby>閉<rt>し</rt></ruby>めれば、<ruby>動<rt>うご</rt></ruby>きますよ。'],
+    blanks:[{id:'_0',ans:'が',opts:['が','を','は','に']},{id:'_1',ans:'を',opts:['を','が','は','に']}],
+    exp:'洗濯機【が】動く (が＝主語) / ふた【を】閉める (を＝目的語)'
+  },
+];
+
+var partDone={};
+function partInit(){
+  partDone={};
+  var w=document.getElementById('part-wrap'); w.innerHTML='';
+  PART.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    // build sentence HTML
+    var sentHtml=ex.segs.join('').replace(/_(\d)/g,function(m,bi){
+      return '<span class="p-blank" id="pb'+i+'_'+bi+'">　</span>';
+    });
+    var optsHtml='';
+    ex.blanks.forEach(function(bl,bi){
+      optsHtml+=
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap">'+
+        '<span style="font-size:11px;color:#880E4F;font-weight:700">空欄'+(bi+1)+'：</span>'+
+        '<div class="opts" id="po'+i+'_'+bi+'" style="margin-bottom:0">';
+      shuffle(bl.opts.slice()).forEach(function(opt){
+        optsHtml+='<button class="p-opt" onclick="partCheck('+i+','+bi+',this,\''+opt+'\')">'+opt+'</button>';
+      });
+      optsHtml+='</div></div>';
+    });
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="etag t-par">助詞</span></div>'+
+      '<div class="ex-sent">'+sentHtml+'</div>'+
+      optsHtml+
+      '<div class="ex-res" id="pr'+i+'"></div>';
+    w.appendChild(d);
+  });
+}
+function partCheck(i,bi,btn,ans){
+  var key=i+'_'+bi;
+  if(partDone[key]!==undefined)return;
+  partDone[key]=ans;
+  var bl=PART[i].blanks[bi];
+  var ok=(ans===bl.ans);
+  var oo=document.querySelectorAll('#po'+i+'_'+bi+' .p-opt');
+  oo.forEach(function(b){b.disabled=true;if(b.textContent===bl.ans)b.classList.add('ok');});
+  if(!ok)btn.classList.add('no');
+  var blkEl=document.getElementById('pb'+i+'_'+bi);
+  if(blkEl){blkEl.textContent=ans;blkEl.className='p-blank '+(ok?'ok':'no');}
+  // check if all answered
+  var allAnswered=PART[i].blanks.every(function(_,bj){return partDone[i+'_'+bj]!==undefined;});
+  if(allAnswered){
+    var allOk=PART[i].blanks.every(function(_,bj){return partDone[i+'_'+bj]===PART[i].blanks[bj].ans;});
+    var res=document.getElementById('pr'+i);
+    res.textContent=(allOk?'✓ 正解！\n':'✗ 不正解あり。\n')+PART[i].exp;
+    res.className='ex-res '+(allOk?'ok':'no')+' vis';
+    addScore(allOk?1:0,1);
+    if(allOk){playOK();rain(true);}else{playFail();rain(false);}
+  }
+}
+
+/* ══════════ AUDIO ══════════ */
+function playOK(){
+  try{
+    var c=new AudioContext();
+    // bright happy notes
+    [659,784,988,1319].forEach(function(f,i){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';
+      var t=c.currentTime+i*.13;
+      g.gain.setValueAtTime(.26,t);g.gain.exponentialRampToValueAtTime(.001,t+.38);
+      o.start(t);o.stop(t+.42);
+    });
+  }catch(e){}
+}
+function playFail(){
+  try{
+    var c=new AudioContext();
+    [370,330,294].forEach(function(f,i){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sawtooth';
+      var t=c.currentTime+i*.2;
+      g.gain.setValueAtTime(.2,t);g.gain.exponentialRampToValueAtTime(.001,t+.38);
+      o.start(t);o.stop(t+.42);
+    });
+  }catch(e){}
+}
+
+/* ══════════ PARTICLES: TULIP & FOX ══════════ */
+function tulipSVG(col){
+  var c=col||'#FF6B9D';
+  return '<svg width="28" height="36" xmlns="http://www.w3.org/2000/svg">'+
+    // stem
+    '<line x1="14" y1="20" x2="14" y2="36" stroke="#43A047" stroke-width="2.5" stroke-linecap="round"/>'+
+    // leaf
+    '<path d="M14 28 Q20 22 24 25" stroke="#43A047" stroke-width="2" fill="none"/>'+
+    // petals
+    '<ellipse cx="14" cy="14" rx="5" ry="10" fill="'+c+'" opacity=".92"/>'+
+    '<ellipse cx="9" cy="16" rx="4.5" ry="9" fill="'+c+'" opacity=".85" transform="rotate(-18 9 16)"/>'+
+    '<ellipse cx="19" cy="16" rx="4.5" ry="9" fill="'+c+'" opacity=".85" transform="rotate(18 19 16)"/>'+
+    // center
+    '<ellipse cx="14" cy="12" rx="3" ry="4" fill="#FFE082" opacity=".7"/>'+
+    '</svg>';
+}
+var TULIP_COLS=['#FF6B9D','#FF8FAB','#E040FB','#FF4081','#F50057','#FF80AB','#EA80FC'];
+
+// Fox SVG
+var FOX_SVG='<svg width="38" height="40" xmlns="http://www.w3.org/2000/svg">'+
+  // ears
+  '<polygon points="6,18 2,2 14,12" fill="#E65100"/>'+
+  '<polygon points="32,18 36,2 24,12" fill="#E65100"/>'+
+  '<polygon points="8,17 4,5 13,13" fill="#FFB74D"/>'+
+  '<polygon points="30,17 34,5 25,13" fill="#FFB74D"/>'+
+  // head
+  '<ellipse cx="19" cy="22" rx="15" ry="14" fill="#E65100"/>'+
+  // face white
+  '<ellipse cx="19" cy="26" rx="10" ry="8" fill="#FFF8E1"/>'+
+  // eyes
+  '<ellipse cx="13" cy="19" rx="3" ry="3.5" fill="#1a1a1a"/>'+
+  '<ellipse cx="25" cy="19" rx="3" ry="3.5" fill="#1a1a1a"/>'+
+  '<circle cx="12" cy="18" r="1" fill="white"/>'+
+  '<circle cx="24" cy="18" r="1" fill="white"/>'+
+  // sad eyebrows
+  '<path d="M10 15 Q13 13 16 15" stroke="#5D2800" stroke-width="1.5" fill="none"/>'+
+  '<path d="M22 15 Q25 13 28 15" stroke="#5D2800" stroke-width="1.5" fill="none"/>'+
+  // nose
+  '<ellipse cx="19" cy="25" rx="2.5" ry="1.8" fill="#BF360C"/>'+
+  // sad mouth
+  '<path d="M14 30 Q19 28 24 30" stroke="#5D2800" stroke-width="1.5" fill="none"/>'+
+  // tear drops
+  '<ellipse cx="11" cy="23" rx="1.2" ry="2" fill="#64B5F6" opacity=".85"/>'+
+  '<ellipse cx="27" cy="23" rx="1.2" ry="2" fill="#64B5F6" opacity=".85"/>'+
+  // whiskers
+  '<line x1="3" y1="24" x2="12" y2="25" stroke="#BF360C" stroke-width="1"/>'+
+  '<line x1="3" y1="27" x2="12" y2="27" stroke="#BF360C" stroke-width="1"/>'+
+  '<line x1="35" y1="24" x2="26" y2="25" stroke="#BF360C" stroke-width="1"/>'+
+  '<line x1="35" y1="27" x2="26" y2="27" stroke="#BF360C" stroke-width="1"/>'+
+  '</svg>';
+
+function rain(ok){
+  var ct=document.getElementById('particles');
+  var n=ok?30:16;
+  for(var i=0;i<n;i++){
+    (function(ii){setTimeout(function(){
+      var s=document.createElement('span'); s.className='p-item';
+      if(ok){
+        s.innerHTML=tulipSVG(TULIP_COLS[Math.floor(Math.random()*TULIP_COLS.length)]);
+        s.style.animationDuration=(2.2+Math.random()*3)+'s';
+      } else {
+        if(Math.random()<0.6){
+          s.innerHTML=FOX_SVG;
+          s.style.animationDuration=(1.8+Math.random()*2)+'s';
+        } else {
+          s.textContent='💧'; s.style.fontSize='20px';
+          s.style.animationDuration=(1.5+Math.random()*2)+'s';
+        }
+      }
+      s.style.left=Math.random()*93+'%';
+      ct.appendChild(s);
+      setTimeout(function(){s.remove();},5500);
+    },ii*75);})(i);
+  }
+}
+
+function showBanner(msg,ok){
+  var old=document.querySelector('.banner');if(old)old.remove();
+  var d=document.createElement('div');d.className='banner';
+  d.style.border='3px solid '+(ok?'#2E7D32':'#C62828');
+  d.style.color=ok?'#1B5E20':'#7F0000';
+  d.innerHTML=msg; document.body.appendChild(d);
+  setTimeout(function(){d.remove();},3200);
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function norm(s){return s.replace(/\s/g,'').replace(/　/g,'');}
+
+/* ── INIT ── */
+document.querySelectorAll('.section').forEach(function(s){
+  if(!s.classList.contains('vis'))s.style.display='none';
+});
+</script>
+</body>
+</html>

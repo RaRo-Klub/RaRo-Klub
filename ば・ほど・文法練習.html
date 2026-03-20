@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>〜ば〜ほど 練習 — 第35課</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding:12px;
+  background:linear-gradient(160deg,#E3F2FD 0%,#BBDEFB 40%,#E1F5FE 100%)}
+
+/* ── SAKURA PATTERN ── */
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cellipse cx='30' cy='18' rx='7' ry='12' fill='%23FFB7C5' opacity='.45' transform='rotate(0 30 30)'/%3E%3Cellipse cx='30' cy='18' rx='7' ry='12' fill='%23FFB7C5' opacity='.45' transform='rotate(72 30 30)'/%3E%3Cellipse cx='30' cy='18' rx='7' ry='12' fill='%23FFB7C5' opacity='.45' transform='rotate(144 30 30)'/%3E%3Cellipse cx='30' cy='18' rx='7' ry='12' fill='%23FFB7C5' opacity='.45' transform='rotate(216 30 30)'/%3E%3Cellipse cx='30' cy='18' rx='7' ry='12' fill='%23FFB7C5' opacity='.45' transform='rotate(288 30 30)'/%3E%3Ccircle cx='30' cy='30' r='5' fill='%23FFE4B5' opacity='.6'/%3E%3C/svg%3E");
+  background-size:60px 60px;opacity:0.18;pointer-events:none;z-index:0}
+
+#app{position:relative;z-index:1;max-width:900px;margin:0 auto}
+
+.hdr{background:linear-gradient(135deg,#1565C0,#1976D2,#0288D1);border-radius:20px;
+  padding:14px 20px;margin-bottom:12px;text-align:center;color:#fff;
+  box-shadow:0 4px 20px rgba(21,101,192,.4)}
+.hdr h1{font-size:22px;font-weight:700}
+.hdr small{font-size:12px;opacity:.88;display:block;margin-top:2px}
+
+.score-bar{background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;
+  border-radius:14px;padding:9px 16px;display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:8px;font-weight:700;font-size:14px}
+.prog-wrap{background:#BBDEFB;border-radius:20px;height:7px;margin-bottom:12px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,#1976D2,#26C6DA);
+  border-radius:20px;transition:width .5s}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.tb{padding:8px 14px;border:2.5px solid #1565C0;border-radius:22px;cursor:pointer;
+  font-size:12px;font-weight:700;color:#1565C0;background:#fff;transition:all .18s}
+.tb:hover{background:#E3F2FD}.tb.act{background:#1565C0;color:#fff}
+
+.section{display:none}.section.vis{display:block}
+.panel{background:#fff;border-radius:18px;border:2px solid #BBDEFB;padding:16px;
+  margin-bottom:12px;box-shadow:0 2px 12px rgba(21,101,192,.12)}
+.s-title{font-size:15px;font-weight:700;color:#1565C0;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px}
+
+.btn{padding:8px 16px;border:2.5px solid #1565C0;border-radius:22px;cursor:pointer;
+  font-size:12px;font-weight:700;color:#1565C0;background:#fff;transition:all .18s}
+.btn:hover{background:#E3F2FD}
+.btn.gn{border-color:#2E7D32;color:#2E7D32}.btn.gn:hover{background:#E8F5E9}
+.btn.rd{border-color:#C62828;color:#C62828}.btn.rd:hover{background:#FFEBEE}
+.center{text-align:center;margin:8px 0}
+
+/* ── GRAMMAR EXPLANATION ── */
+.gram-box{border-radius:14px;padding:14px;margin-bottom:12px}
+.gram-blue{background:#E3F2FD;border:2px solid #1976D2}
+.gram-title{font-size:17px;font-weight:700;color:#0D47A1;margin-bottom:8px}
+.gram-pattern{font-size:14px;font-weight:700;padding:8px 14px;border-radius:10px;
+  background:#fff;color:#1565C0;border:1.5px solid #1976D2;display:inline-block;margin-bottom:8px}
+.gram-note{font-size:13px;color:#444;line-height:1.8;margin-bottom:10px}
+.gram-ex{background:rgba(255,255,255,.7);border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.gram-ex-jp{font-size:15px;font-weight:600;color:#0D47A1;margin-bottom:3px}
+.gram-ex-hg{font-size:11px;color:#888;margin-bottom:3px}
+.gram-ex-hu{font-size:13px;color:#555;font-style:italic}
+.hl{color:#C62828;font-weight:700;background:#FFEBEE;padding:1px 4px;border-radius:4px}
+
+/* ── CONJUGATION TABLE ── */
+.conj-table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:14px}
+.conj-table th{background:#1565C0;color:#fff;padding:10px 8px;text-align:center;font-weight:700}
+.conj-table th:first-child{border-radius:8px 0 0 0}
+.conj-table th:last-child{border-radius:0 8px 0 0}
+.conj-table td{padding:8px 10px;border:1px solid #BBDEFB;vertical-align:middle}
+.conj-table tr:nth-child(even) td{background:#F3F9FF}
+.conj-table tr:nth-child(odd) td{background:#fff}
+.dict{font-weight:700;color:#0D47A1;font-size:15px}
+.conj-inp{border:2px solid #BBDEFB;border-radius:8px;padding:6px 10px;font-size:14px;
+  width:100%;outline:none;font-family:inherit;transition:border-color .15s;min-width:160px}
+.conj-inp:focus{border-color:#1976D2}
+.conj-inp.ok{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20}
+.conj-inp.no{border-color:#C62828;background:#FFEBEE}
+.conj-hint{font-size:11px;color:#888;margin-top:3px}
+.check-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.conj-res{font-size:12px;margin-top:4px;padding:3px 8px;border-radius:6px;font-weight:600;display:none}
+.conj-res.vis{display:inline-block}
+.conj-res.ok{background:#E8F5E9;color:#1B5E20}
+.conj-res.no{background:#FFEBEE;color:#C62828}
+.type-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700;margin-left:4px}
+.t-v1{background:#E3F2FD;color:#1565C0}
+.t-v2{background:#E8F5E9;color:#2E7D32}
+.t-vi{background:#EDE7F6;color:#6A1B9A}
+.t-ia{background:#FFF8E1;color:#E65100}
+.t-na{background:#FCE4EC;color:#880E4F}
+
+/* ── EXERCISE ITEMS ── */
+.ex-item{background:#fff;border-radius:14px;border:1.5px solid #BBDEFB;
+  padding:14px;margin-bottom:10px}
+.ex-num{font-size:11px;color:#1565C0;font-weight:700;margin-bottom:5px;
+  display:flex;align-items:center;gap:6px}
+.ex-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+.tag-sel{background:#E3F2FD;color:#1565C0;border:1px solid #BBDEFB}
+.tag-fill{background:#E8F5E9;color:#2E7D32;border:1px solid #C8E6C9}
+.tag-part{background:#FCE4EC;color:#880E4F;border:1px solid #F8BBD9}
+.ex-sent{font-size:17px;line-height:2.3;color:#1a1a1a;margin-bottom:7px}
+.ex-hu{font-size:12px;color:#888;font-style:italic;margin-bottom:8px;line-height:1.6}
+.ex-clue{font-size:12px;color:#1565C0;font-weight:600;margin-bottom:8px;
+  background:#E3F2FD;padding:4px 10px;border-radius:8px;display:inline-block}
+.blank{display:inline-block;min-width:80px;border-bottom:3px solid #1976D2;
+  text-align:center;padding:0 4px;margin:0 2px;color:#1565C0;font-weight:700;
+  vertical-align:bottom;transition:all .2s}
+.blank.ok{border-bottom-color:#2E7D32;color:#1B5E20;background:#E8F5E9;border-radius:4px 4px 0 0}
+.blank.no{border-bottom-color:#C62828;color:#7F0000;background:#FFEBEE;border-radius:4px 4px 0 0}
+.p-blank{display:inline-block;min-width:40px;border-bottom:3px solid #880E4F;
+  text-align:center;padding:0 4px;margin:0 2px;color:#880E4F;font-weight:700;
+  vertical-align:bottom}
+.p-blank.ok{border-bottom-color:#2E7D32;color:#1B5E20;background:#E8F5E9;border-radius:4px 4px 0 0}
+.p-blank.no{border-bottom-color:#C62828;color:#7F0000;background:#FFEBEE;border-radius:4px 4px 0 0}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.opt{padding:8px 14px;border:2px solid #BBDEFB;border-radius:18px;cursor:pointer;
+  font-size:14px;background:#fff;color:#1a1a1a;transition:all .15s;font-weight:500}
+.opt:hover:not(:disabled){border-color:#1976D2;background:#E3F2FD}
+.opt.ok{border-color:#2E7D32!important;background:#E8F5E9!important;color:#1B5E20!important;font-weight:700}
+.opt.no{border-color:#C62828!important;background:#FFEBEE!important;color:#7F0000!important}
+
+.txt-inp{border:2px solid #BBDEFB;border-radius:10px;padding:7px 12px;
+  font-size:15px;color:#1a1a1a;font-family:inherit;outline:none;
+  transition:border-color .15s;min-width:120px}
+.txt-inp:focus{border-color:#1976D2}
+.txt-inp.ok{border-color:#2E7D32;background:#E8F5E9}
+.txt-inp.no{border-color:#C62828;background:#FFEBEE}
+
+.p-inp{border:2px solid #880E4F;border-radius:8px;padding:6px 10px;
+  font-size:15px;font-family:inherit;outline:none;width:60px;text-align:center;
+  transition:border-color .15s}
+.p-inp:focus{border-color:#880E4F;background:#FCE4EC}
+.p-inp.ok{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20}
+.p-inp.no{border-color:#C62828;background:#FFEBEE;color:#7F0000}
+
+.ex-res{font-size:12px;margin-top:5px;padding:5px 10px;border-radius:8px;
+  font-weight:600;display:none;line-height:1.6}
+.ex-res.vis{display:block}
+.ex-res.ok{background:#E8F5E9;color:#1B5E20}
+.ex-res.no{background:#FFEBEE;color:#7F0000}
+.inp-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:9999;overflow:hidden}
+.p-item{position:absolute;top:-50px;animation:pfall linear forwards}
+@keyframes pfall{
+  0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1}
+  50%{transform:translateY(50vh) rotate(180deg) translateX(20px);opacity:.9}
+  100%{transform:translateY(110vh) rotate(360deg) translateX(-10px);opacity:.05}}
+.banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;
+  border-radius:20px;padding:20px 36px;font-size:19px;font-weight:700;z-index:10000;
+  text-align:center;box-shadow:0 10px 38px rgba(0,0,0,.2);animation:bIn .3s ease}
+@keyframes bIn{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="particles"></div>
+
+<div class="hdr">
+  <h1>🌸 〜ば〜ほど 文法練習 — 第35課 🌸</h1>
+  <small>形の練習 · 選択問題 · 記入問題 · パーティクル練習</small>
+</div>
+<div class="score-bar">
+  <span>🌸 <span id="tot-s">0</span> / <span id="tot-m">0</span></span>
+  <span id="tot-pct">— %</span>
+</div>
+<div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+<div class="tabs">
+  <button class="tb act"  onclick="showTab('gram',this)">📚 Magyarázat</button>
+  <button class="tb" onclick="showTab('conj',this)">🔧 形の練習</button>
+  <button class="tb" onclick="showTab('sel',this)">🔘 選択問題</button>
+  <button class="tb" onclick="showTab('fill',this)">✏️ 記入問題</button>
+  <button class="tb" onclick="showTab('part',this)">🔴 パーティクル</button>
+  <button class="tb" onclick="showTab('build',this)">🏗️ 文を作る</button>
+</div>
+
+<!-- ══════════════════ GRAMMAR ══════════════════ -->
+<div id="s-gram" class="section vis">
+  <div class="gram-box gram-blue">
+    <div class="gram-title">〜ば〜ほど ── „minél… annál…"</div>
+    <div class="gram-pattern">【動詞ば形】【動詞辞書形】ほど〜 ／ 【い形容詞ければ】【い形容詞】ほど〜 ／ 【な形容詞なら】【な形容詞な】ほど〜</div>
+    <div class="gram-note">
+      Azt fejezi ki: <strong>„minél [X], annál [Y]"</strong>. A ば形 és ほど előtti szó UGYANAZ a szó.<br>
+      A következmény (<em>ほど以降</em>) általában pozitív vagy negatív változást jelöl.
+    </div>
+
+    <div style="margin-bottom:12px">
+      <strong style="color:#1565C0;font-size:13px">▶ 形の作り方 (Képzés)</strong>
+      <table style="width:100%;margin-top:8px;border-collapse:collapse;font-size:13px">
+        <tr style="background:#1565C0;color:#fff">
+          <th style="padding:7px;text-align:left">種類</th>
+          <th style="padding:7px;text-align:left">辞書形</th>
+          <th style="padding:7px;text-align:left">ば形</th>
+          <th style="padding:7px;text-align:left">〜ほど (変化しない)</th>
+          <th style="padding:7px;text-align:left">パターン全体</th>
+        </tr>
+        <tr style="background:#E3F2FD">
+          <td style="padding:7px">動詞 (u-verb)</td>
+          <td style="padding:7px">使う</td>
+          <td style="padding:7px"><span class="hl">使えば</span></td>
+          <td style="padding:7px">使う<strong>ほど</strong></td>
+          <td style="padding:7px">使えば<span class="hl">使うほど</span></td>
+        </tr>
+        <tr style="background:#fff">
+          <td style="padding:7px">動詞 (ru-verb)</td>
+          <td style="padding:7px">見る</td>
+          <td style="padding:7px"><span class="hl">見れば</span></td>
+          <td style="padding:7px">見る<strong>ほど</strong></td>
+          <td style="padding:7px">見れば<span class="hl">見るほど</span></td>
+        </tr>
+        <tr style="background:#E3F2FD">
+          <td style="padding:7px">動詞 (irr.)</td>
+          <td style="padding:7px">する</td>
+          <td style="padding:7px"><span class="hl">すれば</span></td>
+          <td style="padding:7px">する<strong>ほど</strong></td>
+          <td style="padding:7px">すれば<span class="hl">するほど</span></td>
+        </tr>
+        <tr style="background:#fff">
+          <td style="padding:7px">い形容詞</td>
+          <td style="padding:7px">安い</td>
+          <td style="padding:7px"><span class="hl">安ければ</span></td>
+          <td style="padding:7px">安い<strong>ほど</strong></td>
+          <td style="padding:7px">安ければ<span class="hl">安いほど</span></td>
+        </tr>
+        <tr style="background:#E3F2FD">
+          <td style="padding:7px">な形容詞</td>
+          <td style="padding:7px">暇だ</td>
+          <td style="padding:7px"><span class="hl">暇なら</span></td>
+          <td style="padding:7px">暇な<strong>ほど</strong></td>
+          <td style="padding:7px">暇なら<span class="hl">暇なほど</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="gram-ex">
+      <div class="gram-ex-jp">考えれば<span class="hl">考えるほど</span>わからなくなってしまいました。</div>
+      <div class="gram-ex-hg">かんがえれば かんがえるほど わからなくなってしまいました。</div>
+      <div class="gram-ex-hu">Minél többet gondolkodom, annál kevésbé értem.</div>
+    </div>
+    <div class="gram-ex">
+      <div class="gram-ex-jp">この店のラーメンは食べれば<span class="hl">食べるほど</span>おいしい。</div>
+      <div class="gram-ex-hg">このみせのラーメンはたべれば たべるほど おいしい。</div>
+      <div class="gram-ex-hu">Minél többet eszem ebből az étterem ramenéből, annál finomabb.</div>
+    </div>
+    <div class="gram-ex">
+      <div class="gram-ex-jp">野菜は新しければ<span class="hl">新しいほど</span>おいしいです。</div>
+      <div class="gram-ex-hg">やさいは あたらしければ あたらしいほど おいしいです。</div>
+      <div class="gram-ex-hu">Minél frissebb a zöldség, annál finomabb.</div>
+    </div>
+    <div class="gram-ex">
+      <div class="gram-ex-jp">部屋はきれいなら<span class="hl">きれいなほど</span>いいです。</div>
+      <div class="gram-ex-hg">へやは きれいなら きれいなほど いいです。</div>
+      <div class="gram-ex-hu">Minél szebb a szoba, annál jobb.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CONJUGATION TABLE ══════════════════ -->
+<div id="s-conj" class="section">
+  <div class="panel">
+    <div class="s-title">🔧 形の練習 — ば〜ほど形を作ってください</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">
+      辞書形を見て、「〜ば〜ほど」の完全な形を入力してください。<br>
+      例: 使う → <strong>使えば使うほど</strong>
+    </p>
+    <table class="conj-table" id="conj-table">
+      <thead><tr>
+        <th>種類</th><th>辞書形</th><th>ば〜ほど の形</th><th>結果</th>
+      </tr></thead>
+      <tbody id="conj-body"></tbody>
+    </table>
+    <div class="check-row">
+      <button class="btn gn" onclick="conjCheckAll()">✔ 全部確認</button>
+      <button class="btn" onclick="conjInit()">⇌ やり直し</button>
+      <button class="btn rd" onclick="conjShowAll()">👁 全部見る</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SELECTION ══════════════════ -->
+<div id="s-sel" class="section">
+  <div class="panel">
+    <div class="s-title">🔘 選択問題 — 正しい形を選んでください</div>
+    <div id="sel-wrap"></div>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="selInit()">⇌ やり直し</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ FILL IN ══════════════════ -->
+<div id="s-fill" class="section">
+  <div class="panel">
+    <div class="s-title">✏️ 記入問題 — 〜ば〜ほどの形を書いてください</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">
+      （　）の動詞・形容詞を使って、〜ば〜ほどの形を書いてください。
+    </p>
+    <div id="fill-wrap"></div>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="fillInit()">⇌ やり直し</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PARTICLES ══════════════════ -->
+<div id="s-part" class="section">
+  <div class="panel">
+    <div class="s-title">🔴 パーティクル練習 — 正しい助詞を入れてください</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">
+      空欄に助詞（は・が・を・に・で・も・の）を入れてください。
+    </p>
+    <div id="part-wrap"></div>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="partInit()">⇌ やり直し</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ SENTENCE BUILDING ══════════════════ -->
+<div id="s-build" class="section">
+  <div class="panel">
+    <div class="s-title">🏗️ 文を作る — 単語を使って〜ば〜ほど文を作ってください</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">
+      キーワードを使って正しい文を選んでください。
+    </p>
+    <div id="build-wrap"></div>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="buildInit()">⇌ やり直し</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ══════════════════════════════════════════
+   SCORE
+══════════════════════════════════════════ */
+var tS=0,tM=0;
+function addScore(e,m){
+  tS+=e;tM+=m;
+  document.getElementById('tot-s').textContent=tS;
+  document.getElementById('tot-m').textContent=tM;
+  var p=tM>0?Math.round(tS/tM*100):0;
+  document.getElementById('tot-pct').textContent=p+'%';
+  document.getElementById('prog-bar').style.width=p+'%';
+}
+
+/* ══════════════════════════════════════════
+   TAB
+══════════════════════════════════════════ */
+var tabInited={};
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('vis');s.style.display='none';});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('act');});
+  document.getElementById('s-'+id).style.display='block';
+  document.getElementById('s-'+id).classList.add('vis');
+  btn.classList.add('act');
+  if(!tabInited[id]){tabInited[id]=true;
+    if(id==='conj')conjInit();
+    if(id==='sel')selInit();
+    if(id==='fill')fillInit();
+    if(id==='part')partInit();
+    if(id==='build')buildInit();
+  }
+}
+
+/* ══════════════════════════════════════════
+   CONJUGATION DATA
+══════════════════════════════════════════ */
+var CONJ=[
+  {dict:'使う',   type:'v1', badge:'t-v1', label:'動Ⅰ', ans:'使えば使うほど',  ba:'使えば',  hodo:'使うほど'},
+  {dict:'聞く',   type:'v1', badge:'t-v1', label:'動Ⅰ', ans:'聞けば聞くほど',  ba:'聞けば',  hodo:'聞くほど'},
+  {dict:'飲む',   type:'v1', badge:'t-v1', label:'動Ⅰ', ans:'飲めば飲むほど',  ba:'飲めば',  hodo:'飲むほど'},
+  {dict:'ある',   type:'v1', badge:'t-v1', label:'動Ⅰ', ans:'あればあるほど',  ba:'あれば',  hodo:'あるほど'},
+  {dict:'見る',   type:'v2', badge:'t-v2', label:'動Ⅱ', ans:'見れば見るほど',  ba:'見れば',  hodo:'見るほど'},
+  {dict:'起きる', type:'v2', badge:'t-v2', label:'動Ⅱ', ans:'起きれば起きるほど',ba:'起きれば',hodo:'起きるほど'},
+  {dict:'する',   type:'vi', badge:'t-vi', label:'不規', ans:'すればするほど',  ba:'すれば',  hodo:'するほど'},
+  {dict:'くる',   type:'vi', badge:'t-vi', label:'不規', ans:'くればくるほど',  ba:'くれば',  hodo:'くるほど'},
+  {dict:'安い',   type:'ia', badge:'t-ia', label:'い形', ans:'安ければ安いほど', ba:'安ければ',hodo:'安いほど'},
+  {dict:'多い',   type:'ia', badge:'t-ia', label:'い形', ans:'多ければ多いほど', ba:'多ければ',hodo:'多いほど'},
+  {dict:'軽い',   type:'ia', badge:'t-ia', label:'い形', ans:'軽ければ軽いほど', ba:'軽ければ',hodo:'軽いほど'},
+  {dict:'新しい', type:'ia', badge:'t-ia', label:'い形', ans:'新しければ新しいほど',ba:'新しければ',hodo:'新しいほど'},
+  {dict:'よい',   type:'ia', badge:'t-ia', label:'い形', ans:'よければよいほど', ba:'よければ',hodo:'よいほど'},
+  {dict:'暇だ',   type:'na', badge:'t-na', label:'な形', ans:'暇なら暇なほど',  ba:'暇なら',  hodo:'暇なほど'},
+  {dict:'簡単だ', type:'na', badge:'t-na', label:'な形', ans:'簡単なら簡単なほど',ba:'簡単なら',hodo:'簡単なほど'},
+  {dict:'きれいだ',type:'na',badge:'t-na', label:'な形', ans:'きれいならきれいなほど',ba:'きれいなら',hodo:'きれいなほど'},
+  {dict:'新鮮だ', type:'na', badge:'t-na', label:'な形', ans:'新鮮なら新鮮なほど',ba:'新鮮なら',hodo:'新鮮なほど'},
+];
+
+var conjDone={};
+function conjInit(){
+  conjDone={};
+  var tb=document.getElementById('conj-body'); tb.innerHTML='';
+  CONJ.forEach(function(c,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="text-align:center"><span class="type-badge '+c.badge+'">'+c.label+'</span></td>'+
+      '<td class="dict">'+c.dict+'</td>'+
+      '<td><input type="text" class="conj-inp" id="ci'+i+'" placeholder="　　 ば　　 ほど" '+
+        'oninput="conjCheck1('+i+')" autocomplete="off">'+
+        '<div class="conj-res" id="cr'+i+'"></div>'+
+        '<div class="conj-hint" id="ch'+i+'"></div></td>'+
+      '<td style="text-align:center" id="cm'+i+'">—</td>';
+    tb.appendChild(tr);
+  });
+}
+
+function normalise(s){ return s.replace(/\s+/g,'').replace(/　/g,''); }
+
+function conjCheck1(i){
+  var inp=document.getElementById('ci'+i);
+  var v=normalise(inp.value);
+  var a=normalise(CONJ[i].ans);
+  if(v===a){
+    inp.className='conj-inp ok';
+    var res=document.getElementById('cr'+i);
+    res.textContent='✓ 正解！'; res.className='conj-res ok vis';
+    document.getElementById('cm'+i).innerHTML='<span style="color:#2E7D32;font-size:18px">✓</span>';
+    document.getElementById('ch'+i).textContent='';
+    if(!conjDone[i]){ conjDone[i]=true; addScore(1,1); playOK(); rain(true); }
+  } else {
+    inp.className='conj-inp';
+    document.getElementById('cr'+i).className='conj-res';
+  }
+}
+
+function conjCheckAll(){
+  var allOk=true;
+  CONJ.forEach(function(c,i){
+    var inp=document.getElementById('ci'+i);
+    var v=normalise(inp.value);
+    var a=normalise(c.ans);
+    if(v===a){
+      inp.className='conj-inp ok';
+      var res=document.getElementById('cr'+i);
+      res.textContent='✓ 正解！'; res.className='conj-res ok vis';
+      document.getElementById('cm'+i).innerHTML='<span style="color:#2E7D32;font-size:18px">✓</span>';
+      if(!conjDone[i]){ conjDone[i]=true; addScore(1,1); }
+    } else {
+      inp.className='conj-inp no'; allOk=false;
+      var res=document.getElementById('cr'+i);
+      if(inp.value.trim()){
+        res.textContent='✗ 正解は: '+c.ans; res.className='conj-res no vis';
+      }
+      document.getElementById('ch'+i).textContent='ヒント: ば形→「'+c.ba+'」 ほど→「'+c.hodo+'」';
+      if(!conjDone[i]) addScore(0,0);
+    }
+  });
+  if(allOk){ playOK(); rain(true); showBanner('🌸 全問正解！すばらしい！',true); }
+  else{ playFail(); rain(false); }
+}
+
+function conjShowAll(){
+  CONJ.forEach(function(c,i){
+    var inp=document.getElementById('ci'+i);
+    inp.value=c.ans; inp.className='conj-inp ok';
+    var res=document.getElementById('cr'+i);
+    res.textContent='正解: '+c.ans; res.className='conj-res ok vis';
+    document.getElementById('cm'+i).innerHTML='<span style="color:#888;font-size:12px">表示</span>';
+  });
+}
+
+/* ══════════════════════════════════════════
+   SELECTION DATA
+══════════════════════════════════════════ */
+var SEL=[
+  {
+    pre:'',blank:'住めば住むほど',post:'、ハンガリーが好きになります。',
+    clue:'（住みます）',
+    hu:'Minél tovább lakok itt, annál jobban szeretem Magyarországot.',
+    opts:['住めば住むほど','住みば住むほど','住むば住むほど','住もば住もほど'],
+    ans:'住めば住むほど',
+    exp:'住む (u-verb): 住む → 住め＋ば ＋ 住む＋ほど'
+  },
+  {
+    pre:'',blank:'むずかしければむずかしいほど',post:'、チャレンジしたくなります。',
+    clue:'（むずかしいです）',
+    hu:'Minél nehezebb, annál inkább szeretnék megpróbálni.',
+    opts:['むずかしければむずかしいほど','むずかしいばむずかしいほど','むずかしくばむずかしいほど','むずかしならむずかしほど'],
+    ans:'むずかしければむずかしいほど',
+    exp:'い形容詞: むずかしい → むずかし＋ければ ＋ むずかしい＋ほど'
+  },
+  {
+    pre:'日本では、はだが',blank:'白ければ白いほど',post:'いいと考える人が多いです。',
+    clue:'（白いです）',
+    hu:'Japánban sokan gondolják, hogy minél fehérebb a bőr, annál jobb.',
+    opts:['白ければ白いほど','白いば白いほど','白くば白いほど','白なら白なほど'],
+    ans:'白ければ白いほど',
+    exp:'い形容詞: 白い → 白け＋れば… wait: 白い → 白+ければ ＋ 白い+ほど'
+  },
+  {
+    pre:'あの人は',blank:'えらくなればなるほど',post:'、働かなくなりました。',
+    clue:'（えらくなります）',
+    hu:'Minél fontosabb lett az a személy, annál kevesebbet dolgozott.',
+    opts:['えらくなればなるほど','えらくなるばなるほど','えらくなればなるのほど','えらなればなるほど'],
+    ans:'えらくなればなるほど',
+    exp:'なる (u-verb): なる → な＋れば ＋ なる＋ほど → なればなるほど'
+  },
+  {
+    pre:'部屋は',blank:'きれいならきれいなほど',post:'いいです。',
+    clue:'（きれいです）',
+    hu:'Minél szebb a szoba, annál jobb.',
+    opts:['きれいならきれいなほど','きれいばきれいほど','きれいければきれいいほど','きれいならきれいほど'],
+    ans:'きれいならきれいなほど',
+    exp:'な形容詞: きれいだ → きれい＋なら ＋ きれい＋な＋ほど'
+  },
+  {
+    pre:'じょうほうは',blank:'新鮮なら新鮮なほど',post:'かちがあります。',
+    clue:'（新鮮です）',
+    hu:'Minél frissebb az információ, annál értékesebb.',
+    opts:['新鮮なら新鮮なほど','新鮮ば新鮮ほど','新鮮ければ新鮮いほど','新鮮であれば新鮮なほど'],
+    ans:'新鮮なら新鮮なほど',
+    exp:'な形容詞: 新鮮だ → 新鮮＋なら ＋ 新鮮＋な＋ほど'
+  },
+  {
+    pre:'',blank:'きんちょうすればするほど',post:'、あせが出てきました。',
+    clue:'（きんちょうします）',
+    hu:'Minél idegesebb lettem, annál jobban izzadtam.',
+    opts:['きんちょうすればするほど','きんちょうすばするほど','きんちょうしばするほど','きんちょうすればするのほど'],
+    ans:'きんちょうすればするほど',
+    exp:'する (irregular): する → す＋れば ＋ する＋ほど'
+  },
+  {
+    pre:'',blank:'よければよいほど',post:'ねだんが高いです。',
+    clue:'（いいホテルです）',
+    hu:'Minél jobb a hotel, annál drágább.',
+    opts:['よければよいほど','いければいいほど','よいばよいほど','よくばよいほど'],
+    ans:'よければよいほど',
+    exp:'いい/よい (い形容詞): よい → よ＋ければ ＋ よい＋ほど'
+  },
+  {
+    pre:'ビートルズの音楽は',blank:'聞けば聞くほど',post:'好きになります。',
+    clue:'（聞きます）',
+    hu:'Minél többet hallgatom a Beatles zenéjét, annál jobban szeretem.',
+    opts:['聞けば聞くほど','聞くば聞くほど','聞きば聞くほど','聞こば聞くほど'],
+    ans:'聞けば聞くほど',
+    exp:'聞く (u-verb): 聞く → 聞け＋ば ＋ 聞く＋ほど'
+  },
+  {
+    pre:'給料は',blank:'多ければ多いほど',post:'いいです。',
+    clue:'（多いです）',
+    hu:'Minél magasabb a fizetés, annál jobb.',
+    opts:['多ければ多いほど','多いば多いほど','多くば多いほど','多なら多なほど'],
+    ans:'多ければ多いほど',
+    exp:'い形容詞: 多い → 多＋ければ ＋ 多い＋ほど'
+  },
+  {
+    pre:'車は操作が',blank:'簡単なら簡単なほど',post:'運転が楽です。',
+    clue:'（簡単です）',
+    hu:'Minél egyszerűbb a kezelés, annál könnyebb a vezetés.',
+    opts:['簡単なら簡単なほど','簡単ば簡単ほど','簡単ければ簡単いほど','かんたんであれば簡単ほど'],
+    ans:'簡単なら簡単なほど',
+    exp:'な形容詞: 簡単だ → 簡単＋なら ＋ 簡単＋な＋ほど'
+  },
+  {
+    pre:'東京は',blank:'住めば住むほど',post:'おもしろい町です。',
+    clue:'（住みます）',
+    hu:'Minél tovább élek Tokióban, annál érdekesebb város.',
+    opts:['住めば住むほど','住むば住むほど','住もば住もほど','住みば住みほど'],
+    ans:'住めば住むほど',
+    exp:'住む (u-verb): 住む → 住め＋ば ＋ 住む＋ほど'
+  },
+];
+
+var selDone={};
+function selInit(){
+  selDone={};
+  var w=document.getElementById('sel-wrap'); w.innerHTML='';
+  SEL.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    var sentHtml=ex.pre+'<span class="blank" id="sb'+i+'">　　　　　</span>'+ex.post;
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="ex-tag tag-sel">選択</span></div>'+
+      '<div class="ex-sent">'+sentHtml+'</div>'+
+      '<div class="ex-clue">'+ex.clue+'</div>'+
+      '<div class="ex-hu">🇭🇺 '+ex.hu+'</div>'+
+      '<div class="opts" id="so'+i+'"></div>'+
+      '<div class="ex-res" id="sr'+i+'"></div>';
+    w.appendChild(d);
+    var oo=document.getElementById('so'+i);
+    shuffle(ex.opts.slice()).forEach(function(opt){
+      var b=document.createElement('button'); b.className='opt'; b.textContent=opt;
+      b.onclick=(function(ii,o,btn){return function(){selCheck(ii,o,btn,SEL[ii]);};})(i,opt,b);
+      oo.appendChild(b);
+    });
+  });
+}
+function selCheck(i,ans,btn,ex){
+  if(selDone[i])return; selDone[i]=true;
+  var oo=document.querySelectorAll('#so'+i+' .opt');
+  oo.forEach(function(b){b.disabled=true;if(b.textContent===ex.ans)b.classList.add('ok');});
+  var ok=(ans===ex.ans);
+  var blk=document.getElementById('sb'+i);
+  blk.textContent=ans; blk.className='blank '+(ok?'ok':'no');
+  var res=document.getElementById('sr'+i);
+  res.textContent=(ok?'✓ 正解！ ':'✗ 不正解。正解は: 「'+ex.ans+'」\n')+ex.exp;
+  res.className='ex-res '+(ok?'ok':'no')+' vis';
+  addScore(ok?1:0,1);
+  if(ok){playOK();rain(true);}else{btn.classList.add('no');playFail();rain(false);}
+}
+
+/* ══════════════════════════════════════════
+   FILL IN DATA
+══════════════════════════════════════════ */
+var FILL=[
+  {
+    pre:'',blank:'住めば住むほど',post:'、ハンガリーが好きになります。',
+    clue:'住みます (u-verb)',
+    hu:'Minél tovább lakok, annál jobban szeretem Magyarországot.',
+    accepts:['住めば住むほど'],
+    exp:'住む → 住め+ば + 住む+ほど'
+  },
+  {
+    pre:'',blank:'きんちょうすればするほど',post:'、あせが出てきました。',
+    clue:'きんちょうします (する動詞)',
+    hu:'Minél idegesebb lettem, annál jobban izzadtam.',
+    accepts:['きんちょうすればするほど'],
+    exp:'する → すれば + するほど'
+  },
+  {
+    pre:'',blank:'むずかしければむずかしいほど',post:'、チャレンジしたくなります。',
+    clue:'むずかしいです (い形容詞)',
+    hu:'Minél nehezebb, annál inkább próbálkozni szeretnék.',
+    accepts:['むずかしければむずかしいほど'],
+    exp:'むずかしい → むずかしければ + むずかしいほど'
+  },
+  {
+    pre:'日本では、はだが',blank:'白ければ白いほど',post:'いいと考える人が多いです。',
+    clue:'白いです (い形容詞)',
+    hu:'Japánban sokan gondolják: minél fehérebb a bőr, annál jobb.',
+    accepts:['白ければ白いほど','しろければしろいほど'],
+    exp:'白い → 白ければ + 白いほど'
+  },
+  {
+    pre:'あの人は',blank:'えらくなればなるほど',post:'、働かなくなりました。',
+    clue:'えらくなります (なる u-verb)',
+    hu:'Minél fontosabb lett, annál kevesebbet dolgozott.',
+    accepts:['えらくなればなるほど'],
+    exp:'なる → な+れば + なる+ほど'
+  },
+  {
+    pre:'部屋は',blank:'きれいならきれいなほど',post:'いいです。',
+    clue:'きれいです (な形容詞)',
+    hu:'Minél szebb a szoba, annál jobb.',
+    accepts:['きれいならきれいなほど'],
+    exp:'きれいだ → きれいなら + きれいなほど'
+  },
+  {
+    pre:'じょうほうは',blank:'新鮮なら新鮮なほど',post:'かちがあります。',
+    clue:'新鮮です (な形容詞)',
+    hu:'Minél frissebb az információ, annál értékesebb.',
+    accepts:['新鮮なら新鮮なほど','しんせんならしんせんなほど'],
+    exp:'新鮮だ → 新鮮なら + 新鮮なほど'
+  },
+  {
+    pre:'',blank:'よければよいほど',post:'ねだんが高いです。',
+    clue:'いいホテルです (よい い形容詞)',
+    hu:'Minél jobb a hotel, annál drágább.',
+    accepts:['よければよいほど','よければいいほど'],
+    exp:'よい → よければ + よいほど'
+  },
+  {
+    pre:'ビートルズの音楽は',blank:'聞けば聞くほど',post:'好きになります。',
+    clue:'聞きます (u-verb)',
+    hu:'Minél többet hallgatom a Beatles zenéjét, annál jobban szeretem.',
+    accepts:['聞けば聞くほど','きけばきくほど'],
+    exp:'聞く → 聞け+ば + 聞く+ほど'
+  },
+  {
+    pre:'車は操作が',blank:'簡単なら簡単なほど',post:'運転が楽です。',
+    clue:'簡単です (な形容詞)',
+    hu:'Minél egyszerűbb a kezelés, annál könnyebb a vezetés.',
+    accepts:['簡単なら簡単なほど','かんたんならかんたんなほど'],
+    exp:'簡単だ → 簡単なら + 簡単なほど'
+  },
+];
+var fillDone={};
+function fillInit(){
+  fillDone={};
+  var w=document.getElementById('fill-wrap'); w.innerHTML='';
+  FILL.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="ex-tag tag-fill">記入</span></div>'+
+      '<div class="ex-sent">'+ex.pre+'<span class="blank" id="fb'+i+'">　　　　　</span>'+ex.post+'</div>'+
+      '<div class="ex-clue">'+ex.clue+'</div>'+
+      '<div class="ex-hu">🇭🇺 '+ex.hu+'</div>'+
+      '<div class="inp-row">'+
+        '<input type="text" class="txt-inp" id="fi'+i+'" placeholder="〜ば〜ほど" autocomplete="off">'+
+        '<button class="btn gn" onclick="fillCheck('+i+')">確認</button>'+
+      '</div>'+
+      '<div class="ex-res" id="fr'+i+'"></div>';
+    w.appendChild(d);
+  });
+}
+function fillCheck(i){
+  if(fillDone[i])return; fillDone[i]=true;
+  var ex=FILL[i];
+  var v=normalise(document.getElementById('fi'+i).value);
+  var ok=ex.accepts.some(function(a){return normalise(a)===v;});
+  document.getElementById('fi'+i).className='txt-inp '+(ok?'ok':'no');
+  document.getElementById('fi'+i).disabled=true;
+  var blk=document.getElementById('fb'+i);
+  blk.textContent=ex.accepts[0]; blk.className='blank '+(ok?'ok':'no');
+  var res=document.getElementById('fr'+i);
+  res.textContent=(ok?'✓ 正解！ ':'✗ 不正解。正解は: 「'+ex.accepts[0]+'」\n')+ex.exp;
+  res.className='ex-res '+(ok?'ok':'no')+' vis';
+  addScore(ok?1:0,1);
+  if(ok){playOK();rain(true);}else{playFail();rain(false);}
+}
+
+/* ══════════════════════════════════════════
+   PARTICLE DATA
+══════════════════════════════════════════ */
+var PART=[
+  {
+    parts:[
+      {text:'野菜',after:true, pblank:'は', pid:'p0_0'},
+      {text:'新しければ新しいほど、おいしいです。',after:false}
+    ],
+    full:'野菜は新しければ新しいほど、おいしいです。',
+    hu:'Minél frissebb a zöldség, annál finomabb.',
+    blanks:[{id:'p0_0',ans:'は',opts:['は','が','を','に','で','も']}],
+    exp:'野菜【は】— téma partikula (wa): a főmondat témáját jelöli'
+  },
+  {
+    parts:[
+      {text:'日本では、はだ',after:true, pblank:'が', pid:'p1_0'},
+      {text:'白ければ白いほどいいと考える人',after:true, pblank:'が', pid:'p1_1'},
+      {text:'多いです。',after:false}
+    ],
+    full:'日本では、はだが白ければ白いほどいいと考える人が多いです。',
+    hu:'Japánban sok ember úgy gondolja: minél fehérebb a bőr, annál jobb.',
+    blanks:[
+      {id:'p1_0',ans:'が',opts:['は','が','を','に','で','の']},
+      {id:'p1_1',ans:'が',opts:['は','が','を','に','で','の']}
+    ],
+    exp:'はだ【が】— alany partikula / 人【が】— alany partikula'
+  },
+  {
+    parts:[
+      {text:'ビートルズの音楽',after:true, pblank:'は', pid:'p2_0'},
+      {text:'聞けば聞くほど好き',after:true, pblank:'に', pid:'p2_1'},
+      {text:'なります。',after:false}
+    ],
+    full:'ビートルズの音楽は聞けば聞くほど好きになります。',
+    hu:'Minél többet hallgatom a Beatles zenéjét, annál jobban szeretem.',
+    blanks:[
+      {id:'p2_0',ans:'は',opts:['は','が','を','に','で','も']},
+      {id:'p2_1',ans:'に',opts:['は','が','を','に','で','も']}
+    ],
+    exp:'音楽【は】— téma / 好き【に】なります — 好きになる (megszeretni)'
+  },
+  {
+    parts:[
+      {text:'給料',after:true, pblank:'は', pid:'p3_0'},
+      {text:'多ければ多いほどいいです。',after:false}
+    ],
+    full:'給料は多ければ多いほどいいです。',
+    hu:'Minél magasabb a fizetés, annál jobb.',
+    blanks:[{id:'p3_0',ans:'は',opts:['は','が','を','に','で','も']}],
+    exp:'給料【は】— téma partikula'
+  },
+  {
+    parts:[
+      {text:'車',after:true, pblank:'は', pid:'p4_0'},
+      {text:'操作',after:true, pblank:'が', pid:'p4_1'},
+      {text:'簡単なら簡単なほど、運転',after:true, pblank:'が', pid:'p4_2'},
+      {text:'楽です。',after:false}
+    ],
+    full:'車は操作が簡単なら簡単なほど、運転が楽です。',
+    hu:'Minél egyszerűbb a kezelés, annál könnyebb a vezetés.',
+    blanks:[
+      {id:'p4_0',ans:'は',opts:['は','が','を','に','で','の']},
+      {id:'p4_1',ans:'が',opts:['は','が','を','に','で','の']},
+      {id:'p4_2',ans:'が',opts:['は','が','を','に','で','の']}
+    ],
+    exp:'車【は】— téma / 操作【が】— alany / 運転【が】— alany'
+  },
+  {
+    parts:[
+      {text:'東京',after:true, pblank:'は', pid:'p5_0'},
+      {text:'住めば住むほどおもしろい町です。',after:false}
+    ],
+    full:'東京は住めば住むほどおもしろい町です。',
+    hu:'Minél tovább élek Tokióban, annál érdekesebb város.',
+    blanks:[{id:'p5_0',ans:'は',opts:['は','が','を','に','で','も']}],
+    exp:'東京【は】— téma partikula'
+  },
+  {
+    parts:[
+      {text:'じょうほう',after:true, pblank:'は', pid:'p6_0'},
+      {text:'新鮮なら新鮮なほど、かち',after:true, pblank:'が', pid:'p6_1'},
+      {text:'あります。',after:false}
+    ],
+    full:'じょうほうは新鮮なら新鮮なほど、かちがあります。',
+    hu:'Minél frissebb az információ, annál értékesebb.',
+    blanks:[
+      {id:'p6_0',ans:'は',opts:['は','が','を','に','で','の']},
+      {id:'p6_1',ans:'が',opts:['は','が','を','に','で','の']}
+    ],
+    exp:'じょうほう【は】— téma / かち【が】ある — értéke van (alany)'
+  },
+  {
+    parts:[
+      {text:'この本は、読め',after:false},
+      {text:'',after:false},
+      {text:'読むほど、面白く',after:true, pblank:'なります', pid:'p7_0'},
+      {text:'。',after:false}
+    ],
+    special:true,
+    special_sent:'この本は、読めば読むほど、面白くなります。',
+    hu:'Minél többet olvasom ezt a könyvet, annál érdekesebb lesz.',
+    blanks:[{id:'p7_0',ans:'なります',opts:['なります','います','します','あります']}],
+    exp:'面白く【なります】— 形容詞 + くなる (változik vmilyenné)'
+  },
+];
+
+var partDone={};
+function partInit(){
+  partDone={};
+  var w=document.getElementById('part-wrap'); w.innerHTML='';
+  PART.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    var sentHtml='';
+    if(ex.special){
+      sentHtml='この本は、読めば読むほど、面白く<span class="p-blank" id="p'+i+'_0">　　</span>。';
+    } else {
+      ex.parts.forEach(function(p){
+        sentHtml+=p.text;
+        if(p.after) sentHtml+='<span class="p-blank" id="'+p.pid+'">　</span>';
+      });
+    }
+    var optsHtml='';
+    ex.blanks.forEach(function(bl,bi){
+      optsHtml+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">'+
+        '<span style="font-size:12px;color:#880E4F;font-weight:700">空欄'+(bi+1)+':</span>'+
+        '<div class="opts" id="po'+i+'_'+bi+'" style="margin-bottom:0">';
+      shuffle(bl.opts.slice()).forEach(function(opt){
+        optsHtml+='<button class="opt" onclick="partCheck('+i+','+bi+',this,\''+opt+'\')">'+opt+'</button>';
+      });
+      optsHtml+='</div></div>';
+    });
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="ex-tag tag-part">パーティクル</span></div>'+
+      '<div class="ex-sent">'+sentHtml+'</div>'+
+      '<div class="ex-hu">🇭🇺 '+ex.hu+'</div>'+
+      optsHtml+
+      '<div class="ex-res" id="pr'+i+'"></div>';
+    w.appendChild(d);
+  });
+}
+function partCheck(i,bi,btn,ans){
+  var key=i+'_'+bi;
+  if(partDone[key])return; partDone[key]=ans;
+  var bl=PART[i].blanks[bi];
+  var ok=(ans===bl.ans);
+  var oo=document.querySelectorAll('#po'+i+'_'+bi+' .opt');
+  oo.forEach(function(b){b.disabled=true;if(b.textContent===bl.ans)b.classList.add('ok');});
+  if(!ok) btn.classList.add('no');
+  // fill in blank
+  var blkEl=document.getElementById(bl.id)||document.getElementById('p'+i+'_'+bi);
+  if(blkEl){blkEl.textContent=ans;blkEl.className='p-blank '+(ok?'ok':'no');}
+  // check if all blanks answered
+  var allDone=PART[i].blanks.every(function(_,bj){return partDone[i+'_'+bj]!==undefined;});
+  if(allDone){
+    var allOk=PART[i].blanks.every(function(_,bj){return partDone[i+'_'+bj]===PART[i].blanks[bj].ans;});
+    var res=document.getElementById('pr'+i);
+    res.textContent=(allOk?'✓ 全問正解！ ':'✗ 一部不正解。\n')+PART[i].exp;
+    res.className='ex-res '+(allOk?'ok':'no')+' vis';
+    addScore(allOk?1:0,1);
+    if(allOk){playOK();rain(true);}else{playFail();rain(false);}
+  }
+}
+
+/* ══════════════════════════════════════════
+   SENTENCE BUILDING DATA
+══════════════════════════════════════════ */
+var BUILD=[
+  {
+    prompt:'野菜 ・ 新しいです ・ おいしいです',
+    hu:'Minél frissebb a zöldség, annál finomabb.',
+    opts:['野菜は新しければ新しいほどおいしいです。',
+          '野菜が新しいばほど、おいしいです。',
+          '野菜は新しいほど新しければおいしいです。',
+          '野菜の新しければおいしいほどです。'],
+    ans:'野菜は新しければ新しいほどおいしいです。',
+    exp:'新しい(い形容詞): 新しければ + 新しいほど / 野菜は（テーマ）'
+  },
+  {
+    prompt:'東京 ・ 住みます ・ おもしろい町です',
+    hu:'Minél tovább élek Tokióban, annál érdekesebb város.',
+    opts:['東京は住めば住むほどおもしろい町です。',
+          '東京が住むば住むほどおもしろい町です。',
+          '東京は住みば住むほどおもしろい町です。',
+          '東京を住めばおもしろい町ほどです。'],
+    ans:'東京は住めば住むほどおもしろい町です。',
+    exp:'住む(u-verb): 住め+ば + 住む+ほど'
+  },
+  {
+    prompt:'ビートルズの音楽 ・ 聞きます ・ 好きになります',
+    hu:'Minél többet hallgatom a Beatles zenéjét, annál jobban szeretem.',
+    opts:['ビートルズの音楽は聞けば聞くほど好きになります。',
+          'ビートルズの音楽を聞くば聞くほど好きになります。',
+          'ビートルズの音楽は聞きば聞くほど好きになります。',
+          'ビートルズの音楽が聞けばほど好きになります。'],
+    ans:'ビートルズの音楽は聞けば聞くほど好きになります。',
+    exp:'聞く(u-verb): 聞け+ば + 聞く+ほど'
+  },
+  {
+    prompt:'給料 ・ 多いです ・ いいです',
+    hu:'Minél magasabb a fizetés, annál jobb.',
+    opts:['給料は多ければ多いほどいいです。',
+          '給料が多いば多いほどいいです。',
+          '給料は多くば多いほどいいです。',
+          '給料を多ければいいほどです。'],
+    ans:'給料は多ければ多いほどいいです。',
+    exp:'多い(い形容詞): 多けれ+ば + 多い+ほど'
+  },
+  {
+    prompt:'車 ・ 操作が簡単です ・ 運転が楽です',
+    hu:'Minél egyszerűbb a kezelés, annál könnyebb a vezetés.',
+    opts:['車は操作が簡単なら簡単なほど運転が楽です。',
+          '車が操作を簡単ば簡単なほど運転楽です。',
+          '車は操作が簡単ければ簡単いほど運転が楽です。',
+          '車は操作を簡単なら楽なほど運転です。'],
+    ans:'車は操作が簡単なら簡単なほど運転が楽です。',
+    exp:'簡単だ(な形容詞): 簡単+なら + 簡単+な+ほど'
+  },
+];
+var buildDone={};
+function buildInit(){
+  buildDone={};
+  var w=document.getElementById('build-wrap'); w.innerHTML='';
+  BUILD.forEach(function(ex,i){
+    var d=document.createElement('div'); d.className='ex-item';
+    var keyHtml='<div style="background:#E3F2FD;border-radius:8px;padding:7px 12px;margin-bottom:8px;font-size:14px;font-weight:600;color:#0D47A1">🔑 '+ex.prompt+'</div>';
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="ex-tag tag-sel">文を作る</span></div>'+
+      keyHtml+
+      '<div class="ex-hu">🇭🇺 '+ex.hu+'</div>'+
+      '<div class="opts" style="flex-direction:column;gap:8px" id="bd'+i+'"></div>'+
+      '<div class="ex-res" id="br'+i+'"></div>';
+    w.appendChild(d);
+    var oo=document.getElementById('bd'+i);
+    shuffle(ex.opts.slice()).forEach(function(opt){
+      var b=document.createElement('button');
+      b.className='opt'; b.style.textAlign='left'; b.style.fontSize='15px';
+      b.style.padding='10px 14px'; b.textContent=opt;
+      b.onclick=(function(ii,o,btn){return function(){buildCheck(ii,o,btn,BUILD[ii]);};})(i,opt,b);
+      oo.appendChild(b);
+    });
+  });
+}
+function buildCheck(i,ans,btn,ex){
+  if(buildDone[i])return; buildDone[i]=true;
+  var oo=document.querySelectorAll('#bd'+i+' .opt');
+  oo.forEach(function(b){b.disabled=true;if(b.textContent===ex.ans)b.classList.add('ok');});
+  var ok=(ans===ex.ans);
+  if(!ok) btn.classList.add('no');
+  var res=document.getElementById('br'+i);
+  res.textContent=(ok?'✓ 正解！ ':'✗ 不正解。正解は上の青い選択肢です。\n')+ex.exp;
+  res.className='ex-res '+(ok?'ok':'no')+' vis';
+  addScore(ok?1:0,1);
+  if(ok){playOK();rain(true);}else{playFail();rain(false);}
+}
+
+/* ══════════════════════════════════════════
+   AUDIO
+══════════════════════════════════════════ */
+function playOK(){
+  try{
+    var c=new AudioContext();
+    // bright happy chime  E-G#-B-E
+    [659,831,988,1319].forEach(function(f,i){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';
+      var t=c.currentTime+i*.14;
+      g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.4);
+      o.start(t);o.stop(t+.45);
+    });
+  }catch(e){}
+}
+function playFail(){
+  try{
+    var c=new AudioContext();
+    [349,311,277].forEach(function(f,i){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sawtooth';
+      var t=c.currentTime+i*.2;
+      g.gain.setValueAtTime(.2,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);
+      o.start(t);o.stop(t+.4);
+    });
+  }catch(e){}
+}
+
+/* ══════════════════════════════════════════
+   PARTICLES — sakura or tanuki
+══════════════════════════════════════════ */
+/* SVG sakura petal */
+function sakuraSVG(col){
+  col=col||'#FFB7C5';
+  return '<svg width="22" height="24" xmlns="http://www.w3.org/2000/svg">'+
+    '<ellipse cx="11" cy="7" rx="5.5" ry="9" fill="'+col+'" opacity=".9" transform="rotate(0 11 14)"/>'+
+    '<ellipse cx="11" cy="7" rx="5.5" ry="9" fill="'+col+'" opacity=".85" transform="rotate(72 11 14)"/>'+
+    '<ellipse cx="11" cy="7" rx="5.5" ry="9" fill="'+col+'" opacity=".85" transform="rotate(144 11 14)"/>'+
+    '<ellipse cx="11" cy="7" rx="5.5" ry="9" fill="'+col+'" opacity=".85" transform="rotate(216 11 14)"/>'+
+    '<ellipse cx="11" cy="7" rx="5.5" ry="9" fill="'+col+'" opacity=".85" transform="rotate(288 11 14)"/>'+
+    '<circle cx="11" cy="14" r="3.5" fill="#FFE4B5"/>'+
+    '</svg>';
+}
+/* tanuki SVG */
+var TANUKI='<svg width="36" height="38" xmlns="http://www.w3.org/2000/svg">'+
+  '<ellipse cx="18" cy="17" rx="14" ry="13" fill="#8B6914"/>'+
+  '<ellipse cx="18" cy="22" rx="10" ry="8" fill="#F5DEB3"/>'+
+  '<ellipse cx="10" cy="9" rx="5" ry="7" fill="#8B6914" transform="rotate(-15 10 9)"/>'+
+  '<ellipse cx="26" cy="9" rx="5" ry="7" fill="#8B6914" transform="rotate(15 26 9)"/>'+
+  '<ellipse cx="10" cy="8" rx="3" ry="5" fill="#FFB6C1" transform="rotate(-15 10 8)"/>'+
+  '<ellipse cx="26" cy="8" rx="3" ry="5" fill="#FFB6C1" transform="rotate(15 26 8)"/>'+
+  '<circle cx="13" cy="15" r="3.5" fill="white"/><circle cx="23" cy="15" r="3.5" fill="white"/>'+
+  '<circle cx="13.5" cy="16" r="2" fill="#333"/><circle cx="23.5" cy="16" r="2" fill="#333"/>'+
+  '<ellipse cx="9" cy="19" rx="4" ry="2.5" fill="#5C3D11" opacity=".5"/>'+
+  '<ellipse cx="27" cy="19" rx="4" ry="2.5" fill="#5C3D11" opacity=".5"/>'+
+  '<ellipse cx="18" cy="23" rx="3" ry="2" fill="#D2691E"/>'+
+  '<!-- sad mouth --><path d="M13 27 Q18 25 23 27" stroke="#5C3D11" stroke-width="1.8" fill="none"/>'+
+  '<!-- tears --><ellipse cx="10" cy="22" rx="1.5" ry="2.5" fill="#87CEEB" opacity=".8"/>'+
+  '<ellipse cx="26" cy="22" rx="1.5" ry="2.5" fill="#87CEEB" opacity=".8"/>'+
+  '</svg>';
+
+var SAKURA_COLS=['#FFB7C5','#FF8FAB','#FFADC5','#FFD1DC','#FF6B9D','#FFC0CB'];
+
+function rain(ok){
+  var ct=document.getElementById('particles');
+  var n=ok?32:14;
+  for(var i=0;i<n;i++){
+    (function(ii){setTimeout(function(){
+      var s=document.createElement('span'); s.className='p-item';
+      if(ok){
+        s.innerHTML=sakuraSVG(SAKURA_COLS[Math.floor(Math.random()*SAKURA_COLS.length)]);
+        s.style.fontSize='22px';
+        s.style.animationDuration=(2+Math.random()*3)+'s';
+        // gentle sideways drift via custom animation
+        s.style.animationTimingFunction='ease-in-out';
+      } else {
+        s.innerHTML=TANUKI;
+        s.style.fontSize='36px';
+        s.style.animationDuration=(1.8+Math.random()*2)+'s';
+      }
+      s.style.left=Math.random()*94+'%';
+      ct.appendChild(s);
+      setTimeout(function(){s.remove();},5500);
+    },ii*80);})(i);
+  }
+}
+
+function showBanner(msg,ok){
+  var old=document.querySelector('.banner');if(old)old.remove();
+  var d=document.createElement('div');d.className='banner';
+  d.style.border='3px solid '+(ok?'#1976D2':'#C62828');
+  d.style.color=ok?'#0D47A1':'#7F0000';
+  d.innerHTML=msg;document.body.appendChild(d);
+  setTimeout(function(){d.remove();},3200);
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function normalise(s){return s.replace(/\s+/g,'').replace(/　/g,'');}
+
+/* ── INIT ── */
+document.querySelectorAll('.section').forEach(function(s){
+  if(!s.classList.contains('vis'))s.style.display='none';
+});
+</script>
+</body>
+</html>

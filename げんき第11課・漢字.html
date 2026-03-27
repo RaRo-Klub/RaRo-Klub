@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genki 第11課 — Japán Tanuló Játék</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:linear-gradient(135deg,#FF8C00 0%,#FFA500 35%,#4CAF50 70%,#2e7d32 100%);min-height:100vh;font-family:'Segoe UI',Arial,sans-serif;padding:14px}
+#app{position:relative;max-width:800px;margin:0 auto;background:rgba(255,255,255,0.15);border-radius:24px;padding:14px;backdrop-filter:blur(6px)}
+.hdr{text-align:center;padding:16px 0 8px;font-size:23px;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hdr small{display:block;font-size:13px;color:rgba(255,255,255,.85);font-weight:400;margin-top:3px}
+.tabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.tb{padding:9px 16px;border:2px solid rgba(255,255,255,.7);border-radius:22px;cursor:pointer;font-size:13px;font-weight:700;color:#fff;background:rgba(255,255,255,.2);transition:all .18s}
+.tb:hover{background:rgba(255,255,255,.35)}
+.tb.act{background:#fff;color:#BA7517}
+.section{display:none}
+.section.vis{display:block}
+.btn{padding:9px 20px;border:2px solid #BA7517;border-radius:22px;cursor:pointer;font-size:13px;font-weight:700;color:#BA7517;background:#fff;transition:all .18s}
+.btn:hover{background:#FAEEDA}
+.btn.g{border-color:#3B6D11;color:#3B6D11}
+.btn.g:hover{background:#EAF3DE}
+.btn.v{border-color:#534AB7;color:#534AB7}
+.btn.v:hover{background:#EEEDFE}
+.center{text-align:center;margin:8px 0}
+
+/* FLASHCARD */
+.fc-wrap{perspective:1200px;width:360px;height:250px;cursor:pointer;margin:0 auto 10px;user-select:none}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.2,.2,1)}
+.fc.flip{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border:3px solid}
+.fc-a{background:linear-gradient(145deg,#FFF8E1,#FFE082);border-color:#F9A825;box-shadow:0 8px 28px rgba(249,168,37,.35)}
+.fc-b{background:linear-gradient(145deg,#E8F5E9,#A5D6A7);border-color:#388E3C;transform:rotateY(180deg);box-shadow:0 8px 28px rgba(56,142,60,.35)}
+.fc-emoji{font-size:60px;line-height:1;margin-bottom:10px}
+.fc-lbl{font-size:10px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.fc-main{font-size:20px;font-weight:700;color:#4E342E;text-align:center;line-height:1.3}
+.fc-b .fc-main{font-size:32px;color:#1B5E20;letter-spacing:2px}
+.fc-sub{font-size:15px;color:#2E7D32;margin-top:5px;font-weight:600}
+.fc-hint{font-size:11px;color:#777;margin-top:3px;font-style:italic}
+.fc-flip-hint{font-size:11px;color:rgba(255,255,255,.8);text-align:center;margin-bottom:6px}
+.fc-nav{display:flex;gap:12px;justify-content:center;margin-top:8px}
+.progress{font-size:13px;color:#fff;text-align:center;margin-bottom:8px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.2)}
+
+/* QUIZ */
+.q-score-row{text-align:center;font-size:14px;color:#fff;margin-bottom:10px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.2)}
+.q-box{background:linear-gradient(145deg,#FFF8E1,#FFE082);border-radius:18px;padding:22px 16px;text-align:center;border:2px solid #F9A825;margin-bottom:14px}
+.q-dir{font-size:11px;color:rgba(0,0,0,.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.q-emoji{font-size:44px;display:block;margin-bottom:8px;line-height:1}
+.q-text{font-size:22px;font-weight:700;color:#4E342E;white-space:pre-line;line-height:1.4}
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.q-opt{padding:13px 10px;border:2px solid #FFE082;border-radius:14px;cursor:pointer;font-size:13px;background:#fff;color:#4E342E;line-height:1.4;transition:all .15s;text-align:center;white-space:pre-line;font-weight:500}
+.q-opt:hover:not(:disabled){border-color:#F9A825;background:#FFF8E1}
+.q-opt.ok{border-color:#388E3C!important;background:#E8F5E9!important;color:#1B5E20!important;font-weight:700}
+.q-opt.no{border-color:#C62828!important;background:#FFEBEE!important;color:#B71C1C!important}
+
+/* MEMORY */
+.mem-stats{text-align:center;font-size:14px;color:#fff;margin-bottom:12px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.2)}
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:660px;margin:0 auto}
+.mc{aspect-ratio:3/4;perspective:600px;cursor:pointer}
+.mc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s;border-radius:14px}
+.mc.flip .mc-inner,.mc.done .mc-inner{transform:rotateY(180deg)}
+.mc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;text-align:center;line-height:1.3;gap:4px}
+.mc-back{background:linear-gradient(145deg,#FF8C00,#E65100);border:2px solid #BF360C;color:#fff;font-size:30px}
+.mc-hu{background:linear-gradient(145deg,#FFF8E1,#FFE082);border:2px solid #F9A825;color:#4E342E;font-weight:700;transform:rotateY(180deg);font-size:10px}
+.mc-hu .me{font-size:22px;line-height:1}
+.mc-jp{background:linear-gradient(145deg,#E8F5E9,#C8E6C9);border:2px solid #388E3C;color:#1B5E20;font-weight:700;transform:rotateY(180deg);font-size:13px}
+.mc-jp .me{font-size:22px;line-height:1}
+.mc-jp .mt{white-space:pre-line}
+.mc.done .mc-face{opacity:.4}
+
+/* FILL IN THE BLANK */
+.fib-q{background:#fff;border-radius:16px;border:1.5px solid #FFE082;padding:16px;margin-bottom:12px}
+.fib-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.fib-icon{font-size:38px;flex-shrink:0;line-height:1}
+.fib-sent{font-size:17px;line-height:2.3;color:#4E342E}
+.blank{display:inline-block;min-width:72px;border-bottom:2.5px solid #F9A825;text-align:center;padding:0 5px;margin:0 3px;color:#E65100;font-weight:700;vertical-align:bottom}
+.fib-hint{font-size:12px;color:#888;font-style:italic;margin-bottom:8px}
+.fib-opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.fo{padding:7px 16px;border:2px solid #FFE082;border-radius:20px;cursor:pointer;font-size:14px;background:#fff;color:#4E342E;transition:all .15s;font-weight:500}
+.fo:hover:not(:disabled){border-color:#F9A825;background:#FFF8E1}
+.fo.ok{border-color:#388E3C!important;background:#E8F5E9!important;color:#1B5E20!important;font-weight:700}
+.fo.no{border-color:#C62828!important;background:#FFEBEE!important;color:#B71C1C!important}
+.fib-res{font-size:13px;margin-top:7px;font-weight:600;padding:7px 12px;border-radius:10px}
+.fib-res.ok{background:#E8F5E9;color:#1B5E20}
+.fib-res.no{background:#FFEBEE;color:#B71C1C}
+
+/* PARTICLES */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+.p-item{position:absolute;top:-40px;animation:pfall linear forwards}
+@keyframes pfall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:.1}}
+.banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:18px;padding:22px 40px;font-size:20px;font-weight:700;z-index:10000;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.25);animation:bIn .3s ease}
+@keyframes bIn{from{opacity:0;transform:translate(-50%,-50%) scale(.65)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="particles"></div>
+<div class="hdr">🌸 Genki 第11課 日本語学習 🍃<small>Tanulókártyák · Kvíz · Memóriajáték · Mondatkiegészítés</small></div>
+<div class="tabs">
+  <button class="tb act" onclick="showTab('fc',this)">📖 Kártyák</button>
+  <button class="tb" onclick="showTab('quiz',this)">❓ Kvíz</button>
+  <button class="tb" onclick="showTab('mem',this)">🃏 Memória</button>
+  <button class="tb" onclick="showTab('fib',this)">✏️ Mondatok</button>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="s-fc" class="section vis">
+  <div class="progress" id="fc-prog">Szókártya 1 / 38</div>
+  <div class="fc-wrap" onclick="fcFlip()">
+    <div class="fc" id="fc">
+      <div class="fc-face fc-a">
+        <div class="fc-emoji" id="fc-em-a"></div>
+        <div class="fc-lbl">Magyar</div>
+        <div class="fc-main" id="fc-hu"></div>
+      </div>
+      <div class="fc-face fc-b">
+        <div class="fc-emoji" id="fc-em-b"></div>
+        <div class="fc-lbl">日本語</div>
+        <div class="fc-main" id="fc-kj"></div>
+        <div class="fc-sub" id="fc-hg"></div>
+        <div class="fc-hint" id="fc-hn"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-flip-hint">🖱️ Kattints a megfordításhoz</div>
+  <div class="fc-nav">
+    <button class="btn" onclick="fcPrev()">← Előző</button>
+    <button class="btn g" onclick="fcNext()">Következő →</button>
+  </div>
+  <div class="center" style="margin-top:10px"><button class="btn v" onclick="fcShuffle()">⇌ Keverés</button></div>
+</div>
+
+<!-- QUIZ -->
+<div id="s-quiz" class="section">
+  <div class="q-score-row" id="q-score">Pontszám: 0 / 0</div>
+  <div class="q-box">
+    <span class="q-emoji" id="q-em"></span>
+    <div class="q-dir" id="q-dir"></div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="q-grid" id="q-opts"></div>
+  <div class="center"><button class="btn g" id="q-next" onclick="qNext()" style="display:none">Következő →</button></div>
+  <div class="center" style="margin-top:8px"><button class="btn" onclick="qRestart()">⇌ Újrakezd</button></div>
+</div>
+
+<!-- MEMORY -->
+<div id="s-mem" class="section">
+  <div class="mem-stats" id="m-stats">Párok: 0/10 · Kísérletek: 0</div>
+  <div class="mem-grid" id="m-grid"></div>
+  <div class="center" style="margin-top:14px"><button class="btn" onclick="memInit()">⇌ Újrakezd</button></div>
+</div>
+
+<!-- FILL IN BLANK -->
+<div id="s-fib" class="section">
+  <div id="fib-wrap"></div>
+  <div class="center" style="margin-top:10px"><button class="btn" onclick="fibRender()">⇌ Újrakezd</button></div>
+</div>
+</div>
+
+<script>
+const V=[
+  {k:'手紙',  h:'てがみ',       m:'levél',                    e:'✉️', n:'te-ga-mi'},
+  {k:'歌手',  h:'かしゅ',       m:'énekes',                   e:'🎤', n:'ka-shu'},
+  {k:'手',    h:'て',           m:'kéz',                      e:'✋', n:'te'},
+  {k:'手話',  h:'しゅわ',       m:'jelnyelv',                 e:'🤟', n:'shu-wa'},
+  {k:'上手な',h:'じょうずな',   m:'ügyes (vmiben)',            e:'⭐', n:'jo-zu-na'},
+  {k:'紙',    h:'かみ',         m:'papír',                    e:'📄', n:'ka-mi'},
+  {k:'和紙',  h:'わし',         m:'japán papír',              e:'📜', n:'wa-shi'},
+  {k:'折り紙',h:'おりがみ',     m:'origami',                  e:'🦢', n:'o-ri-ga-mi'},
+  {k:'好きな',h:'すきな',       m:'tetszik, szeret',          e:'❤️', n:'su-ki-na'},
+  {k:'大好きな',h:'だいすきな', m:'nagyon szeret',            e:'💕', n:'dai-su-ki-na'},
+  {k:'好物',  h:'こうぶつ',     m:'kedvenc étel',             e:'🍜', n:'ko-bu-tsu'},
+  {k:'近く',  h:'ちかく',       m:'közel, a közelben',        e:'📍', n:'chi-ka-ku'},
+  {k:'近所',  h:'きんじょ',     m:'szomszédság',              e:'🏘️', n:'kin-jo'},
+  {k:'最近',  h:'さいきん',     m:'mostanában, nemrég',       e:'🗓️', n:'sa-i-kin'},
+  {k:'明るい',h:'あかるい',     m:'vidám, fényes',            e:'☀️', n:'a-ka-ru-i'},
+  {k:'明日',  h:'あした',       m:'holnap',                   e:'🌅', n:'a-shi-ta'},
+  {k:'説明',  h:'せつめい',     m:'magyarázat',               e:'💬', n:'se-tsu-me-i'},
+  {k:'発明',  h:'はつめい',     m:'találmány, feltalálás',    e:'💡', n:'ha-tsu-me-i'},
+  {k:'文明',  h:'ぶんめい',     m:'civilizáció',              e:'🏛️', n:'bun-me-i'},
+  {k:'病院',  h:'びょういん',   m:'kórház',                   e:'🏥', n:'byo-u-in'},
+  {k:'病気',  h:'びょうき',     m:'betegség',                 e:'🤒', n:'byo-u-ki'},
+  {k:'大学院',h:'だいがくいん', m:'posztgraduális iskola',    e:'🎓', n:'da-i-ga-ku-in'},
+  {k:'美容院',h:'びよういん',   m:'szépségszalon',            e:'💇', n:'bi-yo-u-in'},
+  {k:'映画',  h:'えいが',       m:'film, mozi',               e:'🎬', n:'e-i-ga'},
+  {k:'映画館',h:'えいがかん',   m:'moziszínház',              e:'🎭', n:'e-i-ga-kan'},
+  {k:'漫画',  h:'まんが',       m:'manga, képregény',         e:'📚', n:'man-ga'},
+  {k:'歌う',  h:'うたう',       m:'énekel',                   e:'🎵', n:'u-ta-u'},
+  {k:'歌',    h:'うた',         m:'dal',                      e:'🎶', n:'u-ta'},
+  {k:'国歌',  h:'こっか',       m:'himnusz',                  e:'🎼', n:'ko-k-ka'},
+  {k:'市役所',h:'しやくしょ',   m:'városháza',                e:'🏛️', n:'shi-ya-ku-sho'},
+  {k:'台所',  h:'だいどころ',   m:'konyha',                   e:'🍳', n:'da-i-do-ko-ro'},
+  {k:'住所',  h:'じゅうしょ',   m:'lakcím',                   e:'🏠', n:'ju-u-sho'},
+  {k:'勉強する',h:'べんきょうする',m:'tanul',                 e:'📖', n:'ben-kyo-su-ru'},
+  {k:'強い',  h:'つよい',       m:'erős',                     e:'💪', n:'tsu-yo-i'},
+  {k:'有名な',h:'ゆうめいな',   m:'híres',                    e:'🌟', n:'yu-u-me-i-na'},
+  {k:'旅行',  h:'りょこう',     m:'utazás',                   e:'✈️', n:'ryo-ko-u'},
+  {k:'旅館',  h:'りょかん',     m:'japán fogadó',             e:'🏯', n:'ryo-kan'},
+  {k:'旅券',  h:'りょけん',     m:'útlevél',                  e:'🛂', n:'ryo-ken'},
+];
+
+const FIB=[
+  {s:'ひろクンは近所の[　]でボランティアをしています。',a:'病院',o:['病院','市役所','映画館','台所'],e:'🏥',h:'Hiróki a szomszédságban lévő ___ -ban önkénteskedik.',tr:'病院 (びょういん) = kórház'},
+  {s:'子どもに勉強[　]教えたりしています。',a:'を',o:['を','が','に','で'],e:'📖',h:'Gyerekeknek tanulást tanít. (tárgyeset partikula)',tr:'を = tárgyeset partikula'},
+  {s:'川口[　]に住んでいます。',a:'市',o:['市','所','院','館'],e:'🏘️',h:'Kawaguchi ___ -ban lakik.',tr:'市 (し) = város'},
+  {s:'休みの日には車[　]近くの山や川に行きます。',a:'で',o:['で','に','を','の'],e:'🚗',h:'Szabad napokon autóval megy a közeli hegyekhez.',tr:'で = eszközhatározó partikula'},
+  {s:'ホラー映画[　]大好きです。',a:'が',o:['が','を','は','の'],e:'🎬',h:'A horror filmeket nagyon szereti. (alany partikula)',tr:'が = alany partikula'},
+  {s:'将来は[　]手になりたいと思っています。',a:'歌',o:['歌','画','旅','近'],e:'🎤',h:'A jövőben énekes szeretne lenni.',tr:'歌手 (かしゅ) = énekes'},
+  {s:'日本語や日本文化を[　]しています。',a:'勉強',o:['勉強','旅行','説明','発明'],e:'📖',h:'Japán nyelvet és kultúrát tanul.',tr:'勉強する (べんきょうする) = tanul'},
+  {s:'これからいろいろな所[　]行くつもりです。',a:'に',o:['に','で','を','が'],e:'✈️',h:'Ezután különböző helyekre fog menni.',tr:'に = irányhatározó partikula'},
+  {s:'日本の[　]名なお祭りも見たいです。',a:'有',o:['有','近','明','好'],e:'🌟',h:'Japán ___ hírű fesztiválokat is látni szeretne.',tr:'有名な (ゆうめいな) = híres'},
+  {s:'山に登ったり、[　]をしたりするのが好きです。',a:'つり',o:['つり','うた','てがみ','えいが'],e:'🎣',h:'Szeret hegyet mászni és ___ -t.',tr:'つり = horgászat'},
+  {s:'古いお寺や[　]を見たいと思っています。',a:'神社',o:['神社','病院','映画館','市役所'],e:'⛩️',h:'Régi templomokat és ___ -kat szeretne látni.',tr:'神社 (じんじゃ) = sintó szentély'},
+  {s:'[　]はバイトがあるから、平日に映画を見に行きます。',a:'週末',o:['週末','近所','最近','将来'],e:'🗓️',h:'___ -én van munkája, ezért hétköznap megy moziba.',tr:'週末 (しゅうまつ) = hétvége'},
+  {s:'私はメキシコ人[　]留学生です。',a:'の',o:['の','が','を','に'],e:'🌍',h:'Mexikói ___ cserediák vagyok. (minősítő partikula)',tr:'の = minősítő/birtok partikula'},
+  {s:'日本[　]一月に来ました。',a:'に',o:['に','で','を','へ'],e:'🗾',h:'Januárban jött Japánba.',tr:'に = időhatározó / irányhatározó'},
+  {s:'お[　]事をください。',a:'返',o:['返','手','歌','近'],e:'✉️',h:'Kérem a válaszát.',tr:'お返事 (おへんじ) = válasz (udvarias)'},
+];
+
+let fcIdx=0, fcOrder=[...Array(V.length).keys()], fcFlipped=false;
+let qScore=0, qTotal=0, qAnswered=false, qCurIdx=-1;
+let mCards=[], mFlipped=[], mMatched=0, mAttempts=0, mLocked=false;
+const fibState={};
+
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>{s.classList.remove('vis');s.style.display='none'});
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('act'));
+  const el=document.getElementById('s-'+id);
+  el.style.display='block';el.classList.add('vis');
+  btn.classList.add('act');
+  if(id==='quiz'&&qTotal===0)qNext();
+  if(id==='mem'&&mCards.length===0)memInit();
+  if(id==='fib')fibRender();
+}
+
+/* FLASHCARDS */
+function fcRender(){
+  const v=V[fcOrder[fcIdx]];
+  document.getElementById('fc-em-a').textContent=v.e;
+  document.getElementById('fc-em-b').textContent=v.e;
+  document.getElementById('fc-hu').textContent=v.m;
+  document.getElementById('fc-kj').textContent=v.k;
+  document.getElementById('fc-hg').textContent=v.h;
+  document.getElementById('fc-hn').textContent=v.n;
+  document.getElementById('fc-prog').textContent='Szókártya '+(fcIdx+1)+' / '+V.length;
+  const el=document.getElementById('fc');
+  el.classList.remove('flip');fcFlipped=false;
+}
+function fcFlip(){const el=document.getElementById('fc');fcFlipped=!fcFlipped;el.classList.toggle('flip',fcFlipped);}
+function fcNext(){fcIdx=(fcIdx+1)%V.length;fcRender();}
+function fcPrev(){fcIdx=(fcIdx-1+V.length)%V.length;fcRender();}
+function fcShuffle(){
+  for(let i=fcOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fcOrder[i],fcOrder[j]]=[fcOrder[j],fcOrder[i]];}
+  fcIdx=0;fcRender();
+}
+
+/* QUIZ */
+function qNext(){
+  qAnswered=false;
+  document.getElementById('q-next').style.display='none';
+  const dir=Math.random()>.5;
+  let idx;
+  do{idx=Math.floor(Math.random()*V.length);}while(idx===qCurIdx&&V.length>1);
+  qCurIdx=idx;
+  const v=V[idx];
+  document.getElementById('q-em').textContent=v.e;
+  let qt,ca;
+  if(dir){document.getElementById('q-dir').textContent='Magyar → Japán';qt=v.m;ca=v.k+'\n'+v.h;}
+  else{document.getElementById('q-dir').textContent='Japán → Magyar';qt=v.k+'\n'+v.h;ca=v.m;}
+  document.getElementById('q-text').textContent=qt;
+  let opts=[{t:ca,c:true}];
+  V.filter((_,i)=>i!==idx).sort(()=>Math.random()-.5).slice(0,3).forEach(o=>opts.push({t:dir?o.k+'\n'+o.h:o.m,c:false}));
+  opts=opts.sort(()=>Math.random()-.5);
+  const g=document.getElementById('q-opts');g.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='q-opt';b.textContent=o.t;
+    b.onclick=()=>qCheck(b,o.c,g,ca);
+    g.appendChild(b);
+  });
+}
+function qCheck(btn,ok,g,correct){
+  if(qAnswered)return;qAnswered=true;qTotal++;
+  g.querySelectorAll('.q-opt').forEach(b=>{b.disabled=true;if(b.textContent===correct)b.classList.add('ok');});
+  if(ok){qScore++;playOK();rain(true);}
+  else{btn.classList.add('no');playFail();rain(false);}
+  document.getElementById('q-score').textContent='Pontszám: '+qScore+' / '+qTotal;
+  document.getElementById('q-next').style.display='inline-block';
+}
+function qRestart(){qScore=0;qTotal=0;qAnswered=false;qCurIdx=-1;document.getElementById('q-score').textContent='Pontszám: 0 / 0';qNext();}
+
+/* MEMORY */
+function memInit(){
+  mMatched=0;mAttempts=0;mFlipped=[];mLocked=false;
+  const pairs=[...V].sort(()=>Math.random()-.5).slice(0,10);
+  let cards=[];
+  pairs.forEach((v,i)=>{
+    cards.push({uid:i,type:'hu',txt:v.m,em:v.e,pair:i});
+    cards.push({uid:i+100,type:'jp',txt:v.k+'\n'+v.h,em:v.e,pair:i});
+  });
+  cards=cards.sort(()=>Math.random()-.5);
+  mCards=cards;mStats();mRender();
+}
+function mStats(){document.getElementById('m-stats').textContent='Párok: '+mMatched+'/10 · Kísérletek: '+mAttempts;}
+function mRender(){
+  const g=document.getElementById('m-grid');g.innerHTML='';
+  mCards.forEach((c,i)=>{
+    const d=document.createElement('div');d.className='mc';d.dataset.i=i;
+    if(c.type==='hu'){
+      d.innerHTML='<div class="mc-inner"><div class="mc-face mc-back">✿</div><div class="mc-face mc-hu"><span class="me">'+c.em+'</span><span>'+c.txt+'</span></div></div>';
+    } else {
+      d.innerHTML='<div class="mc-inner"><div class="mc-face mc-back">✿</div><div class="mc-face mc-jp"><span class="me">'+c.em+'</span><span class="mt">'+c.txt+'</span></div></div>';
+    }
+    d.onclick=()=>mFlip(i);
+    g.appendChild(d);
+  });
+}
+function mFlip(i){
+  if(mLocked)return;
+  const el=document.querySelector('[data-i="'+i+'"]');
+  if(!el||el.classList.contains('flip')||el.classList.contains('done'))return;
+  if(mFlipped.length>=2)return;
+  el.classList.add('flip');
+  mFlipped.push({i,c:mCards[i]});
+  if(mFlipped.length===2){
+    mAttempts++;mLocked=true;mStats();
+    setTimeout(()=>{
+      const [a,b]=mFlipped;
+      if(a.c.pair===b.c.pair&&a.c.type!==b.c.type){
+        document.querySelector('[data-i="'+a.i+'"]').classList.add('done');
+        document.querySelector('[data-i="'+b.i+'"]').classList.add('done');
+        mMatched++;mStats();playOK();rain(true);
+        if(mMatched===10)setTimeout(()=>showBanner('🎉 Gratulálok! Minden pár megtalálva!',true),400);
+      } else {
+        document.querySelector('[data-i="'+a.i+'"]').classList.remove('flip');
+        document.querySelector('[data-i="'+b.i+'"]').classList.remove('flip');
+        playFail();rain(false);
+      }
+      mFlipped=[];mLocked=false;
+    },950);
+  }
+}
+
+/* FILL IN THE BLANK */
+function fibRender(){
+  Object.keys(fibState).forEach(k=>delete fibState[k]);
+  const w=document.getElementById('fib-wrap');w.innerHTML='';
+  FIB.forEach((ex,i)=>{
+    const parts=ex.s.split('[　]');
+    const div=document.createElement('div');div.className='fib-q';
+    div.innerHTML=
+      '<div class="fib-top"><span class="fib-icon">'+ex.e+'</span>'+
+      '<div class="fib-sent">'+parts[0]+'<span class="blank" id="fb'+i+'">　　　</span>'+(parts[1]||'')+'</div></div>'+
+      '<div class="fib-hint">'+ex.h+'</div>'+
+      '<div class="fib-opts" id="fo'+i+'"></div>'+
+      '<div class="fib-res" id="fr'+i+'"></div>';
+    w.appendChild(div);
+    const oo=document.getElementById('fo'+i);
+    [...ex.o].sort(()=>Math.random()-.5).forEach(opt=>{
+      const b=document.createElement('button');b.className='fo';b.textContent=opt;
+      b.onclick=()=>fibCheck(i,opt,b,ex);
+      oo.appendChild(b);
+    });
+  });
+}
+function fibCheck(i,ans,btn,ex){
+  if(fibState[i])return;fibState[i]=true;
+  document.querySelectorAll('#fo'+i+' .fo').forEach(b=>{b.disabled=true;if(b.textContent===ex.a)b.classList.add('ok');});
+  const blk=document.getElementById('fb'+i);
+  const res=document.getElementById('fr'+i);
+  if(ans===ex.a){
+    blk.textContent=ans;blk.style.color='#1B5E20';blk.style.borderBottomColor='#388E3C';
+    res.textContent='✓ Helyes! '+ex.tr;res.className='fib-res ok';
+    playOK();rain(true);
+  } else {
+    btn.classList.add('no');
+    res.textContent='✗ Helytelen. Helyes válasz: '+ex.a+' — '+ex.tr;res.className='fib-res no';
+    playFail();rain(false);
+  }
+}
+
+/* AUDIO */
+function playOK(){
+  try{
+    const c=new AudioContext();
+    [523,659,784,1047].forEach((f,i)=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';
+      const t=c.currentTime+i*.12;
+      g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.28);
+      o.start(t);o.stop(t+.32);
+    });
+  }catch(e){}
+}
+function playFail(){
+  try{
+    const c=new AudioContext();
+    [330,294,262].forEach((f,i)=>{
+      const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sawtooth';
+      const t=c.currentTime+i*.22;
+      g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);
+      o.start(t);o.stop(t+.4);
+    });
+  }catch(e){}
+}
+
+/* PARTICLES */
+function rain(ok){
+  const ct=document.getElementById('particles');
+  const n=ok?28:14;
+  const fl=ok?['🌸','🌺','🌼','🌻','🍀','💮','✿','🎋']:['☂','🌧','💧','🐾'];
+  for(let i=0;i<n;i++){
+    setTimeout(()=>{
+      const s=document.createElement('span');
+      s.className='p-item';
+      s.textContent=fl[Math.floor(Math.random()*fl.length)];
+      s.style.left=Math.random()*95+'%';
+      s.style.fontSize=(14+Math.random()*14)+'px';
+      s.style.animationDuration=(1.5+Math.random()*2.2)+'s';
+      ct.appendChild(s);
+      setTimeout(()=>s.remove(),4200);
+    },i*55);
+  }
+  if(!ok){
+    for(let j=0;j<10;j++){
+      setTimeout(()=>{
+        const s=document.createElement('span');
+        s.className='p-item';
+        s.textContent='🦝';
+        s.style.left=Math.random()*90+'%';
+        s.style.fontSize='20px';
+        s.style.animationDuration=(2.0+Math.random()*1.8)+'s';
+        ct.appendChild(s);
+        setTimeout(()=>s.remove(),4800);
+      },j*140);
+    }
+  }
+}
+
+function showBanner(msg,ok){
+  const old=document.querySelector('.banner');if(old)old.remove();
+  const d=document.createElement('div');d.className='banner';
+  d.style.border='3px solid '+(ok?'#388E3C':'#C62828');
+  d.style.color=ok?'#1B5E20':'#B71C1C';
+  d.textContent=msg;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),3400);
+}
+
+/* INIT */
+document.querySelectorAll('.section').forEach(s=>{if(!s.classList.contains('vis'))s.style.display='none';});
+fcRender();
+</script>
+</body>
+</html>

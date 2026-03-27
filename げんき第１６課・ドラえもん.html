@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ドラえもん — 第16課</title>
+<style>
+/* ── BASE ── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#FFF9C4;min-height:100vh;padding:10px}
+
+/* ── DORAEMON PATTERN BACKGROUND ── */
+body::before{
+  content:'';
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='100'%3E%3C!-- head --%3E%3Ccircle cx='45' cy='42' r='32' fill='%230094DA'/%3E%3C!-- white face --%3E%3Cellipse cx='45' cy='50' rx='24' ry='20' fill='white'/%3E%3C!-- eyes --%3E%3Ccircle cx='37' cy='34' r='7' fill='white'/%3E%3Ccircle cx='53' cy='34' r='7' fill='white'/%3E%3Ccircle cx='38' cy='35' r='4' fill='%23333'/%3E%3Ccircle cx='54' cy='35' r='4' fill='%23333'/%3E%3Ccircle cx='39' cy='34' r='1.5' fill='white'/%3E%3Ccircle cx='55' cy='34' r='1.5' fill='white'/%3E%3C!-- nose --%3E%3Ccircle cx='45' cy='43' r='4' fill='%23E53935'/%3E%3C!-- mouth line --%3E%3Cline x1='45' y1='47' x2='45' y2='65' stroke='%23aaa' stroke-width='1.2'/%3E%3C!-- smile --%3E%3Cpath d='M30 55 Q45 68 60 55' stroke='%23333' stroke-width='2' fill='none'/%3E%3C!-- whiskers left --%3E%3Cline x1='21' y1='48' x2='39' y2='51' stroke='%23555' stroke-width='1.2'/%3E%3Cline x1='21' y1='53' x2='39' y2='53' stroke='%23555' stroke-width='1.2'/%3E%3Cline x1='21' y1='58' x2='39' y2='55' stroke='%23555' stroke-width='1.2'/%3E%3C!-- whiskers right --%3E%3Cline x1='69' y1='48' x2='51' y2='51' stroke='%23555' stroke-width='1.2'/%3E%3Cline x1='69' y1='53' x2='51' y2='53' stroke='%23555' stroke-width='1.2'/%3E%3Cline x1='69' y1='58' x2='51' y2='55' stroke='%23555' stroke-width='1.2'/%3E%3C!-- collar --%3E%3Crect x='28' y='72' width='34' height='6' rx='3' fill='%23E53935'/%3E%3C!-- bell --%3E%3Ccircle cx='45' cy='81' r='6' fill='%23FFD600'/%3E%3Ccircle cx='45' cy='81' r='2' fill='%23666'/%3E%3Cline x1='45' y1='83' x2='45' y2='87' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-size:90px 100px;
+  opacity:0.12;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── APP WRAPPER ── */
+#app{position:relative;z-index:1;max-width:860px;margin:0 auto}
+
+/* ── HEADER ── */
+.hdr{
+  background:linear-gradient(135deg,#0094DA,#00BCD4);
+  border-radius:20px;padding:16px 20px;margin-bottom:14px;
+  text-align:center;color:#fff;
+  box-shadow:0 4px 20px rgba(0,148,218,.4)
+}
+.hdr h1{font-size:24px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.2)}
+.hdr small{font-size:13px;opacity:.88;display:block;margin-top:3px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.tb{padding:9px 15px;border:2.5px solid #0094DA;border-radius:22px;cursor:pointer;
+    font-size:12px;font-weight:700;color:#0094DA;background:#fff;transition:all .18s}
+.tb:hover{background:#E3F2FD}
+.tb.act{background:#0094DA;color:#fff}
+
+/* ── SECTION ── */
+.section{display:none}
+.section.vis{display:block}
+.panel{background:#fff;border-radius:18px;border:2px solid #B3E5FC;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,148,218,.1)}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 18px;border:2.5px solid #0094DA;border-radius:22px;cursor:pointer;
+    font-size:13px;font-weight:700;color:#0094DA;background:#fff;transition:all .18s}
+.btn:hover{background:#E3F2FD}
+.btn.red{border-color:#E53935;color:#E53935}.btn.red:hover{background:#FFEBEE}
+.btn.grn{border-color:#2E7D32;color:#2E7D32}.btn.grn:hover{background:#E8F5E9}
+.btn.yel{border-color:#F57F17;color:#F57F17}.btn.yel:hover{background:#FFF8E1}
+.center{text-align:center;margin:8px 0}
+
+/* ── TEXT SECTION ── */
+.txt-body{
+  font-size:16px;line-height:2.1;color:#1a1a1a;
+  background:#FFFDE7;border-radius:12px;padding:16px;
+  border:1.5px solid #FDD835;margin-bottom:12px;white-space:pre-line
+}
+.tts-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.tts-btn{padding:8px 16px;border-radius:22px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:all .18s}
+.tts-play{background:#0094DA;color:#fff}
+.tts-play:hover{background:#0077B6}
+.tts-stop{background:#E53935;color:#fff}
+.tts-stop:hover{background:#B71C1C}
+.tts-speed{border:2px solid #0094DA;background:#fff;border-radius:18px;padding:6px 10px;font-size:12px;color:#0094DA;font-weight:700}
+.tts-prog{font-size:12px;color:#888;font-style:italic}
+
+/* ── FILL IN BLANK ── */
+.fib-q{background:#fff;border-radius:14px;border:1.5px solid #FDD835;padding:14px;margin-bottom:10px}
+.fib-sent{font-size:16px;line-height:2.2;color:#1a1a1a;margin-bottom:8px}
+.blank-inp{
+  display:inline-block;min-width:80px;border:none;border-bottom:3px solid #0094DA;
+  background:transparent;font-size:16px;font-weight:700;color:#0094DA;
+  text-align:center;padding:0 4px;margin:0 3px;vertical-align:bottom;outline:none
+}
+.blank-inp.ok{border-bottom-color:#2E7D32;color:#2E7D32;background:#E8F5E9;border-radius:6px 6px 0 0}
+.blank-inp.no{border-bottom-color:#E53935;color:#E53935;background:#FFEBEE;border-radius:6px 6px 0 0}
+.fib-opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:7px}
+.fo{padding:7px 14px;border:2px solid #B3E5FC;border-radius:20px;cursor:pointer;
+    font-size:14px;background:#fff;color:#1a1a1a;transition:all .15s;font-weight:500}
+.fo:hover:not(:disabled){border-color:#0094DA;background:#E3F2FD}
+.fo.ok{border-color:#2E7D32!important;background:#E8F5E9!important;color:#1B5E20!important;font-weight:700}
+.fo.no{border-color:#E53935!important;background:#FFEBEE!important;color:#7F0000!important}
+.fib-res{font-size:12px;margin-top:5px;padding:5px 10px;border-radius:8px;font-weight:600;display:none}
+.fib-res.vis{display:block}
+.fib-res.ok{background:#E8F5E9;color:#1B5E20}
+.fib-res.no{background:#FFEBEE;color:#7F0000}
+.fib-hint{font-size:12px;color:#888;font-style:italic;margin-bottom:6px}
+
+/* ── TRUE / FALSE ── */
+.tf-q{background:#fff;border-radius:14px;border:1.5px solid #FDD835;padding:14px;margin-bottom:10px}
+.tf-stmt{font-size:16px;font-weight:500;color:#1a1a1a;margin-bottom:10px;line-height:1.6}
+.tf-btns{display:flex;gap:10px}
+.tf-btn{padding:10px 26px;border-radius:22px;border:2.5px solid;cursor:pointer;font-size:14px;font-weight:700;transition:all .15s;background:#fff}
+.tf-t{border-color:#2E7D32;color:#2E7D32}
+.tf-t:hover:not(:disabled){background:#E8F5E9}
+.tf-f{border-color:#E53935;color:#E53935}
+.tf-f:hover:not(:disabled){background:#FFEBEE}
+.tf-btn.ok{background:#E8F5E9!important;border-color:#2E7D32!important;color:#1B5E20!important}
+.tf-btn.no{background:#FFEBEE!important;border-color:#E53935!important;color:#7F0000!important}
+.tf-res{font-size:12px;margin-top:7px;padding:5px 10px;border-radius:8px;font-weight:600;display:none}
+.tf-res.vis{display:block}
+.tf-res.ok{background:#E8F5E9;color:#1B5E20}
+.tf-res.no{background:#FFEBEE;color:#7F0000}
+
+/* ── OPEN QUESTIONS ── */
+.oq-q{background:#fff;border-radius:14px;border:1.5px solid #FDD835;padding:14px;margin-bottom:10px}
+.oq-num{font-size:12px;color:#0094DA;font-weight:700;margin-bottom:5px}
+.oq-text{font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:10px;line-height:1.6}
+.oq-inp{
+  width:100%;border:2px solid #B3E5FC;border-radius:10px;
+  padding:10px 14px;font-size:15px;color:#1a1a1a;font-family:inherit;
+  resize:vertical;min-height:56px;outline:none;transition:border-color .15s
+}
+.oq-inp:focus{border-color:#0094DA}
+.oq-row{display:flex;gap:8px;margin-top:7px;align-items:flex-start;flex-wrap:wrap}
+.oq-hint{font-size:12px;color:#888;font-style:italic;background:#FFFDE7;padding:5px 10px;border-radius:8px;display:none;margin-top:5px;line-height:1.7}
+.oq-hint.vis{display:block}
+.oq-score{font-size:12px;color:#0094DA;font-weight:700;margin-bottom:8px;text-align:right}
+
+/* ── ORDER DRAG ── */
+.order-items{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.ord-item{
+  background:#fff;border:2px solid #B3E5FC;border-radius:12px;padding:10px 14px;
+  cursor:grab;font-size:14px;color:#1a1a1a;display:flex;align-items:center;gap:10px;
+  transition:border-color .15s;user-select:none
+}
+.ord-item.dragging{opacity:.5;border-color:#0094DA}
+.ord-item.correct{border-color:#2E7D32;background:#E8F5E9}
+.ord-item.wrong{border-color:#E53935;background:#FFEBEE}
+.ord-num{font-weight:700;color:#0094DA;min-width:24px}
+
+/* ── SCORE ── */
+.score-bar{
+  background:linear-gradient(135deg,#0094DA,#26C6DA);
+  color:#fff;border-radius:14px;padding:10px 16px;
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;font-weight:700;font-size:14px
+}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+.p-item{position:absolute;top:-50px;animation:pfall linear forwards}
+@keyframes pfall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(540deg);opacity:.05}}
+
+/* ── BANNER ── */
+.banner{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#fff;border-radius:20px;padding:22px 40px;font-size:20px;
+  font-weight:700;z-index:10000;text-align:center;
+  box-shadow:0 12px 40px rgba(0,0,0,.22);animation:bIn .3s ease
+}
+@keyframes bIn{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+/* ── PROGRESS ── */
+.prog-wrap{background:#E3F2FD;border-radius:20px;height:8px;margin:6px 0 12px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,#0094DA,#26C6DA);border-radius:20px;transition:width .5s ease}
+
+/* ── SECTION TITLE ── */
+.s-title{font-size:16px;font-weight:700;color:#0094DA;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="particles"></div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <h1>🔵 ドラえもん 第16課 🔔</h1>
+  <small>Szövegolvasás · Mondatkiegészítés · Partikulák · Igaz–Hamis · Kérdések · Sorrend</small>
+</div>
+
+<div class="score-bar">
+  <span>⭐ Pontszám: <span id="total-score">0</span> / <span id="total-max">0</span></span>
+  <span id="score-pct">— %</span>
+</div>
+<div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tb act" onclick="showTab('read',this)">📖 Szöveg</button>
+  <button class="tb" onclick="showTab('fib',this)">✏️ Szavak</button>
+  <button class="tb" onclick="showTab('part',this)">🔤 Partikulák</button>
+  <button class="tb" onclick="showTab('tf',this)">⭕ Igaz–Hamis</button>
+  <button class="tb" onclick="showTab('open',this)">💬 Kérdések</button>
+  <button class="tb" onclick="showTab('ord',this)">🔢 Sorrend</button>
+</div>
+
+<!-- ══════ READING ══════ -->
+<div id="s-read" class="section vis">
+  <div class="panel">
+    <div class="s-title">🔊 Szöveg felolvasás — ドラえもん</div>
+    <div class="tts-bar">
+      <button class="tts-btn tts-play" onclick="ttsPlay()">▶ Felolvasás</button>
+      <button class="tts-btn tts-stop" onclick="ttsStop()">⏹ Stop</button>
+      <select class="tts-speed" id="tts-speed" onchange="ttsStop()">
+        <option value="0.6">🐢 Lassú</option>
+        <option value="0.85" selected>🚶 Normál</option>
+        <option value="1.1">🏃 Gyors</option>
+      </select>
+      <span class="tts-prog" id="tts-status">— kattints a felolvasáshoz —</span>
+    </div>
+    <div class="txt-body" id="txt-display"></div>
+    <div style="font-size:12px;color:#888;text-align:right;margin-top:4px">※ A felolvasás a böngésző japán hangját használja (Web Speech API)</div>
+  </div>
+</div>
+
+<!-- ══════ FILL IN BLANK — WORDS ══════ -->
+<div id="s-fib" class="section">
+  <div class="panel">
+    <div class="s-title">✏️ Töltsd ki a hiányzó szavakat!</div>
+    <div id="fib-wrap"></div>
+    <div class="center" style="margin-top:10px"><button class="btn" onclick="fibInit()">⇌ Újrakezd</button></div>
+  </div>
+</div>
+
+<!-- ══════ PARTICLES — FILL IN ══════ -->
+<div id="s-part" class="section">
+  <div class="panel">
+    <div class="s-title">🔤 Melyik a helyes partikula?</div>
+    <div id="part-wrap"></div>
+    <div class="center" style="margin-top:10px"><button class="btn" onclick="partInit()">⇌ Újrakezd</button></div>
+  </div>
+</div>
+
+<!-- ══════ TRUE / FALSE ══════ -->
+<div id="s-tf" class="section">
+  <div class="panel">
+    <div class="s-title">⭕ Igaz (○) vagy Hamis (✗)?</div>
+    <div id="tf-wrap"></div>
+    <div class="center" style="margin-top:10px"><button class="btn" onclick="tfInit()">⇌ Újrakezd</button></div>
+  </div>
+</div>
+
+<!-- ══════ OPEN QUESTIONS ══════ -->
+<div id="s-open" class="section">
+  <div class="panel">
+    <div class="s-title">💬 Válaszolj saját szavakkal!</div>
+    <div class="oq-score" id="oq-score"></div>
+    <div id="open-wrap"></div>
+  </div>
+</div>
+
+<!-- ══════ ORDER ══════ -->
+<div id="s-ord" class="section">
+  <div class="panel">
+    <div class="s-title">🔢 Rendezd sorrendbe az eseményeket!</div>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">Húzd a mondatokat a helyes sorrendbe (első eseménytől az utolsóig)!</p>
+    <div class="order-items" id="ord-wrap"></div>
+    <div class="center" style="margin-top:8px;gap:8px;display:flex;justify-content:center;flex-wrap:wrap">
+      <button class="btn grn" onclick="ordCheck()">✔ Ellenőrzés</button>
+      <button class="btn" onclick="ordInit()">⇌ Újrakezd</button>
+    </div>
+    <div class="fib-res" id="ord-res" style="margin-top:10px;font-size:14px"></div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ══════════════════════════════════════════
+   TEXT DATA
+══════════════════════════════════════════ */
+var TEXT = [
+  '「ドラえもん」',
+  '',
+  '子供の時、「空を飛んでみたい」「違う世界に行ってみたい」と思いませんでしたか。まんが「ドラえもん」の中でそんな夢がかないます。「ドラえもん」は未来から来たロボットです。未来のいろいろな便利な「ひみつ道具」をポケットの中に持っていて、小学生ののび太くんが困った時、その道具を使って助けてくれます。',
+  '',
+  'ある日、のび太くんはテストがあるのを忘れて、ぜんぜん勉強しませんでした。困ったのび太くんはドラえもんに言いました。「ドラえもん、助けてよ。次のテストは自分で勉強するから。」ドラえもんはポケットから、のび太くんに「アンキパン」をあげました。「これは『アンキパン』だよ。覚えたいことをこのパンに写して、食べてみて。覚えられるから。」',
+  '',
+  'のび太くんはパンに覚えたいことを写して、全部食べて、学校に行きました。もう、テストは大丈夫です。でも、のび太くんは何も覚えていません。教室ではテストが始まりました。のび太くんはテストの前に、おなかが痛くなって、トイレに行ったのです。やっぱり自分で勉強しなければいけないのです。',
+  '',
+  'まんが「ドラえもん」は一九七〇年に雑誌で始まりました。七三年にはテレビ番組になり、今も毎週続いています。どうして「ドラえもん」は人気があるのでしょうか。それは、ドラえもんが夢をたくさんくれるからです。例えば、「どこでもドア」。行きたい所を考えて、このドアを開けます。すると、「どこでもドア」の向こうにはその場所があるのです。このドアであなたもこんな「ひみつ道具」があったら、どこにでも行きたいと思いませんか。',
+  '',
+  'また、ドラえもんは弱い子供の味方です。のび太くんは勉強もあまりできないし、運動もできません。でも、ドラえもんはいつものび太くんを助けてくれます。子供たちはそんなやさしいドラえもんが大好きなのです。',
+  '',
+  'ドラえもんのテレビ番組は、シンガポールやベトナムなど、日本以外の国でも見られます。あなたの国にもドラえもんが来るかもしれません。'
+].join('\n');
+
+document.getElementById('txt-display').textContent = TEXT;
+
+/* ══════════════════════════════════════════
+   TTS
+══════════════════════════════════════════ */
+var ttsUtter = null;
+var ttsActive = false;
+
+function ttsPlay(){
+  if(!window.speechSynthesis){ alert('A böngésző nem támogatja a hangfelolvasást.'); return; }
+  ttsStop();
+  var spd = parseFloat(document.getElementById('tts-speed').value);
+  ttsUtter = new SpeechSynthesisUtterance(TEXT);
+  ttsUtter.lang = 'ja-JP';
+  ttsUtter.rate = spd;
+  ttsUtter.pitch = 1.05;
+  // try to find a Japanese voice
+  var voices = window.speechSynthesis.getVoices();
+  var jpVoice = voices.find(function(v){ return v.lang.indexOf('ja')===0; });
+  if(jpVoice) ttsUtter.voice = jpVoice;
+  ttsUtter.onstart = function(){ document.getElementById('tts-status').textContent = '🔊 Felolvasás folyamatban...'; ttsActive=true; };
+  ttsUtter.onend = function(){ document.getElementById('tts-status').textContent = '✅ Vége'; ttsActive=false; };
+  ttsUtter.onerror = function(){ document.getElementById('tts-status').textContent = '⚠️ Hiba — próbáld egy másik böngészőben'; };
+  window.speechSynthesis.speak(ttsUtter);
+}
+function ttsStop(){
+  if(window.speechSynthesis){ window.speechSynthesis.cancel(); }
+  document.getElementById('tts-status').textContent = '⏹ Megállítva';
+  ttsActive = false;
+}
+// voices may load async
+if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged = function(){};
+
+/* ══════════════════════════════════════════
+   SCORE SYSTEM
+══════════════════════════════════════════ */
+var scoreData = { earned:0, max:0 };
+function addScore(earned, max){
+  scoreData.earned += earned;
+  scoreData.max += max;
+  updateScoreBar();
+}
+function updateScoreBar(){
+  document.getElementById('total-score').textContent = scoreData.earned;
+  document.getElementById('total-max').textContent = scoreData.max;
+  var pct = scoreData.max > 0 ? Math.round(scoreData.earned/scoreData.max*100) : 0;
+  document.getElementById('score-pct').textContent = pct + ' %';
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+
+/* ══════════════════════════════════════════
+   TAB SWITCHER
+══════════════════════════════════════════ */
+function showTab(id, btn){
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('vis'); s.style.display='none'; });
+  document.querySelectorAll('.tb').forEach(function(b){ b.classList.remove('act'); });
+  var el = document.getElementById('s-'+id);
+  el.style.display = 'block'; el.classList.add('vis');
+  btn.classList.add('act');
+  if(id==='fib' && !fibInited) fibInit();
+  if(id==='part' && !partInited) partInit();
+  if(id==='tf' && !tfInited) tfInit();
+  if(id==='open' && !openInited) openInit();
+  if(id==='ord' && !ordInited) ordInit();
+}
+
+/* ══════════════════════════════════════════
+   FILL IN BLANK — WORDS
+══════════════════════════════════════════ */
+var fibInited = false;
+var fibDone = {};
+
+var FIB = [
+  {
+    pre:'「ドラえもん」は', blank:'未来', post:'から来たロボットです。',
+    opts:['未来','過去','現在','外国'],
+    hint:'ドラえもん comes from the future — 未来 (みらい)',
+    tr:'未来 (みらい) = jövő'
+  },
+  {
+    pre:'のび太くんはテストがあるのを', blank:'忘れて', post:'、ぜんぜん勉強しませんでした。',
+    opts:['忘れて','思い出して','知って','見て'],
+    hint:'He forgot (忘れる wasureru) about the test',
+    tr:'忘れる (わすれる) = elfelejteni'
+  },
+  {
+    pre:'困ったのび太くんはドラえもんに「', blank:'助けて', post:'よ」と言いました。',
+    opts:['助けて','教えて','待って','来て'],
+    hint:'Nobita says "help me!" — 助ける (tasukeru)',
+    tr:'助ける (たすける) = segíteni'
+  },
+  {
+    pre:'「これは「アンキパン」だよ。覚えたいことをこの', blank:'パン', post:'に写して、食べてみて。」',
+    opts:['パン','ノート','本','紙'],
+    hint:'AnkiPAN — pan means bread パン',
+    tr:'パン = kenyér'
+  },
+  {
+    pre:'のび太くんはテストの前に、おなかが', blank:'痛く', post:'なって、トイレに行きました。',
+    opts:['痛く','よく','楽しく','寒く'],
+    hint:'His stomach hurt — 痛い (itai)',
+    tr:'痛い (いたい) = fáj'
+  },
+  {
+    pre:'「ドラえもん」は一九七〇年に', blank:'雑誌', post:'で始まりました。',
+    opts:['雑誌','テレビ','映画','ラジオ'],
+    hint:'It started in a magazine — 雑誌 (zasshi)',
+    tr:'雑誌 (ざっし) = folyóirat, képesújság'
+  },
+  {
+    pre:'「どこでもドア」は行きたい', blank:'所', post:'に行ける道具です。',
+    opts:['所','時','人','物'],
+    hint:'The door takes you anywhere — 所 (tokoro) = place',
+    tr:'所 (ところ) = hely'
+  },
+  {
+    pre:'のび太くんは勉強もあまりできないし、', blank:'運動', post:'もできません。',
+    opts:['運動','料理','音楽','旅行'],
+    hint:'Nobita is bad at sports too — 運動 (undou)',
+    tr:'運動 (うんどう) = sport, mozgás'
+  },
+  {
+    pre:'ドラえもんのテレビ番組は、シンガポールや', blank:'ベトナム', post:'など、日本以外の国でも見られます。',
+    opts:['ベトナム','フランス','ブラジル','エジプト'],
+    hint:'Vietnam and Singapore are mentioned in the text',
+    tr:'ベトナム = Vietnam'
+  },
+  {
+    pre:'子供たちはそんなやさしいドラえもんが', blank:'大好き', post:'なのです。',
+    opts:['大好き','大嫌い','有名','不思議'],
+    hint:'Children love Doraemon very much — 大好き (daisuki)',
+    tr:'大好き (だいすき) = nagyon szeret'
+  }
+];
+
+function fibInit(){
+  fibInited = true;
+  fibDone = {};
+  var w = document.getElementById('fib-wrap');
+  w.innerHTML = '';
+  FIB.forEach(function(ex, i){
+    var d = document.createElement('div');
+    d.className = 'fib-q';
+    d.innerHTML =
+      '<div class="fib-sent">'+ex.pre+
+      '<span class="blank" id="fb'+i+'">＿＿＿</span>'+
+      ex.post+'</div>'+
+      '<div class="fib-hint">💡 '+ex.hint+'</div>'+
+      '<div class="fib-opts" id="fo'+i+'"></div>'+
+      '<div class="fib-res" id="fr'+i+'"></div>';
+    w.appendChild(d);
+    var oo = document.getElementById('fo'+i);
+    shuffle(ex.opts.slice()).forEach(function(opt){
+      var b = document.createElement('button'); b.className='fo'; b.textContent=opt;
+      b.onclick = (function(ii,o,btn){ return function(){ fibCheck(ii,o,btn,FIB[ii]); }; })(i,opt,b);
+      oo.appendChild(b);
+    });
+  });
+}
+
+function fibCheck(i, ans, btn, ex){
+  if(fibDone[i]) return; fibDone[i]=true;
+  var oo = document.querySelectorAll('#fo'+i+' .fo');
+  oo.forEach(function(b){ b.disabled=true; if(b.textContent===ex.blank) b.classList.add('ok'); });
+  var blk = document.getElementById('fb'+i);
+  var res = document.getElementById('fr'+i);
+  if(ans===ex.blank){
+    blk.textContent=ans; blk.style.color='#1B5E20'; blk.style.borderBottomColor='#2E7D32';
+    blk.style.background='#E8F5E9'; blk.style.borderRadius='6px 6px 0 0';
+    res.textContent='✓ Helyes! '+ex.tr; res.className='fib-res ok vis';
+    addScore(1,1); playOK(); rain(true);
+  } else {
+    btn.classList.add('no');
+    res.textContent='✗ Helytelen. Helyes: '+ex.blank+' — '+ex.tr; res.className='fib-res no vis';
+    addScore(0,1); playFail(); rain(false);
+  }
+}
+
+/* ══════════════════════════════════════════
+   PARTICLES — FILL IN
+══════════════════════════════════════════ */
+var partInited = false;
+var partDone = {};
+
+var PART = [
+  {
+    pre:'困ったのび太くんはドラえもん', blank:'に', post:'言いました。',
+    opts:['に','が','を','で'],
+    hint:'〜に言う = 〜-nak/nek mond (irány)',
+    tr:'に = -nak/-nek (irányhatározó)'
+  },
+  {
+    pre:'覚えたいことをこのパン', blank:'に', post:'写して、食べてみて。',
+    opts:['に','で','を','から'],
+    hint:'パンに写す = átmásolni a kenyérre (irány: -ra)',
+    tr:'に = -ra/-re (irány)'
+  },
+  {
+    pre:'ドラえもん', blank:'は', post:'未来から来たロボットです。',
+    opts:['は','が','を','の'],
+    hint:'は = téma partikula (topic marker)',
+    tr:'は = téma partikula'
+  },
+  {
+    pre:'ポケット', blank:'から', post:'「アンキパン」を出しました。',
+    opts:['から','に','で','まで'],
+    hint:'〜から出す = kivesz vmiből (honnan?)',
+    tr:'から = -ból/-ből (honnan)'
+  },
+  {
+    pre:'まんが「ドラえもん」は一九七〇年に雑誌', blank:'で', post:'始まりました。',
+    opts:['で','に','を','が'],
+    hint:'〜で始まる = vmiben/vmivel kezdődik (eszköz/hely)',
+    tr:'で = helyet/eszközt jelöl'
+  },
+  {
+    pre:'行きたい所', blank:'を', post:'考えて、このドアを開けます。',
+    opts:['を','に','が','は'],
+    hint:'〜を考える = gondolkodik vmin (tárgy)',
+    tr:'を = tárgyeset partikula'
+  },
+  {
+    pre:'「ドラえもん」は、シンガポールやベトナムなど、日本以外の国', blank:'でも', post:'見られます。',
+    opts:['でも','にも','をも','がも'],
+    hint:'〜でも見られる = vmiben is látható',
+    tr:'でも = -ban/-ben is'
+  },
+  {
+    pre:'次のテストは自分', blank:'で', post:'勉強するから。',
+    opts:['で','が','を','に'],
+    hint:'自分で = saját magától/egyedül',
+    tr:'自分で = saját magától, egyedül'
+  },
+  {
+    pre:'子供たちはそんなやさしいドラえもん', blank:'が', post:'大好きなのです。',
+    opts:['が','を','は','に'],
+    hint:'〜が大好き = nagyon szeret vmit (が + érzelem)',
+    tr:'が = érzelmek partikula (daisuki, suki)'
+  },
+  {
+    pre:'のび太くんは勉強もあまりできないし、運動', blank:'も', post:'できません。',
+    opts:['も','が','を','は'],
+    hint:'〜も = szintén, is (párhuzam)',
+    tr:'も = is, szintén'
+  }
+];
+
+function partInit(){
+  partInited = true;
+  partDone = {};
+  var w = document.getElementById('part-wrap');
+  w.innerHTML = '';
+  PART.forEach(function(ex, i){
+    var d = document.createElement('div');
+    d.className = 'fib-q';
+    d.innerHTML =
+      '<div class="fib-sent">'+ex.pre+
+      '<span class="blank" id="pb'+i+'">＿</span>'+
+      ex.post+'</div>'+
+      '<div class="fib-hint">💡 '+ex.hint+'</div>'+
+      '<div class="fib-opts" id="po'+i+'"></div>'+
+      '<div class="fib-res" id="pr'+i+'"></div>';
+    w.appendChild(d);
+    var oo = document.getElementById('po'+i);
+    shuffle(ex.opts.slice()).forEach(function(opt){
+      var b = document.createElement('button'); b.className='fo'; b.textContent=opt;
+      b.onclick = (function(ii,o,btn){ return function(){ partCheck(ii,o,btn,PART[ii]); }; })(i,opt,b);
+      oo.appendChild(b);
+    });
+  });
+}
+
+function partCheck(i, ans, btn, ex){
+  if(partDone[i]) return; partDone[i]=true;
+  var oo = document.querySelectorAll('#po'+i+' .fo');
+  oo.forEach(function(b){ b.disabled=true; if(b.textContent===ex.blank) b.classList.add('ok'); });
+  var blk = document.getElementById('pb'+i);
+  var res = document.getElementById('pr'+i);
+  if(ans===ex.blank){
+    blk.textContent=ans; blk.style.color='#1B5E20'; blk.style.borderBottomColor='#2E7D32';
+    res.textContent='✓ Helyes! '+ex.tr; res.className='fib-res ok vis';
+    addScore(1,1); playOK(); rain(true);
+  } else {
+    btn.classList.add('no');
+    res.textContent='✗ Helytelen. Helyes: 「'+ex.blank+'」 — '+ex.tr; res.className='fib-res no vis';
+    addScore(0,1); playFail(); rain(false);
+  }
+}
+
+/* ══════════════════════════════════════════
+   TRUE / FALSE
+══════════════════════════════════════════ */
+var tfInited = false;
+var tfDone = {};
+
+var TF = [
+  { stmt:'「ドラえもん」は現在から来たロボットです。', ans:false, exp:'✗ ドラえもんは未来から来たロボットです。(Doraemon a jövőből jött.)' },
+  { stmt:'のび太くんはテストのために一生懸命勉強しました。', ans:false, exp:'✗ のび太くんはテストがあるのを忘れて、ぜんぜん勉強しませんでした。(Nobita elfelejtette a tesztet és egyáltalán nem tanult.)' },
+  { stmt:'「アンキパン」は覚えたいことをパンに写して食べる道具です。', ans:true, exp:'○ 正解！ 覚えたいことをパンに写して食べます。(Igaz — az AnkiPan-ra másoljuk, amit meg akarunk tanulni, és megesszük.)' },
+  { stmt:'のび太くんはアンキパンを食べてテストに合格しました。', ans:false, exp:'✗ のび太くんはおなかが痛くなって、トイレに行ったので、テストができませんでした。(Nobita gyomra fájt és toaletre kellett mennie, így nem tudta megírni a tesztet.)' },
+  { stmt:'まんが「ドラえもん」は一九七〇年に始まりました。', ans:true, exp:'○ 正解！ 一九七〇年に雑誌で始まりました。(Igaz — 1970-ben indult folyóiratban.)' },
+  { stmt:'「どこでもドア」を使うと空を飛ぶことができます。', ans:false, exp:'✗ 「どこでもドア」は行きたい所に行ける道具です。空を飛ぶ道具ではありません。(A bárhova-ajtó egy tetszőleges helyre visz — nem repülésre való.)' },
+  { stmt:'ドラえもんのアニメは今も毎週続いています。', ans:true, exp:'○ 正解！ 七三年にテレビ番組になり、今も毎週続いています。(Igaz — 1973 óta ma is heti rendszerességgel megy.)' },
+  { stmt:'のび太くんは勉強が得意で、スポーツも上手です。', ans:false, exp:'✗ のび太くんは勉強もあまりできないし、運動もできません。(Nobita nem jó a tanulásban és sportban sem.)' },
+  { stmt:'ドラえもんのテレビ番組は日本だけで見られます。', ans:false, exp:'✗ シンガポールやベトナムなど、日本以外の国でも見られます。(Szingapúrban, Vietnamban és más országokban is nézik.)' },
+  { stmt:'子供たちはドラえもんのことが大好きです。', ans:true, exp:'○ 正解！ 子供たちはそんなやさしいドラえもんが大好きなのです。(Igaz — a gyerekek nagyon szeretik a kedves Doraemont.)' }
+];
+
+function tfInit(){
+  tfInited = true;
+  tfDone = {};
+  var w = document.getElementById('tf-wrap');
+  w.innerHTML = '';
+  TF.forEach(function(q, i){
+    var d = document.createElement('div');
+    d.className = 'tf-q';
+    d.innerHTML =
+      '<div class="tf-stmt">'+(i+1)+'．'+q.stmt+'</div>'+
+      '<div class="tf-btns">'+
+        '<button class="tf-btn tf-t" id="tft'+i+'" onclick="tfCheck('+i+',true,this)">○ Igaz</button>'+
+        '<button class="tf-btn tf-f" id="tff'+i+'" onclick="tfCheck('+i+',false,this)">✗ Hamis</button>'+
+      '</div>'+
+      '<div class="tf-res" id="tfr'+i+'"></div>';
+    w.appendChild(d);
+  });
+}
+
+function tfCheck(i, val, btn){
+  if(tfDone[i]) return; tfDone[i]=true;
+  var q = TF[i];
+  var ok = (val === q.ans);
+  var bt = document.getElementById('tft'+i);
+  var bf = document.getElementById('tff'+i);
+  bt.disabled=true; bf.disabled=true;
+  btn.classList.add(ok ? 'ok':'no');
+  // also mark the correct one
+  if(!ok){ (q.ans ? bt : bf).classList.add('ok'); }
+  var res = document.getElementById('tfr'+i);
+  res.textContent = q.exp;
+  res.className = 'tf-res vis '+(ok?'ok':'no');
+  addScore(ok?1:0, 1);
+  if(ok){ playOK(); rain(true); } else { playFail(); rain(false); }
+}
+
+/* ══════════════════════════════════════════
+   OPEN QUESTIONS
+══════════════════════════════════════════ */
+var openInited = false;
+var openChecked = {};
+
+var OPEN = [
+  {
+    q:'ドラえもんはどこから来ましたか。',
+    hint:'答えのヒント: 「〜は〜から来ました。」\nSegítség: ドラえもんは【未来】から来ました。',
+    model:'ドラえもんは未来から来ました。'
+  },
+  {
+    q:'「アンキパン」はどんな道具ですか。説明してください。',
+    hint:'答えのヒント: 「〜は〜道具です。〜を〜ことができます。」\nSegítség: 覚えたいことをパンに写して食べると、覚えられる道具です。',
+    model:'「アンキパン」は覚えたいことをパンに写して食べると、そのことを全部覚えられる道具です。'
+  },
+  {
+    q:'「どこでもドア」はどんな道具ですか。',
+    hint:'Segítség: 行きたい所を考えてドアを開けると、その場所に行ける道具です。',
+    model:'「どこでもドア」は行きたい所を考えてドアを開けると、どこにでも行ける道具です。'
+  },
+  {
+    q:'のび太くんはなぜテストがうまくいきませんでしたか。',
+    hint:'Miért nem ment jól Nobita tesztje? \nSegítség: アンキパンを食べたのに、おなかが痛くなって…',
+    model:'のび太くんはテストの前におなかが痛くなって、トイレに行ったので、テストができませんでした。'
+  },
+  {
+    q:'どうして「ドラえもん」は世界中で人気がありますか。あなたの考えを書いてください。',
+    hint:'Miért népszerű Doraemon? Saját véleményedben használd ezeket: 夢・ひみつ道具・やさしい・子供',
+    model:'（例）ドラえもんはたくさんの夢を与えてくれるからです。また、ドラえもんはやさしくて、弱い子供の味方だからだと思います。'
+  },
+  {
+    q:'あなたはどんな「ひみつ道具」がほしいですか。どうしてですか。',
+    hint:'自分の意見を書いてみましょう！ \n（例）私は「どこでもドア」がほしいです。なぜなら、〜したいからです。',
+    model:'（自由回答 — szabad válasz! Nincs egyetlen helyes megoldás.）'
+  },
+  {
+    q:'あなたの国でドラえもんは人気がありますか。',
+    hint:'（例）私の国（ハンガリー）では、ドラえもんは〜です。',
+    model:'（自由回答 — saját vélemény!）'
+  }
+];
+
+function openInit(){
+  openInited = true;
+  var w = document.getElementById('open-wrap');
+  w.innerHTML = '';
+  document.getElementById('oq-score').textContent = '';
+  OPEN.forEach(function(q, i){
+    var d = document.createElement('div');
+    d.className = 'oq-q';
+    d.innerHTML =
+      '<div class="oq-num">質問 '+(i+1)+' / '+OPEN.length+'</div>'+
+      '<div class="oq-text">'+q.q+'</div>'+
+      '<textarea class="oq-inp" id="oa'+i+'" placeholder="ここに答えを書いてください…" rows="3"></textarea>'+
+      '<div class="oq-row">'+
+        '<button class="btn grn" onclick="openCheck('+i+')">✔ Ellenőrzés / 答え合わせ</button>'+
+        '<button class="btn yel" onclick="openHint('+i+')">💡 Tipp / ヒント</button>'+
+      '</div>'+
+      '<div class="oq-hint" id="oh'+i+'"><strong>模範答え (mintaválasz):</strong><br>'+q.hint+'<br><br>📌 '+q.model+'</div>';
+    w.appendChild(d);
+  });
+}
+
+function openCheck(i){
+  if(openChecked[i]) return;
+  var inp = document.getElementById('oa'+i).value.trim();
+  if(!inp){ alert('Kérlek írj valamit a bevitelbe!'); return; }
+  openChecked[i] = true;
+  document.getElementById('oa'+i).style.borderColor = '#2E7D32';
+  document.getElementById('oa'+i).style.background = '#F1F8E9';
+  openHint(i);
+  playOK(); rain(true);
+  addScore(1,1);
+  updateScoreBar();
+}
+
+function openHint(i){
+  var el = document.getElementById('oh'+i);
+  el.classList.add('vis');
+}
+
+/* ══════════════════════════════════════════
+   ORDER / DRAG
+══════════════════════════════════════════ */
+var ordInited = false;
+var dragSrc = null;
+
+var ORD_CORRECT = ['d','f','e','c','a','b'];  // correct sequence labels
+var ORD_ITEMS = {
+  'a':'のび太くんはおなかが痛くなったので、トイレに行った。',
+  'b':'のび太くんはテストがぜんぜんできなかった。',
+  'c':'のび太くんは「アンキパン」に覚えたいことを写して、全部食べた。',
+  'd':'のび太くんはテストがあるのを忘れていた。',
+  'e':'ドラえもんはポケットから「アンキパン」を出した。',
+  'f':'のび太くんは困って、ドラえもんに相談した。'
+};
+var ORD_LABELS = { 'a':'a','b':'b','c':'c','d':'d','e':'e','f':'f' };
+
+var ordCurrentOrder = [];
+
+function ordInit(){
+  ordInited = true;
+  ordCurrentOrder = Object.keys(ORD_ITEMS).slice().sort(function(){ return Math.random()-.5; });
+  var w = document.getElementById('ord-wrap');
+  w.innerHTML = '';
+  document.getElementById('ord-res').className = 'fib-res';
+  document.getElementById('ord-res').textContent = '';
+  ordCurrentOrder.forEach(function(key, idx){
+    var d = document.createElement('div');
+    d.className = 'ord-item';
+    d.draggable = true;
+    d.dataset.key = key;
+    d.innerHTML = '<span class="ord-num">'+(idx+1)+'</span><span>'+key+'. '+ORD_ITEMS[key]+'</span>';
+    d.addEventListener('dragstart', function(e){ dragSrc=this; this.classList.add('dragging'); });
+    d.addEventListener('dragend', function(){ this.classList.remove('dragging'); });
+    d.addEventListener('dragover', function(e){ e.preventDefault(); });
+    d.addEventListener('drop', function(e){
+      e.preventDefault();
+      if(dragSrc===this) return;
+      var items = Array.from(w.querySelectorAll('.ord-item'));
+      var si = items.indexOf(dragSrc);
+      var ti = items.indexOf(this);
+      if(si<ti) w.insertBefore(dragSrc, this.nextSibling);
+      else w.insertBefore(dragSrc, this);
+      // update numbers
+      Array.from(w.querySelectorAll('.ord-item')).forEach(function(it,ii){
+        it.querySelector('.ord-num').textContent = ii+1;
+      });
+    });
+    w.appendChild(d);
+  });
+}
+
+function ordCheck(){
+  var items = Array.from(document.querySelectorAll('.ord-item'));
+  var current = items.map(function(it){ return it.dataset.key; });
+  var correct = 0;
+  current.forEach(function(key, idx){
+    var item = items[idx];
+    item.classList.remove('correct','wrong');
+    if(key === ORD_CORRECT[idx]){
+      item.classList.add('correct'); correct++;
+    } else {
+      item.classList.add('wrong');
+    }
+  });
+  var res = document.getElementById('ord-res');
+  if(correct === ORD_CORRECT.length){
+    res.textContent = '🎉 Tökéletes! A helyes sorrend: d → f → e → c → a → b';
+    res.className = 'fib-res ok vis';
+    addScore(2,2); playOK(); rain(true);
+    showBanner('🔵 全問正解！完璧です！',true);
+  } else {
+    res.textContent = correct+' / '+ORD_CORRECT.length+' helyes. Próbáld újra! (Helyes sorrend: d→f→e→c→a→b)';
+    res.className = 'fib-res no vis';
+    addScore(0,2); playFail(); rain(false);
+  }
+}
+
+/* ══════════════════════════════════════════
+   AUDIO
+══════════════════════════════════════════ */
+function playOK(){
+  try{
+    var c = new AudioContext();
+    // happy doraemon-like melody: C E G C
+    [523,659,784,1047].forEach(function(f,i){
+      var o=c.createOscillator(), g=c.createGain();
+      o.connect(g); g.connect(c.destination);
+      o.frequency.value=f; o.type='sine';
+      var t=c.currentTime+i*.13;
+      g.gain.setValueAtTime(.28,t); g.gain.exponentialRampToValueAtTime(.001,t+.3);
+      o.start(t); o.stop(t+.35);
+    });
+    // little bell at end (Doraemon bell sound)
+    var ob=c.createOscillator(), gb=c.createGain();
+    ob.connect(gb); gb.connect(c.destination);
+    ob.frequency.value=1568; ob.type='sine';
+    var tb=c.currentTime+0.6;
+    gb.gain.setValueAtTime(.2,tb); gb.gain.exponentialRampToValueAtTime(.001,tb+.5);
+    ob.start(tb); ob.stop(tb+.55);
+  }catch(e){}
+}
+
+function playFail(){
+  try{
+    var c = new AudioContext();
+    [330,294,247].forEach(function(f,i){
+      var o=c.createOscillator(), g=c.createGain();
+      o.connect(g); g.connect(c.destination);
+      o.frequency.value=f; o.type='sawtooth';
+      var t=c.currentTime+i*.2;
+      g.gain.setValueAtTime(.18,t); g.gain.exponentialRampToValueAtTime(.001,t+.35);
+      o.start(t); o.stop(t+.4);
+    });
+  }catch(e){}
+}
+
+/* ══════════════════════════════════════════
+   PARTICLES
+══════════════════════════════════════════ */
+// Doraemon SVG as data URI for particle
+var DORA_EMOJI = ['🔵','🔔','⭐','🌟','💫','✨'];
+var TANUKI = ['🦝','☂','🌧','💧'];
+
+function rain(ok){
+  var ct = document.getElementById('particles');
+  var n = ok ? 30 : 14;
+  for(var i=0;i<n;i++){
+    (function(ii){
+      setTimeout(function(){
+        var s = document.createElement('span');
+        s.className = 'p-item';
+        if(ok){
+          // Doraemon rain: blue circles, bells, stars
+          s.textContent = DORA_EMOJI[Math.floor(Math.random()*DORA_EMOJI.length)];
+          s.style.fontSize = (16+Math.random()*16)+'px';
+          s.style.animationDuration = (1.4+Math.random()*2)+'s';
+        } else {
+          s.textContent = TANUKI[Math.floor(Math.random()*TANUKI.length)];
+          s.style.fontSize = (16+Math.random()*10)+'px';
+          s.style.animationDuration = (1.8+Math.random()*2)+'s';
+        }
+        s.style.left = Math.random()*96+'%';
+        ct.appendChild(s);
+        setTimeout(function(){ s.remove(); }, 4500);
+      }, ii*60);
+    })(i);
+  }
+  // Extra smiling Doraemon on correct
+  if(ok){
+    for(var j=0;j<8;j++){
+      (function(jj){
+        setTimeout(function(){
+          var s = document.createElement('span');
+          s.className = 'p-item';
+          s.innerHTML = getDoraSmile();
+          s.style.left = Math.random()*88+'%';
+          s.style.animationDuration = (2+Math.random()*2)+'s';
+          s.style.fontSize = '32px';
+          ct.appendChild(s);
+          setTimeout(function(){ s.remove(); }, 5000);
+        }, jj*180);
+      })(j);
+    }
+  }
+}
+
+function getDoraSmile(){
+  // inline SVG Doraemon smiling face (small)
+  return '<svg width="40" height="44" xmlns="http://www.w3.org/2000/svg">'+
+    '<circle cx="20" cy="18" r="15" fill="#0094DA"/>'+
+    '<ellipse cx="20" cy="23" rx="11" ry="9" fill="white"/>'+
+    '<circle cx="15" cy="13" r="4" fill="white"/><circle cx="25" cy="13" r="4" fill="white"/>'+
+    '<circle cx="15.5" cy="13.5" r="2.5" fill="#222"/><circle cx="25.5" cy="13.5" r="2.5" fill="#222"/>'+
+    '<circle cx="16" cy="13" r="1" fill="white"/><circle cx="26" cy="13" r="1" fill="white"/>'+
+    '<circle cx="20" cy="20" r="2.5" fill="#E53935"/>'+
+    '<path d="M12 25 Q20 32 28 25" stroke="#333" stroke-width="1.5" fill="none"/>'+
+    '<rect x="13" y="33" width="14" height="3" rx="1.5" fill="#E53935"/>'+
+    '<circle cx="20" cy="38" r="3" fill="#FFD600"/>'+
+    '</svg>';
+}
+
+function showBanner(msg, ok){
+  var old = document.querySelector('.banner'); if(old) old.remove();
+  var d = document.createElement('div'); d.className='banner';
+  d.style.border = '3px solid '+(ok?'#0094DA':'#E53935');
+  d.style.color = ok?'#005F8A':'#7F0000';
+  d.innerHTML = msg;
+  document.body.appendChild(d);
+  setTimeout(function(){ d.remove(); }, 3200);
+}
+
+/* ══════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════ */
+function shuffle(arr){
+  for(var i=arr.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+  }
+  return arr;
+}
+
+/* ── INIT ── */
+document.querySelectorAll('.section').forEach(function(s){
+  if(!s.classList.contains('vis')) s.style.display='none';
+});
+</script>
+</body>
+</html>

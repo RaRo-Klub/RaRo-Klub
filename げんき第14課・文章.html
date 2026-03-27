@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>アドバイス 第14課 練習</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic Pro','Meiryo','Segoe UI',sans-serif;
+  min-height:100vh;padding:12px;
+  background:linear-gradient(155deg,#E3F2FD 0%,#BBDEFB 45%,#E1F5FE 100%)}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cellipse cx='32' cy='20' rx='6' ry='11' fill='%2390CAF9' opacity='.18' transform='rotate(0 32 32)'/%3E%3Cellipse cx='32' cy='20' rx='6' ry='11' fill='%2390CAF9' opacity='.16' transform='rotate(72 32 32)'/%3E%3Cellipse cx='32' cy='20' rx='6' ry='11' fill='%2390CAF9' opacity='.16' transform='rotate(144 32 32)'/%3E%3Cellipse cx='32' cy='20' rx='6' ry='11' fill='%2290CAF9' opacity='.16' transform='rotate(216 32 32)'/%3E%3Cellipse cx='32' cy='20' rx='6' ry='11' fill='%2290CAF9' opacity='.16' transform='rotate(288 32 32)'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23E3F2FD' opacity='.4'/%3E%3C/svg%3E");
+  background-size:64px 64px;opacity:.55;pointer-events:none;z-index:0}
+
+#app{position:relative;z-index:1;max-width:860px;margin:0 auto}
+
+.hdr{background:linear-gradient(135deg,#1565C0,#1976D2,#0288D1);border-radius:20px;
+  padding:14px 20px;margin-bottom:12px;text-align:center;color:#fff;
+  box-shadow:0 4px 20px rgba(21,101,192,.45)}
+.hdr h1{font-size:21px;font-weight:700}
+.hdr small{font-size:12px;opacity:.88;display:block;margin-top:2px}
+
+.score-bar{background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;
+  border-radius:14px;padding:9px 16px;display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:8px;font-weight:700;font-size:14px}
+.prog-wrap{background:#BBDEFB;border-radius:20px;height:7px;margin-bottom:12px;overflow:hidden}
+.prog-bar{height:100%;background:linear-gradient(90deg,#1976D2,#29B6F6);
+  border-radius:20px;transition:width .5s}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.tb{padding:8px 13px;border:2.5px solid #1565C0;border-radius:22px;cursor:pointer;
+  font-size:12px;font-weight:700;color:#1565C0;background:#fff;transition:all .18s}
+.tb:hover{background:#E3F2FD}.tb.act{background:#1565C0;color:#fff}
+
+.section{display:none}.section.vis{display:block}
+.panel{background:#fff;border-radius:18px;border:2px solid #BBDEFB;padding:16px;
+  margin-bottom:12px;box-shadow:0 2px 12px rgba(21,101,192,.1)}
+.s-title{font-size:15px;font-weight:700;color:#1565C0;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px}
+
+.btn{padding:8px 16px;border:2.5px solid #1565C0;border-radius:22px;cursor:pointer;
+  font-size:12px;font-weight:700;color:#1565C0;background:#fff;transition:all .18s}
+.btn:hover{background:#E3F2FD}
+.btn.gn{border-color:#2E7D32;color:#2E7D32}.btn.gn:hover{background:#E8F5E9}
+.btn.pu{border-color:#6A1B9A;color:#6A1B9A}.btn.pu:hover{background:#F3E5F5}
+.center{text-align:center;margin:8px 0}
+
+/* ── TEXT ── */
+.txt-section{background:#F0F8FF;border-radius:14px;border:1.5px solid #90CAF9;
+  padding:16px;margin-bottom:12px}
+.txt-header{font-size:15px;font-weight:700;color:#1565C0;margin-bottom:10px;
+  border-bottom:2px solid #BBDEFB;padding-bottom:6px;display:flex;align-items:center;gap:8px}
+.txt-body{font-size:16px;line-height:2.2;color:#1a1a1a}
+.tts-btn-sm{padding:5px 12px;border-radius:16px;border:none;cursor:pointer;
+  font-size:11px;font-weight:700;background:#1976D2;color:#fff;transition:all .18s}
+.tts-btn-sm:hover{background:#1565C0}
+
+/* ── EXERCISE ITEMS ── */
+.ex-item{background:#fff;border-radius:14px;border:1.5px solid #BBDEFB;
+  padding:13px;margin-bottom:10px}
+.ex-num{font-size:11px;color:#1565C0;font-weight:700;margin-bottom:5px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.etag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+.t-sel{background:#E3F2FD;color:#1565C0;border:1px solid #BBDEFB}
+.t-par{background:#FCE4EC;color:#880E4F;border:1px solid #F8BBD9}
+.t-qa{background:#E8F5E9;color:#2E7D32;border:1px solid #C8E6C9}
+.ex-sent{font-size:17px;line-height:2.4;color:#1a1a1a;margin-bottom:7px}
+.ex-ctx{font-size:12px;color:#0288D1;font-weight:600;margin-bottom:7px;
+  background:#E1F5FE;padding:4px 10px;border-radius:8px;display:inline-block;line-height:1.6}
+
+.blank{display:inline-block;min-width:82px;border-bottom:3px solid #1976D2;
+  text-align:center;padding:0 4px;margin:0 2px;color:#1565C0;font-weight:700;vertical-align:bottom}
+.blank.ok{border-bottom-color:#2E7D32;color:#1B5E20;background:#E8F5E9;border-radius:4px 4px 0 0}
+.blank.no{border-bottom-color:#C62828;color:#7F0000;background:#FFEBEE;border-radius:4px 4px 0 0}
+.p-blank{display:inline-block;min-width:38px;border-bottom:3px solid #880E4F;
+  text-align:center;padding:0 3px;margin:0 2px;color:#880E4F;font-weight:700;vertical-align:bottom}
+.p-blank.ok{border-bottom-color:#2E7D32;color:#1B5E20;background:#E8F5E9;border-radius:4px 4px 0 0}
+.p-blank.no{border-bottom-color:#C62828;color:#7F0000;background:#FFEBEE;border-radius:4px 4px 0 0}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.opt{padding:8px 13px;border:2px solid #BBDEFB;border-radius:18px;cursor:pointer;
+  font-size:14px;background:#fff;color:#1a1a1a;transition:all .15s;font-weight:500}
+.opt:hover:not(:disabled){border-color:#1976D2;background:#E3F2FD}
+.opt.ok{border-color:#2E7D32!important;background:#E8F5E9!important;color:#1B5E20!important;font-weight:700}
+.opt.no{border-color:#C62828!important;background:#FFEBEE!important;color:#7F0000!important}
+
+.p-opt{padding:7px 13px;border:2px solid #F8BBD9;border-radius:18px;cursor:pointer;
+  font-size:14px;background:#fff;color:#880E4F;transition:all .15s;font-weight:700}
+.p-opt:hover:not(:disabled){border-color:#880E4F;background:#FCE4EC}
+.p-opt.ok{border-color:#2E7D32!important;background:#E8F5E9!important;color:#1B5E20!important}
+.p-opt.no{border-color:#C62828!important;background:#FFEBEE!important;color:#7F0000!important}
+
+.ex-res{font-size:12px;margin-top:5px;padding:5px 10px;border-radius:8px;
+  font-weight:600;display:none;line-height:1.7}
+.ex-res.vis{display:block}
+.ex-res.ok{background:#E8F5E9;color:#1B5E20}
+.ex-res.no{background:#FFEBEE;color:#7F0000}
+
+/* ── Q&A ── */
+.qa-item{background:#fff;border-radius:14px;border:1.5px solid #C8E6C9;padding:13px;margin-bottom:10px}
+.qa-q{font-size:16px;font-weight:700;color:#1565C0;margin-bottom:8px;line-height:1.7}
+.qa-ctx{font-size:11px;color:#0288D1;background:#E1F5FE;padding:3px 9px;border-radius:8px;
+  margin-bottom:8px;display:inline-block;font-weight:600}
+.qa-inp{width:100%;border:2px solid #BBDEFB;border-radius:10px;padding:9px 12px;
+  font-size:15px;font-family:inherit;outline:none;transition:border-color .15s;
+  resize:vertical;min-height:56px}
+.qa-inp:focus{border-color:#1976D2}
+.qa-inp.submitted{border-color:#2E7D32;background:#F1F8E9}
+.qa-row{display:flex;gap:8px;margin-top:7px;flex-wrap:wrap;align-items:center}
+.qa-model{background:#E3F2FD;border:1.5px solid #90CAF9;border-radius:10px;
+  padding:8px 12px;margin-top:7px;font-size:14px;color:#0D47A1;
+  line-height:1.8;display:none}
+.qa-model.vis{display:block}
+.qa-model strong{color:#1565C0}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:9999;overflow:hidden}
+.p-item{position:absolute;top:-60px;animation:pfall linear forwards}
+@keyframes pfall{
+  0%  {transform:translateY(0)    rotate(0deg)   translateX(0);   opacity:1}
+  35% {transform:translateY(35vh) rotate(110deg) translateX(16px);opacity:.95}
+  65% {transform:translateY(70vh) rotate(230deg) translateX(-12px);opacity:.8}
+  100%{transform:translateY(112vh) rotate(360deg) translateX(5px); opacity:.04}}
+.banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;
+  border-radius:20px;padding:20px 36px;font-size:19px;font-weight:700;z-index:10000;
+  text-align:center;box-shadow:0 10px 38px rgba(0,0,0,.2);animation:bIn .3s ease}
+@keyframes bIn{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="particles"></div>
+
+<div class="hdr">
+  <h1>🌸 アドバイス — 第14課 練習 🌸</h1>
+  <small>テキスト · 文の練習 · 質問と答え · 助詞練習</small>
+</div>
+<div class="score-bar">
+  <span>🌸 <span id="tot-s">0</span> / <span id="tot-m">0</span></span>
+  <span id="tot-pct">— %</span>
+</div>
+<div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+<div class="tabs">
+  <button class="tb act"  onclick="showTab('txt',this)">📖 テキスト</button>
+  <button class="tb" onclick="showTab('sent',this)">✏️ 文の練習</button>
+  <button class="tb" onclick="showTab('qa',this)">💬 質問と答え</button>
+  <button class="tb" onclick="showTab('part',this)">🔴 助詞練習</button>
+</div>
+
+<!-- ══ TEXT ══ -->
+<div id="s-txt" class="section vis">
+
+  <div class="txt-section">
+    <div class="txt-header">
+      <span>１ 結婚と仕事</span>
+      <button class="tts-btn-sm" onclick="sayText(0)">🔊 読む</button>
+    </div>
+    <div class="txt-body" id="txt0">26歳の会社員です。三歳年上の彼がいます。彼は大学時代の先輩で、六年間付き合っています。このごろ、彼は「早く結婚したい」と言っています。彼はやさしいし、仕事もできるし、私も結婚したいと思っています。でも、彼は東京に住んでいて、私は大阪に住んでいます。彼は今の仕事をやめられないと言っています。私もやめたくありません。私が仕事をやめて東京に行ったほうがいいんでしょうか。彼を愛しています。</div>
+  </div>
+
+  <div class="txt-section">
+    <div class="txt-header">
+      <span>２ 日本語が上手にならない</span>
+      <button class="tts-btn-sm" onclick="sayText(1)">🔊 読む</button>
+    </div>
+    <div class="txt-body" id="txt1">カナダ人の留学生です。日本の大学で勉強しています。私の悩みは日本語です。今、日本人のホストファミリーと住んでいます。家族は親切ですが、みんなは私と英語を話したがっています。だから、私は「英語を話さなきゃ」と思って、英語を話します。学校に日本人の友だちがたくさんいますが、みんなの英語は私の日本語より上手です。だから、たいてい英語を使います。買い物の時も「すみません。あのう、これください」と日本語で言いますが、お店の人は「ツーハンドレッドエンね。サンキュー！」と英語で言います。もう六か月も日本にいますが、ぜんぜん日本語が上手になりません。どうしたらいいでしょうか。</div>
+  </div>
+
+  <div class="txt-section">
+    <div class="txt-header">
+      <span>３ 飛行機がきらい</span>
+      <button class="tts-btn-sm" onclick="sayText(2)">🔊 読む</button>
+    </div>
+    <div class="txt-body" id="txt2">私は子供の時から飛行機がきらいです。去年、父親が急に病気になったので、飛行機で北海道に帰らなければいけませんでした。その時、気分が悪くて大変でした。実は、三か月後に会社の出張でブラジルに行くんですが、日本からサンパウロまで27時間ぐらい飛行機に乗っていなければいけません。どうしたらいいでしょうか。アドバイスをお願いします。</div>
+  </div>
+
+  <div class="txt-section" style="border-color:#A5D6A7;background:#F1F8E9">
+    <div class="txt-header" style="color:#2E7D32;border-bottom-color:#C8E6C9">
+      <span>アドバイス（飛行機がきらいへ）</span>
+      <button class="tts-btn-sm" style="background:#2E7D32" onclick="sayText(3)">🔊 読む</button>
+    </div>
+    <div class="txt-body" id="txt3">私も飛行機に乗るのが好きじゃないので、あなたの悩みが本当によくわかります。私はよく飛行機の中で、大好きなモーツァルトの音楽を聞きます。でも、あなたの場合はもっと大変そうなので、お医者さんに行って相談してみたらどうですか。</div>
+  </div>
+</div>
+
+<!-- ══ SENTENCE FILL ══ -->
+<div id="s-sent" class="section">
+  <div class="panel">
+    <div class="s-title">✏️ 文の練習 — 正しい言葉を選んでください</div>
+    <div id="sent-wrap"></div>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="sentInit()">⇌ やり直し</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Q&A ══ -->
+<div id="s-qa" class="section">
+  <div class="panel">
+    <div class="s-title">💬 質問に答えてください</div>
+    <p style="font-size:13px;color:#555;margin-bottom:12px">
+      質問に日本語で答えを書いてから、「答えを見る」ボタンを押してください。
+    </p>
+    <div id="qa-wrap"></div>
+  </div>
+</div>
+
+<!-- ══ PARTICLES ══ -->
+<div id="s-part" class="section">
+  <div class="panel">
+    <div class="s-title">🔴 助詞練習 — 正しい助詞を選んでください</div>
+    <div id="part-wrap"></div>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" onclick="partInit()">⇌ やり直し</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ══ TEXTS FOR TTS ══ */
+var TEXTS=[
+  '26歳の会社員です。三歳年上の彼がいます。彼は大学時代の先輩で、六年間付き合っています。このごろ、彼は早く結婚したいと言っています。彼はやさしいし、仕事もできるし、私も結婚したいと思っています。でも、彼は東京に住んでいて、私は大阪に住んでいます。私が仕事をやめて東京に行ったほうがいいんでしょうか。',
+  'カナダ人の留学生です。私の悩みは日本語です。今、日本人のホストファミリーと住んでいます。家族は親切ですが、みんなは私と英語を話したがっています。もう六か月も日本にいますが、ぜんぜん日本語が上手になりません。どうしたらいいでしょうか。',
+  '私は子供の時から飛行機がきらいです。三か月後に会社の出張でブラジルに行くんですが、日本からサンパウロまで27時間ぐらい飛行機に乗っていなければいけません。どうしたらいいでしょうか。',
+  '私も飛行機に乗るのが好きじゃないので、あなたの悩みが本当によくわかります。お医者さんに行って相談してみたらどうですか。'
+];
+function sayText(i){say(TEXTS[i],'ja-JP');}
+
+/* ══ SENTENCE DATA ══ */
+var SENT=[
+  // テキスト1
+  {
+    ctx:'① 結婚と仕事',
+    segs:['彼は大学時代の','__','です。'],
+    ans:'先輩',opts:['先輩','後輩','会社員','留学生'],
+    read:'彼は大学時代の先輩です。'
+  },{
+    ctx:'① 結婚と仕事',
+    segs:['彼は「早く','__','したい」と言っています。'],
+    ans:'結婚',opts:['結婚','仕事','勉強','出張'],
+    read:'彼は早く結婚したいと言っています。'
+  },{
+    ctx:'① 結婚と仕事',
+    segs:['彼は今の','__','をやめられないと言っています。'],
+    ans:'仕事',opts:['仕事','大学','趣味','アルバイト'],
+    read:'彼は今の仕事をやめられないと言っています。'
+  },{
+    ctx:'① 結婚と仕事',
+    segs:['私が仕事をやめて','__','に行ったほうがいいんでしょうか。'],
+    ans:'東京',opts:['東京','大阪','北海道','ブラジル'],
+    read:'私が仕事をやめて東京に行ったほうがいいんでしょうか。'
+  },
+  // テキスト2
+  {
+    ctx:'② 日本語が上手にならない',
+    segs:['私の悩みは','__','です。'],
+    ans:'日本語',opts:['日本語','英語','お金','友だち'],
+    read:'私の悩みは日本語です。'
+  },{
+    ctx:'② 日本語が上手にならない',
+    segs:['今、日本人の','__','と住んでいます。'],
+    ans:'ホストファミリー',opts:['ホストファミリー','先輩','彼氏','教授'],
+    read:'今、日本人のホストファミリーと住んでいます。'
+  },{
+    ctx:'② 日本語が上手にならない',
+    segs:['みんなの英語は私の日本語より','__','です。'],
+    ans:'上手',opts:['上手','下手','便利','大変'],
+    read:'みんなの英語は私の日本語より上手です。'
+  },{
+    ctx:'② 日本語が上手にならない',
+    segs:['もう六か月も日本にいますが、ぜんぜん日本語が上手に','__','。'],
+    ans:'なりません',opts:['なりません','なります','できます','わかります'],
+    read:'もう六か月も日本にいますが、ぜんぜん日本語が上手になりません。'
+  },
+  // テキスト3
+  {
+    ctx:'③ 飛行機がきらい',
+    segs:['去年、父親が急に','__','になったので、飛行機で北海道に帰りました。'],
+    ans:'病気',opts:['病気','元気','心配','仕事'],
+    read:'去年、父親が急に病気になったので、飛行機で北海道に帰りました。'
+  },{
+    ctx:'③ 飛行機がきらい',
+    segs:['三か月後に会社の','__','でブラジルに行きます。'],
+    ans:'出張',opts:['出張','旅行','留学','結婚'],
+    read:'三か月後に会社の出張でブラジルに行きます。'
+  },{
+    ctx:'③ 飛行機がきらい',
+    segs:['日本からサンパウロまで','__','時間ぐらい飛行機に乗っていなければいけません。'],
+    ans:'27',opts:['27','6','10','15'],
+    read:'日本からサンパウロまで27時間ぐらい飛行機に乗っていなければいけません。'
+  },{
+    ctx:'③ 飛行機がきらい',
+    segs:['その時、気分が悪くて','__','でした。'],
+    ans:'大変',opts:['大変','楽しい','便利','親切'],
+    read:'その時、気分が悪くて大変でした。'
+  },
+  // アドバイス
+  {
+    ctx:'アドバイス',
+    segs:['私はよく飛行機の中で、大好きな','__','の音楽を聞きます。'],
+    ans:'モーツァルト',opts:['モーツァルト','ビートルズ','ジャズ','ロック'],
+    read:'私はよく飛行機の中で、大好きなモーツァルトの音楽を聞きます。'
+  },{
+    ctx:'アドバイス',
+    segs:['お医者さんに行って','__','してみたらどうですか。'],
+    ans:'相談',opts:['相談','勉強','結婚','出張'],
+    read:'お医者さんに行って相談してみたらどうですか。'
+  },{
+    ctx:'アドバイス',
+    segs:['あなたの悩みが本当によく','__','。'],
+    ans:'わかります',opts:['わかります','なります','できます','います'],
+    read:'あなたの悩みが本当によくわかります。'
+  },
+];
+
+/* ══ Q&A DATA ══ */
+var QA=[
+  // セクション1
+  {
+    ctx:'① 結婚と仕事',
+    q:'この人の彼はどんな人ですか。',
+    model:'彼は三歳年上で、大学時代の先輩です。やさしいし、仕事もできます。六年間付き合っています。'
+  },{
+    ctx:'① 結婚と仕事',
+    q:'どうしてこの人はすぐ彼と結婚しないのですか。',
+    model:'彼は東京に住んでいて、この人は大阪に住んでいます。彼は仕事をやめられないし、この人もやめたくないので、結婚できません。'
+  },{
+    ctx:'① 結婚と仕事',
+    q:'あなたはこの人が仕事をやめて結婚したほうがいいと思いますか。どうしてですか。',
+    model:'（例）私は仕事をやめないほうがいいと思います。仕事は大切ですし、彼との関係は遠距離でも続けられると思います。'
+  },{
+    ctx:'① 結婚と仕事',
+    q:'あなたならどうすると思いますか。',
+    model:'（例）私なら、まず彼と話し合って、どちらかが引っ越せないか考えます。それから、二人の将来をゆっくり計画します。'
+  },
+  // セクション2
+  {
+    ctx:'② 日本語が上手にならない',
+    q:'この人はホストファミリーと日本語で話しますか。どうしてですか。',
+    model:'いいえ、話しません。ホストファミリーは英語を話したがっているので、英語で話してしまいます。'
+  },{
+    ctx:'② 日本語が上手にならない',
+    q:'日本人の友だちと日本語で話しますか。どうしてですか。',
+    model:'いいえ、たいてい英語を使います。友だちの英語がこの人の日本語より上手だからです。'
+  },{
+    ctx:'② 日本語が上手にならない',
+    q:'お店の人はどうですか。',
+    model:'お店の人も英語で話します。日本語で言っても、英語で返事をされてしまいます。'
+  },{
+    ctx:'② 日本語が上手にならない',
+    q:'あなたも同じ悩みがありますか。どんなアドバイスをしますか。',
+    model:'（例）私も同じような経験があります。日本語だけを使う練習として、日本語のクラスに入ったり、日本語しか使わない友だちを作ったりするといいと思います。'
+  },
+  // セクション3
+  {
+    ctx:'③ 飛行機がきらい',
+    q:'この人はいつ飛行機に乗りましたか。飛行機はどうでしたか。',
+    model:'去年、父親が急に病気になったので、北海道に帰るために乗りました。気分が悪くて大変でした。'
+  },{
+    ctx:'③ 飛行機がきらい',
+    q:'どうしてブラジルに行きたくないのですか。',
+    model:'飛行機がきらいだからです。日本からサンパウロまで27時間ぐらい飛行機に乗らなければいけないので、大変だと思っています。'
+  },{
+    ctx:'③ 飛行機がきらい',
+    q:'あなたはこの人がブラジルに行くと思いますか。',
+    model:'（例）はい、行くと思います。会社の出張なので、断ることができないと思います。でも、お医者さんに相談して薬をもらえれば大丈夫かもしれません。'
+  },
+  // A. 質問
+  {
+    ctx:'A. 質問に答えてください',
+    q:'あなたは悩みがありますか。だれに相談しますか。',
+    model:'（例）はい、日本語の勉強が難しくて悩んでいます。先生や友だちに相談します。'
+  },{
+    ctx:'A. 質問に答えてください',
+    q:'あなたの友だちはどんな悩みがありますか。どんなアドバイスをしましたか。',
+    model:'（例）友だちは仕事が忙しくて疲れていると言っていました。休みの日はゆっくり休んだほうがいいとアドバイスしました。'
+  },
+];
+
+/* ══ PARTICLE DATA ══ */
+var PART=[
+  {
+    segs:['彼は東京','_0','住んでいて、私は大阪','_1','住んでいます。'],
+    blanks:[
+      {id:'_0',ans:'に',opts:['に','で','を','が']},
+      {id:'_1',ans:'に',opts:['に','で','を','が']}
+    ],
+    read:'彼は東京に住んでいて、私は大阪に住んでいます。',
+    exp:'東京【に】住む / 大阪【に】住む — 住む場所はに'
+  },{
+    segs:['私','_0','仕事をやめて東京に行ったほうがいいんでしょうか。'],
+    blanks:[{id:'_0',ans:'が',opts:['が','は','を','に']}],
+    read:'私が仕事をやめて東京に行ったほうがいいんでしょうか。',
+    exp:'私【が】— 主語を強調する時にが'
+  },{
+    segs:['今、日本人のホストファミリー','_0','住んでいます。'],
+    blanks:[{id:'_0',ans:'と',opts:['と','に','で','が']}],
+    read:'今、日本人のホストファミリーと住んでいます。',
+    exp:'ホストファミリー【と】住む — 一緒に住むはと'
+  },{
+    segs:['みんなは私','_0','英語を話したがっています。'],
+    blanks:[{id:'_0',ans:'と',opts:['と','に','で','が']}],
+    read:'みんなは私と英語を話したがっています。',
+    exp:'私【と】話す — 誰かと話すはと'
+  },{
+    segs:['もう六か月','_0','日本にいますが、ぜんぜん日本語が上手','_1','なりません。'],
+    blanks:[
+      {id:'_0',ans:'も',opts:['も','は','が','を']},
+      {id:'_1',ans:'に',opts:['に','が','で','を']}
+    ],
+    read:'もう六か月も日本にいますが、ぜんぜん日本語が上手になりません。',
+    exp:'六か月【も】— 長い時間を強調するも / 上手【に】なる — 変化の結果はに'
+  },{
+    segs:['買い物の時','_0','「すみません、これください」と日本語','_1','言います。'],
+    blanks:[
+      {id:'_0',ans:'も',opts:['も','は','が','を']},
+      {id:'_1',ans:'で',opts:['で','に','を','が']}
+    ],
+    read:'買い物の時も「すみません、これください」と日本語で言います。',
+    exp:'〜の時【も】— 〜の時にもで強調 / 日本語【で】言う — 言語・手段はで'
+  },{
+    segs:['父親が急に病気','_0','なったので、飛行機','_1','北海道に帰りました。'],
+    blanks:[
+      {id:'_0',ans:'に',opts:['に','が','で','を']},
+      {id:'_1',ans:'で',opts:['で','に','を','が']}
+    ],
+    read:'父親が急に病気になったので、飛行機で北海道に帰りました。',
+    exp:'病気【に】なる — 変化の結果はに / 飛行機【で】帰る — 交通手段はで'
+  },{
+    segs:['三か月後に会社の出張','_0','ブラジル','_1','行きます。'],
+    blanks:[
+      {id:'_0',ans:'で',opts:['で','に','を','が']},
+      {id:'_1',ans:'に',opts:['に','へ','を','で']}
+    ],
+    read:'三か月後に会社の出張でブラジルに行きます。',
+    exp:'出張【で】— 理由・目的はで / ブラジル【に】行く — 目的地はに'
+  },{
+    segs:['日本','_0','サンパウロまで27時間ぐらい飛行機','_1','乗っていなければいけません。'],
+    blanks:[
+      {id:'_0',ans:'から',opts:['から','まで','に','で']},
+      {id:'_1',ans:'に',opts:['に','で','を','が']}
+    ],
+    read:'日本からサンパウロまで27時間ぐらい飛行機に乗っていなければいけません。',
+    exp:'日本【から】〜まで — 起点はから / 飛行機【に】乗る — 乗り物はに'
+  },{
+    segs:['お医者さん','_0','行って相談','_1','みたらどうですか。'],
+    blanks:[
+      {id:'_0',ans:'に',opts:['に','で','を','へ']},
+      {id:'_1',ans:'して',opts:['して','に','を','が']}
+    ],
+    read:'お医者さんに行って相談してみたらどうですか。',
+    exp:'お医者さん【に】行く — 目的地はに / 相談【して】みる — てみる形'
+  },{
+    segs:['私はよく飛行機の中','_0','、大好きな音楽を聞きます。'],
+    blanks:[{id:'_0',ans:'で',opts:['で','に','を','が']}],
+    read:'私はよく飛行機の中で、大好きな音楽を聞きます。',
+    exp:'飛行機の中【で】聞く — 動作の場所はで'
+  },{
+    segs:['彼はやさしいし、仕事','_0','できるし、私','_1','結婚したいと思っています。'],
+    blanks:[
+      {id:'_0',ans:'も',opts:['も','が','を','に']},
+      {id:'_1',ans:'も',opts:['も','が','を','は']}
+    ],
+    read:'彼はやさしいし、仕事もできるし、私も結婚したいと思っています。',
+    exp:'仕事【も】— 列挙のも / 私【も】— 同様にという意味のも'
+  },
+];
+
+/* ══ STATE ══ */
+var totS=0,totM=0,tabInited={},sentDone={},partDoneMap={};
+
+/* ══ SCORE ══ */
+function addScore(e,m){
+  totS+=e;totM+=m;
+  document.getElementById('tot-s').textContent=totS;
+  document.getElementById('tot-m').textContent=totM;
+  var p=totM>0?Math.round(totS/totM*100):0;
+  document.getElementById('tot-pct').textContent=p+'%';
+  document.getElementById('prog-bar').style.width=p+'%';
+}
+
+/* ══ TTS ══ */
+function say(txt,lang){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(txt);
+  u.lang=lang||'ja-JP';u.rate=.84;u.pitch=1.05;
+  var voices=window.speechSynthesis.getVoices();
+  var v=voices.find(function(x){return x.lang.indexOf((lang||'ja-JP').split('-')[0])===0;});
+  if(v)u.voice=v;
+  window.speechSynthesis.speak(u);
+}
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=function(){};
+
+/* ══ TAB ══ */
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('vis');s.style.display='none';});
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('act');});
+  document.getElementById('s-'+id).style.display='block';
+  document.getElementById('s-'+id).classList.add('vis');
+  btn.classList.add('act');
+  if(!tabInited[id]){tabInited[id]=true;
+    if(id==='sent')sentInit();
+    if(id==='qa')qaInit();
+    if(id==='part')partInit();
+  }
+}
+
+/* ══ SENTENCES ══ */
+function sentInit(){
+  sentDone={};
+  var w=document.getElementById('sent-wrap');w.innerHTML='';
+  // Group by context
+  var groups={};
+  SENT.forEach(function(ex,i){
+    if(!groups[ex.ctx])groups[ex.ctx]=[];
+    groups[ex.ctx].push(i);
+  });
+  Object.keys(groups).forEach(function(ctx){
+    var gh=document.createElement('div');
+    gh.style.cssText='font-size:13px;font-weight:700;color:#1565C0;margin:10px 0 6px;padding:5px 10px;background:#E3F2FD;border-radius:8px;';
+    gh.textContent=ctx;
+    document.getElementById('sent-wrap').appendChild(gh);
+    groups[ctx].forEach(function(i){buildSentItem(i);});
+  });
+}
+function buildSentItem(i){
+  var ex=SENT[i];
+  var d=document.createElement('div');d.className='ex-item';
+  var sentHtml=ex.segs[0]+'<span class="blank" id="sb'+i+'">　　　</span>'+ex.segs[2];
+  d.innerHTML=
+    '<div class="ex-num">'+(i+1)+'. <span class="etag t-sel">4択</span></div>'+
+    '<div class="ex-sent">'+sentHtml+'</div>'+
+    '<div class="opts" id="so'+i+'"></div>'+
+    '<div class="ex-res" id="sr'+i+'"></div>';
+  document.getElementById('sent-wrap').appendChild(d);
+  var oo=document.getElementById('so'+i);
+  shuffle(ex.opts.slice()).forEach(function(opt){
+    var b=document.createElement('button');b.className='opt';b.textContent=opt;
+    b.onclick=(function(ii,o,btn){return function(){sentCheck(ii,o,btn,SENT[ii]);};})(i,opt,b);
+    oo.appendChild(b);
+  });
+}
+function sentCheck(i,ans,btn,ex){
+  if(sentDone[i])return;sentDone[i]=true;
+  var oo=document.querySelectorAll('#so'+i+' .opt');
+  oo.forEach(function(b){b.disabled=true;if(b.textContent===ex.ans)b.classList.add('ok');});
+  var ok=(ans===ex.ans);
+  var blk=document.getElementById('sb'+i);
+  blk.textContent=ans;blk.className='blank '+(ok?'ok':'no');
+  var res=document.getElementById('sr'+i);
+  if(ok){
+    res.textContent='✓ 正解！';res.className='ex-res ok vis';
+    addScore(1,1);playOK();rain(true);
+    setTimeout(function(){say(ex.read,'ja-JP');},300);
+  } else {
+    btn.classList.add('no');
+    res.textContent='✗ 正解は「'+ex.ans+'」';res.className='ex-res no vis';
+    addScore(0,1);playFail();rain(false);
+  }
+}
+
+/* ══ Q&A ══ */
+var qaShown={};
+function qaInit(){
+  qaShown={};
+  var w=document.getElementById('qa-wrap');w.innerHTML='';
+  var groups={};
+  QA.forEach(function(ex,i){if(!groups[ex.ctx])groups[ex.ctx]=[];groups[ex.ctx].push(i);});
+  Object.keys(groups).forEach(function(ctx){
+    var gh=document.createElement('div');
+    gh.style.cssText='font-size:13px;font-weight:700;color:#2E7D32;margin:10px 0 6px;padding:5px 10px;background:#E8F5E9;border-radius:8px;';
+    gh.textContent=ctx;
+    w.appendChild(gh);
+    groups[ctx].forEach(function(i){buildQAItem(i);});
+  });
+}
+function buildQAItem(i){
+  var ex=QA[i];
+  var d=document.createElement('div');d.className='qa-item';
+  d.innerHTML=
+    '<div class="qa-q">'+(i+1)+'．'+ex.q+'</div>'+
+    '<textarea class="qa-inp" id="qa'+i+'" rows="2" placeholder="ここに答えを書いてください…"></textarea>'+
+    '<div class="qa-row">'+
+      '<button class="btn gn" onclick="qaReveal('+i+')">📖 答えを見る</button>'+
+      '<button class="tts-btn-sm" style="padding:7px 14px;border-radius:18px" onclick="say(\''+ex.q.replace(/'/g,"\\'")+'\')" >🔊 質問を聞く</button>'+
+    '</div>'+
+    '<div class="qa-model" id="qm'+i+'">'+
+      '<strong>参考答え：</strong><br>'+ex.model+
+    '</div>';
+  document.getElementById('qa-wrap').appendChild(d);
+}
+function qaReveal(i){
+  if(qaShown[i])return;
+  qaShown[i]=true;
+  var inp=document.getElementById('qa'+i);
+  var mod=document.getElementById('qm'+i);
+  if(inp.value.trim().length>0){
+    inp.className='qa-inp submitted';
+    addScore(1,1);playOK();rain(true);
+  }
+  mod.classList.add('vis');
+  say(QA[i].model,'ja-JP');
+}
+
+/* ══ PARTICLES ══ */
+function partInit(){
+  partDoneMap={};
+  var w=document.getElementById('part-wrap');w.innerHTML='';
+  PART.forEach(function(ex,i){
+    var d=document.createElement('div');d.className='ex-item';
+    var sentHtml=ex.segs.join('').replace(/_(\d)/g,function(m,bi){
+      return '<span class="p-blank" id="pb'+i+'_'+bi+'">　</span>';
+    });
+    var optsHtml='';
+    ex.blanks.forEach(function(bl,bi){
+      optsHtml+=
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap">'+
+        '<span style="font-size:11px;color:#880E4F;font-weight:700">空欄'+(bi+1)+':</span>'+
+        '<div class="opts" id="po'+i+'_'+bi+'" style="margin-bottom:0">';
+      shuffle(bl.opts.slice()).forEach(function(opt){
+        optsHtml+='<button class="p-opt" onclick="partCheck('+i+','+bi+',this,\''+opt+'\')">'+opt+'</button>';
+      });
+      optsHtml+='</div></div>';
+    });
+    d.innerHTML=
+      '<div class="ex-num">'+(i+1)+'. <span class="etag t-par">助詞</span></div>'+
+      '<div class="ex-sent">'+sentHtml+'</div>'+
+      optsHtml+
+      '<div class="ex-res" id="pr'+i+'"></div>';
+    w.appendChild(d);
+  });
+}
+function partCheck(i,bi,btn,ans){
+  var key=i+'_'+bi;
+  if(partDoneMap[key]!==undefined)return;
+  partDoneMap[key]=ans;
+  var bl=PART[i].blanks[bi];
+  var ok=(ans===bl.ans);
+  document.querySelectorAll('#po'+i+'_'+bi+' .p-opt').forEach(function(b){
+    b.disabled=true;if(b.textContent===bl.ans)b.classList.add('ok');
+  });
+  if(!ok)btn.classList.add('no');
+  var blkEl=document.getElementById('pb'+i+'_'+bi);
+  if(blkEl){blkEl.textContent=ans;blkEl.className='p-blank '+(ok?'ok':'no');}
+  var allA=PART[i].blanks.every(function(_,bj){return partDoneMap[i+'_'+bj]!==undefined;});
+  if(allA){
+    var allOk=PART[i].blanks.every(function(_,bj){return partDoneMap[i+'_'+bj]===PART[i].blanks[bj].ans;});
+    var res=document.getElementById('pr'+i);
+    res.textContent=(allOk?'✓ 正解！\n':'✗ 不正解あり。\n')+PART[i].exp;
+    res.className='ex-res '+(allOk?'ok':'no')+' vis';
+    addScore(allOk?1:0,1);
+    if(allOk){playOK();rain(true);setTimeout(function(){say(PART[i].read,'ja-JP');},300);}
+    else{playFail();rain(false);}
+  }
+}
+
+/* ══ AUDIO ══ */
+function playOK(){
+  try{
+    var c=new AudioContext();
+    // bright ascending jingle: C-E-G-B-C (sakura-style)
+    [523,659,784,988,1047].forEach(function(f,i){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);
+      o.frequency.value=f;o.type='sine';
+      var t=c.currentTime+i*.12;
+      g.gain.setValueAtTime(.24,t);
+      g.gain.exponentialRampToValueAtTime(.001,t+.3);
+      o.start(t);o.stop(t+.34);
+    });
+    // bell shimmer at end
+    var ob=c.createOscillator(),gb=c.createGain();
+    ob.connect(gb);gb.connect(c.destination);
+    ob.frequency.value=1568;ob.type='sine';
+    var tb=c.currentTime+.66;
+    gb.gain.setValueAtTime(.18,tb);gb.gain.exponentialRampToValueAtTime(.001,tb+.45);
+    ob.start(tb);ob.stop(tb+.5);
+  }catch(e){}
+}
+function playFail(){
+  try{
+    var c=new AudioContext();
+    [392,349,330,294].forEach(function(f,i){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);
+      o.frequency.value=f;o.type='sawtooth';
+      var t=c.currentTime+i*.2;
+      g.gain.setValueAtTime(.2,t);g.gain.exponentialRampToValueAtTime(.001,t+.32);
+      o.start(t);o.stop(t+.36);
+    });
+  }catch(e){}
+}
+
+/* ══ PARTICLES: SAKURA & TANUKI ══ */
+var SAKURA_COLS=['#FFB7C5','#FF8FAB','#FF4081','#F48FB1','#FFD1DC','#FF6B9D','#E040FB'];
+function sakuraSVG(col){
+  col=col||'#FFB7C5';
+  return '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">'+
+    '<ellipse cx="12" cy="6"  rx="5" ry="9" fill="'+col+'" opacity=".92" transform="rotate(0  12 12)"/>'+
+    '<ellipse cx="12" cy="6"  rx="5" ry="9" fill="'+col+'" opacity=".88" transform="rotate(72  12 12)"/>'+
+    '<ellipse cx="12" cy="6"  rx="5" ry="9" fill="'+col+'" opacity=".88" transform="rotate(144 12 12)"/>'+
+    '<ellipse cx="12" cy="6"  rx="5" ry="9" fill="'+col+'" opacity=".88" transform="rotate(216 12 12)"/>'+
+    '<ellipse cx="12" cy="6"  rx="5" ry="9" fill="'+col+'" opacity=".88" transform="rotate(288 12 12)"/>'+
+    '<circle  cx="12" cy="12" r="4"  fill="#FFE4B5" opacity=".8"/>'+
+    '</svg>';
+}
+// Tanuki
+var TANUKI_SVG='<svg width="36" height="38" xmlns="http://www.w3.org/2000/svg">'+
+  '<ellipse cx="18" cy="19" rx="14" ry="13" fill="#8D6E63"/>'+
+  '<ellipse cx="18" cy="24" rx="9" ry="7" fill="#D7CCC8"/>'+
+  '<ellipse cx="7"  cy="9"  rx="4" ry="6" fill="#8D6E63" transform="rotate(-15 7 9)"/>'+
+  '<ellipse cx="29" cy="9"  rx="4" ry="6" fill="#8D6E63" transform="rotate(15 29 9)"/>'+
+  '<ellipse cx="7"  cy="9"  rx="2.5" ry="4" fill="#FFCDD2" transform="rotate(-15 7 9)"/>'+
+  '<ellipse cx="29" cy="9"  rx="2.5" ry="4" fill="#FFCDD2" transform="rotate(15 29 9)"/>'+
+  '<ellipse cx="10" cy="16" rx="4" ry="3" fill="#4E342E" opacity=".55"/>'+
+  '<ellipse cx="26" cy="16" rx="4" ry="3" fill="#4E342E" opacity=".55"/>'+
+  '<ellipse cx="12" cy="17" rx="2.8" ry="3" fill="#1a1a1a"/>'+
+  '<ellipse cx="24" cy="17" rx="2.8" ry="3" fill="#1a1a1a"/>'+
+  '<circle  cx="11.5" cy="16.5" r=".9" fill="white"/>'+
+  '<circle  cx="23.5" cy="16.5" r=".9" fill="white"/>'+
+  '<path d="M8 13 Q11 11 14 13" stroke="#3E2723" stroke-width="1.5" fill="none"/>'+
+  '<path d="M22 13 Q25 11 28 13" stroke="#3E2723" stroke-width="1.5" fill="none"/>'+
+  '<ellipse cx="18" cy="23" rx="2.5" ry="1.8" fill="#A1887F"/>'+
+  '<path d="M12 29 Q18 27 24 29" stroke="#3E2723" stroke-width="1.5" fill="none"/>'+
+  '<ellipse cx="10" cy="21" rx="1.2" ry="2" fill="#90CAF9" opacity=".85"/>'+
+  '<ellipse cx="26" cy="21" rx="1.2" ry="2" fill="#90CAF9" opacity=".85"/>'+
+  '<line x1="2"  y1="22" x2="10" y2="23" stroke="#A1887F" stroke-width="1"/>'+
+  '<line x1="2"  y1="25" x2="10" y2="25" stroke="#A1887F" stroke-width="1"/>'+
+  '<line x1="34" y1="22" x2="26" y2="23" stroke="#A1887F" stroke-width="1"/>'+
+  '<line x1="34" y1="25" x2="26" y2="25" stroke="#A1887F" stroke-width="1"/>'+
+  '</svg>';
+
+function rain(ok){
+  var ct=document.getElementById('particles');
+  var n=ok?30:15;
+  for(var i=0;i<n;i++){
+    (function(ii){setTimeout(function(){
+      var s=document.createElement('span');s.className='p-item';
+      if(ok){
+        s.innerHTML=sakuraSVG(SAKURA_COLS[Math.floor(Math.random()*SAKURA_COLS.length)]);
+        s.style.animationDuration=(2.2+Math.random()*2.8)+'s';
+      } else {
+        s.innerHTML=TANUKI_SVG;
+        s.style.animationDuration=(1.8+Math.random()*2)+'s';
+      }
+      s.style.left=Math.random()*94+'%';
+      ct.appendChild(s);
+      setTimeout(function(){s.remove();},6000);
+    },ii*70);})(i);
+  }
+}
+function showBanner(msg,ok){
+  var old=document.querySelector('.banner');if(old)old.remove();
+  var d=document.createElement('div');d.className='banner';
+  d.style.border='3px solid '+(ok?'#1976D2':'#C62828');
+  d.style.color=ok?'#0D47A1':'#7F0000';
+  d.innerHTML=msg;document.body.appendChild(d);
+  setTimeout(function(){d.remove();},3200);
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+/* ── INIT ── */
+document.querySelectorAll('.section').forEach(function(s){
+  if(!s.classList.contains('vis'))s.style.display='none';
+});
+</script>
+</body>
+</html>

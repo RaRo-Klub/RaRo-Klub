@@ -1,0 +1,684 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>漢字キック</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one centered column. Header, shootout tracker, the penalty scene, then a panel that swaps between setup, question and result.
+     Single daytime look on purpose (school ground, chalk white, goal-card red); every color below is set explicitly. */
+  :root {
+    --ink: #16233b;
+    --ink-soft: #4d5d78;
+    --paper: #e9f4fa;
+    --card: #ffffff;
+    --sky: #9bd4ee;
+    --turf: #46a357;
+    --turf-deep: #3b9049;
+    --stand: #566b87;
+    --signal: #d63a22;
+    --gold: #f6b93b;
+    --good: #177a42;
+    --good-bg: #d9f3e2;
+    --bad: #b92f1b;
+    --bad-bg: #fde0d9;
+    --line: #c3d3df;
+    --f-display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --f-ui: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --f-kanji: "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    padding-block: 22px 48px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .app { max-width: 720px; margin: 0 auto; display: grid; gap: 14px; }
+  .app > * { min-width: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px 16px; flex-wrap: wrap; }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--ink-soft); }
+  h1 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(28px, 7vw, 40px); line-height: 1.1; letter-spacing: .02em; text-wrap: balance; }
+  .best { margin: 0; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .best b { font-family: var(--f-display); font-weight: 400; font-size: 18px; color: var(--ink); margin-left: 4px; font-variant-numeric: tabular-nums; }
+
+  .hud { display: flex; justify-content: space-between; align-items: center; gap: 10px 16px; flex-wrap: wrap; }
+  .pks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .pks li { width: 24px; height: 24px; border-radius: 50%; border: 2.5px dashed #8ea5b8; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff; line-height: 1; }
+  .pks li.cur { border: 2.5px solid var(--ink); background: var(--card); animation: pulse 1.2s ease-in-out infinite; }
+  .pks li.g { border: 2.5px solid var(--ink); background: var(--good); }
+  .pks li.g::after { content: "\2713"; }
+  .pks li.m { border: 2.5px solid var(--ink); background: var(--signal); }
+  .pks li.m::after { content: "\2715"; }
+  @keyframes pulse { 50% { transform: scale(1.15); } }
+  .stats { display: flex; gap: 6px 18px; margin: 0; font-size: 14px; font-weight: 700; }
+  .stats b { font-family: var(--f-display); font-weight: 400; font-size: 20px; margin-left: 4px; font-variant-numeric: tabular-nums; }
+
+  .stage { position: relative; border: 3px solid var(--ink); border-radius: 14px; overflow: hidden; aspect-ratio: 800 / 440; max-width: 100%; background: var(--sky); box-shadow: 0 4px 0 var(--ink); }
+  .stage canvas { display: block; width: 100%; height: 100%; }
+  .banner { position: absolute; left: 50%; top: 12%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; text-align: center; width: 100%; }
+  .bmain { font-family: var(--f-display); font-size: clamp(34px, 10vw, 76px); line-height: 1.1; -webkit-text-stroke: 7px var(--ink); paint-order: stroke fill; letter-spacing: .02em; }
+  .bsub { background: var(--ink); color: #fff; font-weight: 700; font-size: clamp(13px, 3.4vw, 18px); padding: 1px 12px; border-radius: 99px; }
+  .banner.is-goal .bmain { color: var(--gold); }
+  .banner.is-miss .bmain { color: #fff; }
+  .banner.is-goal { animation: pop .55s cubic-bezier(.2, 1.4, .4, 1) both; }
+  .banner.is-miss { animation: shake .5s ease both; }
+  @keyframes pop { 0% { transform: translateX(-50%) scale(.4); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+  @keyframes shake { 0%, 100% { transform: translateX(-50%); } 20% { transform: translateX(calc(-50% - 9px)); } 40% { transform: translateX(calc(-50% + 9px)); } 60% { transform: translateX(calc(-50% - 5px)); } 80% { transform: translateX(calc(-50% + 5px)); } }
+
+  .panel { background: var(--card); border: 3px solid var(--ink); border-radius: 14px; padding: 18px; box-shadow: 0 4px 0 var(--ink); }
+  .panel h2 { margin: 0 0 4px; font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1.25; }
+  .lead { margin: 0 0 16px; font-size: 14px; color: var(--ink-soft); }
+  .form { display: grid; gap: 16px; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend { padding: 0; margin-bottom: 8px; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--ink-soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chip span { display: inline-block; padding: 7px 14px; border: 2.5px solid var(--ink); border-radius: 99px; background: var(--card); font-weight: 700; font-size: 15px; cursor: pointer; }
+  .chip small { font-weight: 500; font-size: 12px; opacity: .75; margin-left: 4px; }
+  .chip input:checked + span { background: var(--ink); color: #fff; }
+  .chip input:focus-visible + span { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .check { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; accent-color: var(--ink); }
+
+  .btn { font: 700 17px/1.3 var(--f-ui); padding: 10px 20px; border: 2.5px solid var(--ink); border-radius: 10px; background: var(--signal); color: #fff; box-shadow: 0 3px 0 var(--ink); cursor: pointer; }
+  .btn.ghost { background: var(--card); color: var(--ink); }
+  .btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn:focus-visible, .choice:focus-visible, input[type="text"]:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .kick { justify-self: start; }
+
+  .qhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .tag { background: var(--gold); color: var(--ink); border: 2px solid var(--ink); border-radius: 99px; padding: 0 10px; }
+  .kanji { margin: 6px 0 0; text-align: center; font: 600 clamp(48px, 13vw, 76px)/1.15 var(--f-kanji); letter-spacing: .04em; overflow-wrap: anywhere; }
+  .meaning { margin: 0 0 14px; text-align: center; font-size: 15px; color: var(--ink-soft); min-height: 1.6em; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 10px; }
+  .choice { display: flex; align-items: center; gap: 10px; text-align: left; padding: 11px 14px; background: var(--card); color: var(--ink); border: 2.5px solid var(--ink); border-radius: 10px; box-shadow: 0 3px 0 var(--ink); font-family: var(--f-ui); cursor: pointer; min-width: 0; }
+  .choice .key { flex: none; width: 22px; height: 22px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 6px; background: var(--paper); font-size: 12px; font-weight: 700; }
+  .choice .kana { font-size: 19px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; min-width: 0; }
+  .choice:hover:not(:disabled) { transform: translateY(-1px); }
+  .choice:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+  .choice:disabled { cursor: default; }
+  .choice:disabled:not(.is-right):not(.is-wrong) { opacity: .5; }
+  .choice.is-right { background: var(--good-bg); border-color: var(--good); }
+  .choice.is-wrong { background: var(--bad-bg); border-color: var(--bad); }
+  .typeform { display: flex; flex-wrap: wrap; gap: 10px; }
+  .typeform input { flex: 1 1 200px; min-width: 0; font: 700 22px/1.3 var(--f-ui); padding: 9px 12px; border: 2.5px solid var(--ink); border-radius: 10px; background: var(--card); color: var(--ink); }
+  .typeform input:disabled { opacity: .6; }
+  .feedback { margin-top: 14px; padding: 12px 14px; border: 2.5px solid; border-radius: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; }
+  .feedback.ok { background: var(--good-bg); border-color: var(--good); }
+  .feedback.ng { background: var(--bad-bg); border-color: var(--bad); }
+  .fbtext { flex: 1 1 200px; min-width: 0; }
+  .fbtext p { margin: 0; }
+  #fbMain { font-weight: 700; font-size: 17px; }
+  #fbSub { font-size: 14px; color: var(--ink-soft); }
+
+  .final { display: flex; align-items: baseline; gap: 10px; margin: 0; }
+  .final b { font-family: var(--f-display); font-weight: 400; font-size: clamp(56px, 16vw, 84px); line-height: 1; font-variant-numeric: tabular-nums; }
+  .final span { font-size: 18px; font-weight: 700; }
+  .rank { margin: 4px 0 16px; font-size: 18px; font-weight: 700; }
+  .miss { list-style: none; margin: 8px 0 18px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 8px; }
+  .miss li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 12px; border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; min-width: 0; }
+  .mk { font: 600 28px/1.2 var(--f-kanji); overflow-wrap: anywhere; }
+  .mr { display: grid; min-width: 0; }
+  .mr b { font-size: 16px; overflow-wrap: anywhere; }
+  .mr small { font-size: 12px; color: var(--ink-soft); line-height: 1.35; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .banner.is-goal, .banner.is-miss, .pks li.cur { animation: none; }
+  }
+</style>
+
+<main class="app">
+  <header class="top">
+    <div>
+      <p class="eyebrow">げんき 第16課 ・ ドラえもん</p>
+      <h1>漢字キック</h1>
+    </div>
+    <p class="best">ベストれんぞく<b id="bestN">0</b></p>
+  </header>
+
+  <section class="hud" aria-label="スコア">
+    <ol class="pks" id="pks"></ol>
+    <p class="stats"><span>ゴール<b id="goals">0</b></span><span>れんぞく<b id="streak">0</b></span></p>
+  </section>
+
+  <div class="stage">
+    <canvas id="scene" role="img" aria-label="ペナルティキックのシーン。ボールとキーパーとゴール。"></canvas>
+    <div id="banner" class="banner" hidden><span class="bmain" id="bmain"></span><span class="bsub" id="bsub"></span></div>
+  </div>
+
+  <section id="setup" class="panel">
+    <h2>PK戦、キックオフ</h2>
+    <p class="lead">漢字の読みを当てるとゴール。外れるとゴール失敗です。</p>
+    <form class="form" id="setupForm">
+      <fieldset>
+        <legend>はんい</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="scope" value="n" checked><span>新出漢字<small>16字の語</small></span></label>
+          <label class="chip"><input type="radio" name="scope" value="t"><span>本文の語</span></label>
+          <label class="chip"><input type="radio" name="scope" value="all"><span>ぜんぶ</span></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>こたえかた</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="mode" value="choose" checked><span>4つから選ぶ</span></label>
+          <label class="chip"><input type="radio" name="mode" value="type"><span>ひらがなで入力</span></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>キックの数</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="total" value="5"><span>5</span></label>
+          <label class="chip"><input type="radio" name="total" value="10" checked><span>10</span></label>
+          <label class="chip"><input type="radio" name="total" value="15"><span>15</span></label>
+        </div>
+      </fieldset>
+      <label class="check" for="hint"><input type="checkbox" id="hint" checked>意味（ハンガリー語）のヒントを見る</label>
+      <button type="submit" class="btn kick" id="startBtn">キックオフ</button>
+    </form>
+  </section>
+
+  <section id="quiz" class="panel" hidden>
+    <div class="qhead"><span id="qno">キック 1 / 10</span><span class="tag" id="qscope">新出漢字</span></div>
+    <p class="kanji" id="kanji" lang="ja">世界</p>
+    <p class="meaning" id="meaning" lang="hu"></p>
+    <div id="choices" class="choices" role="group" aria-label="読み方を選ぶ"></div>
+    <form id="typeForm" class="typeform" autocomplete="off" hidden>
+      <label for="typeInput" class="sr">読み方をひらがなで入力</label>
+      <input id="typeInput" type="text" lang="ja" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ひらがなで入力" enterkeyhint="go">
+      <button type="submit" class="btn" id="shoot">シュート</button>
+    </form>
+    <div id="feedback" class="feedback" role="status" aria-live="polite" hidden>
+      <div class="fbtext"><p id="fbMain"></p><p id="fbSub"></p></div>
+      <button type="button" class="btn" id="nextBtn">つぎのキック</button>
+    </div>
+  </section>
+
+  <section id="result" class="panel" hidden>
+    <p class="eyebrow">試合終了</p>
+    <p class="final"><b id="rGoals">0</b><span>/ <span id="rTotal">10</span> ゴール</span></p>
+    <p class="rank" id="rRank"></p>
+    <div id="rMissWrap">
+      <h2>もう一度見る漢字</h2>
+      <ul class="miss" id="rMiss"></ul>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn" id="again">もう一度蹴る</button>
+      <button type="button" class="btn ghost" id="toSetup">設定にもどる</button>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const cs = getComputedStyle(document.documentElement);
+  const tok = (n) => cs.getPropertyValue(n).trim();
+  const col = { ink: tok('--ink'), sky: tok('--sky'), turf: tok('--turf'), turf2: tok('--turf-deep'), signal: tok('--signal'), gold: tok('--gold'), stand: tok('--stand') };
+  const rand = (n) => Math.floor(Math.random() * n);
+  const pick = (a) => a[rand(a.length)];
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rand(i + 1); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+
+  /* ---------- vocabulary (げんき 第16課) ---------- */
+  const NEW = [
+    ['子供','こども','gyerek'],['供える','そなえる','felajánl valamit egy szellemnek'],['提供','ていきょう','felajánlás, nyújtás'],
+    ['世界','せかい','a világ'],['世話','せわ','gondoskodás, gondozás'],['世代','せだい','generáció, nemzedék'],['三世','さんせい','harmadik generáció'],['世の中','よのなか','társadalom'],
+    ['視界','しかい','látótávolság'],['政界','せいかい','politikai világ'],['限界','げんかい','határ, korlát'],
+    ['全部','ぜんぶ','az összes, minden'],['安全','あんぜん','biztonság'],['全国','ぜんこく','az egész ország'],['全く','まったく','teljesen'],['全て','すべて','minden'],
+    ['部屋','へや','szoba'],['テニス部','テニスぶ','teniszklub'],['部長','ぶちょう','osztályvezető'],
+    ['始まる','はじまる','elkezdődik'],['始める','はじめる','elkezd valamit'],['始発','しはつ','a nap első vonata'],['開始','かいし','kezdés, megkezdés'],
+    ['毎週','まいしゅう','minden héten'],['先週','せんしゅう','múlt héten'],['一週間','いっしゅうかん','egy hét'],['二週目','にしゅうめ','a második hét'],['週末','しゅうまつ','hétvége'],
+    ['考える','かんがえる','gondolkodik'],['考え','かんがえ','ötlet, gondolat'],['考古学','こうこがく','régészet'],['参考','さんこう','referencia, támpont'],
+    ['開ける','あける','kinyit valamit'],['開く','あく|ひらく','kinyílik; kinyit'],['開店','かいてん','üzletnyitás'],
+    ['本屋','ほんや','könyvesbolt'],['魚屋','さかなや','halbolt'],['屋上','おくじょう','tetőterasz, tető'],['屋内','おくない','beltéri, épületen belül'],
+    ['味方','みかた','szövetséges, valakinek a pártján álló'],['読み方','よみかた','olvasat, olvasási mód'],['夕方','ゆうがた','késő délután, alkonyat'],['両方','りょうほう','mindkettő'],['方法','ほうほう','módszer'],
+    ['運動','うんどう','testmozgás'],['運転','うんてん','vezetés (járműé)'],['運がいい','うんがいい','szerencsés'],['運命','うんめい','sors'],['運ぶ','はこぶ','visz, szállít'],
+    ['動く','うごく','mozog'],['自動車','じどうしゃ','autó'],['動物','どうぶつ','állat'],['動詞','どうし','ige'],
+    ['教える','おしえる','tanít'],['教室','きょうしつ','tanterem'],['教会','きょうかい','templom, egyház'],['キリスト教','キリストきょう','kereszténység'],['教科書','きょうかしょ','tankönyv'],
+    ['研究室','けんきゅうしつ','professzori iroda'],['地下室','ちかしつ','pince'],['待合室','まちあいしつ','váróterem'],
+    ['以外','いがい','kivéve ..., azon kívül'],['以上','いじょう','... vagy több'],['以下','いか','... vagy kevesebb'],['以内','いない','... belül'],['以前','いぜん','korábban, előtte']
+  ];
+  const TXT = [
+    ['空','そら','ég'],['飛ぶ','とぶ','repül'],['違う','ちがう','különbözik'],['未来','みらい','jövő'],['道具','どうぐ','eszköz'],
+    ['小学生','しょうがくせい','általános iskolások'],['助ける','たすける','segít, megment'],['写す','うつす','lemásol'],['番組','ばんぐみ','(tévé)műsor'],
+    ['続く','つづく','folytatódik'],['弱い','よわい','gyenge'],['戻る','もどる','visszatér, visszamegy'],['便利','べんり','kényelmes, hasznos'],['夢','ゆめ','álom'],
+    ['例えば','たとえば','például'],['忘れる','わすれる','elfelejt'],['覚える','おぼえる','megjegyez'],['勉強','べんきょう','tanulás'],['痛い','いたい','fáj, fájdalmas'],
+    ['困る','こまる','bajba kerül'],['相談','そうだん','megbeszélés, tanácskérés'],['大丈夫','だいじょうぶ','rendben van'],['雑誌','ざっし','magazin'],['人気','にんき','népszerűség'],
+    ['国','くに','ország'],['来た','きた','jött'],['使う','つかう','használ'],['次','つぎ','következő'],['自分','じぶん','saját maga'],['書く','かく','ír'],
+    ['テストの前','テストのまえ','a teszt előtt'],['出す','だす','kivesz, elővesz']
+  ];
+  const WORDS = NEW.map((a) => ({ k: a[0], r: a[1].split('|'), m: a[2], g: 'n' }))
+    .concat(TXT.map((a) => ({ k: a[0], r: a[1].split('|'), m: a[2], g: 't' })));
+
+  const norm = (s) => s.replace(/[\s　]/g, '').replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
+  const kanjiOf = (s) => (s.match(/[一-鿿]/g) || []);
+
+  /* wrong readings that look plausible: voicing, long vowels, small tsu, vowel in same row */
+  const VOICE = { 'か':'が','き':'ぎ','く':'ぐ','け':'げ','こ':'ご','さ':'ざ','し':'じ','す':'ず','せ':'ぜ','そ':'ぞ','た':'だ','て':'で','と':'ど','は':'ば','ひ':'び','ふ':'ぶ','へ':'べ','ほ':'ぼ' };
+  const REV = {}; Object.keys(VOICE).forEach((k) => { REV[VOICE[k]] = k; });
+  const ROWS = ['あいうえお','かきくけこ','さしすせそ','たちつてと','なにぬねの','はひふへほ','まみむめも','らりるれろ'];
+  function mutOnce(s) {
+    const ops = shuffle([0, 1, 2, 3]);
+    for (let n = 0; n < ops.length; n++) {
+      const a = Array.from(s); let res = null; const op = ops[n];
+      if (op === 0) {
+        const idx = []; a.forEach((c, i) => { if (VOICE[c] || REV[c]) idx.push(i); });
+        if (idx.length) { const i = pick(idx); a[i] = VOICE[a[i]] || REV[a[i]]; res = a.join(''); }
+      } else if (op === 1) {
+        if (/[ょゅ]う/.test(s)) res = s.replace(/([ょゅ])う/, '$1');
+        else if (/[ょゅ](?!う)/.test(s)) res = s.replace(/([ょゅ])(?!う)/, '$1う');
+        else if (s.indexOf('おう') >= 0) res = s.replace('おう', 'お');
+      } else if (op === 2) {
+        if (s.indexOf('っ') >= 0) res = s.replace('っ', '');
+        else {
+          const idx = []; for (let i = 1; i < a.length; i++) if ('かきくけこさしすせそたちつてと'.indexOf(a[i]) >= 0 && a[i - 1] !== 'ん') idx.push(i);
+          if (idx.length) { a.splice(pick(idx), 0, 'っ'); res = a.join(''); }
+        }
+      } else {
+        const idx = []; a.forEach((c, i) => { if (ROWS.some((r) => r.indexOf(c) >= 0)) idx.push(i); });
+        if (idx.length) {
+          const i = pick(idx); const row = ROWS.find((r) => r.indexOf(a[i]) >= 0);
+          a[i] = pick(Array.from(row).filter((c) => c !== a[i])); res = a.join('');
+        }
+      }
+      if (res && res !== s) return res;
+    }
+    return s;
+  }
+  function mutate(s) { let r = mutOnce(s); if (Math.random() < 0.3) r = mutOnce(r); return r; }
+
+  function buildChoices(w) {
+    const ok = new Set(w.r.map(norm));
+    const correct = pick(w.r);
+    const dis = [];
+    const add = (s) => { const n = norm(s); if (!ok.has(n) && !dis.some((d) => norm(d) === n)) dis.push(s); };
+    const kk = kanjiOf(w.k);
+    const sim = shuffle(WORDS.filter((o) => o !== w && kanjiOf(o.k).some((c) => kk.indexOf(c) >= 0) && Math.abs(o.r[0].length - correct.length) <= 2));
+    sim.slice(0, 2).forEach((o) => add(o.r[0]));
+    let guard = 0;
+    while (dis.length < 3 && guard++ < 80) add(mutate(correct));
+    while (dis.length < 3) add(pick(WORDS).r[0]);
+    return shuffle([correct].concat(dis.slice(0, 3)));
+  }
+
+  /* ---------- scene (canvas) ---------- */
+  const Scene = (function () {
+    const cv = $('scene'), ctx = cv.getContext('2d');
+    const W = 800, H = 440, HIP = 235;
+    const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    let sc = 1, now = performance.now(), last = now, kick = null, jump = 0, parts = [];
+    const S = { x: 400, y: 366, r: 16, gy: 382 };
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+    const eo3 = (t) => 1 - Math.pow(1 - t, 3);
+
+    let seed = 7; const srnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const cc = [col.gold, col.signal, '#ffffff', '#3d7fc4', '#f29ab0', '#7ac36a', '#eef3f7'];
+    const crowd = [];
+    for (let r = 0; r < 5; r++) for (let x = (r % 2) * 5; x < W; x += 11) crowd.push({ x: x + srnd() * 3, y: 80 + r * 14 + srnd() * 2, c: cc[Math.floor(srnd() * cc.length)], p: srnd() * 6.28 });
+
+    function fit() {
+      const r = cv.getBoundingClientRect();
+      const d = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(2, Math.round(r.width * d)), h = Math.max(2, Math.round(r.height * d));
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+      sc = cv.width / W;
+    }
+
+    function rr(x, y, w, h, r) {
+      ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+
+    /* keeper pose that puts the gloves on (tx,ty) when diving to side sign */
+    function reach(tx, ty, sign) {
+      const L = 56; const th = ty < 220 ? 65 : (ty > 245 ? 95 : 80); const rad = th * Math.PI / 180;
+      const hx = tx - sign * L * Math.sin(rad), hy = ty + L * Math.cos(rad);
+      return { dx: hx - 400, dy: hy - HIP, ang: sign * rad };
+    }
+
+    const TARGETS = [[305, 206], [495, 206], [305, 258], [495, 258], [355, 228], [445, 228]];
+    function plan(outcome) {
+      const side = Math.random() < 0.5 ? -1 : 1, t = pick(TARGETS);
+      let segs, kp, fxAt = 1;
+      if (outcome === 'goal') {
+        segs = [{ t0: 0, t1: 1, to: { x: t[0], y: t[1], r: 8, gy: 266 }, lift: 68, ease: 'out' }];
+        kp = reach(800 - t[0], t[1], t[0] < 400 ? 1 : -1);
+      } else if (outcome === 'wide') {
+        segs = [{ t0: 0, t1: 1, to: { x: 400 + side * (205 + Math.random() * 40), y: 196 + Math.random() * 30, r: 8, gy: 266 }, lift: 64, ease: 'out' }];
+        const s = pick([-1, 1]); kp = reach(400 + s * 95, 226, s);
+      } else if (outcome === 'post') {
+        segs = [
+          { t0: 0, t1: 0.66, to: { x: 400 + side * 118, y: 232, r: 8.5, gy: 266 }, lift: 42, ease: 'out' },
+          { t0: 0.66, t1: 1, to: { x: 400 + side * 180, y: 322, r: 13, gy: 332 }, lift: 28, ease: 'lin' }
+        ];
+        kp = reach(400 + side * 95, 228, side); kp.dx *= 0.62; kp.dy *= 0.62; kp.ang *= 0.7; fxAt = 0.66;
+      } else {
+        const s = t[0] < 400 ? -1 : 1;
+        segs = [
+          { t0: 0, t1: 0.72, to: { x: t[0], y: t[1], r: 9, gy: 266 }, lift: 64, ease: 'out' },
+          { t0: 0.72, t1: 1, to: { x: t[0] + s * 24, y: 300, r: 11, gy: 304 }, lift: 0, ease: 'in' }
+        ];
+        kp = reach(t[0], t[1], s); fxAt = 9;
+      }
+      return { segs: segs, kp: kp, fxAt: fxAt };
+    }
+
+    function ballAt(k, el) {
+      const t = clamp01(el / k.dur); let from = S, seg = k.segs[0];
+      for (let i = 0; i < k.segs.length; i++) { seg = k.segs[i]; if (t <= seg.t1 || i === k.segs.length - 1) break; from = seg.to; }
+      const u = clamp01((t - seg.t0) / (seg.t1 - seg.t0));
+      const e = seg.ease === 'out' ? 1 - Math.pow(1 - u, 1.6) : seg.ease === 'in' ? u * u : u;
+      return { x: lerp(from.x, seg.to.x, e), y: lerp(from.y, seg.to.y, e) - seg.lift * Math.sin(Math.PI * u), r: lerp(from.r, seg.to.r, e), gy: lerp(from.gy, seg.to.gy, e), spin: t * 14 * k.spin };
+    }
+
+    function burst(kind, x, y) {
+      if (reduce) return;
+      if (kind === 'confetti') {
+        const cs2 = [col.signal, col.gold, '#ffffff', col.sky, col.turf];
+        for (let i = 0; i < 70; i++) parts.push({ k: 'c', x: 280 + Math.random() * 240, y: 150, vx: (Math.random() - 0.5) * 520, vy: -250 - Math.random() * 330, w: 6 + Math.random() * 5, h: 4 + Math.random() * 4, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14, c: pick(cs2), life: 2.4 });
+      } else {
+        for (let i = 0; i < 12; i++) { const a = Math.random() * 6.28, v = 80 + Math.random() * 160; parts.push({ k: 's', x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 40, w: 3, h: 3, rot: 0, vr: 0, c: col.gold, life: 0.45 }); }
+      }
+    }
+
+    function update(dt) {
+      jump = Math.max(0, jump - dt * 0.45);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i]; p.life -= dt; p.vy += (p.k === 'c' ? 620 : 500) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+        if (p.life <= 0 || p.y > H + 20) parts.splice(i, 1);
+      }
+      if (kick) {
+        const el = now - kick.t0;
+        if (!kick.fx && el / kick.dur >= kick.fxAt) {
+          kick.fx = true;
+          if (kick.outcome === 'post') { const b = ballAt(kick, el); burst('spark', b.x, b.y); }
+        }
+        if (!kick.goalFx && kick.outcome === 'goal' && el >= kick.dur) { kick.goalFx = true; jump = 1; burst('confetti'); }
+        if (!kick.done && el >= kick.dur + kick.hold) { kick.done = true; kick.cb(); }
+      }
+    }
+
+    function drawKeeper(p, sway) {
+      const cx = 400 + p.dx + (sway ? Math.sin(now / 380) * 5 : 0), hy = HIP + p.dy, a = p.arms;
+      ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.beginPath(); ctx.ellipse(cx, 268, 24, 5, 0, 0, 6.3); ctx.fill();
+      ctx.save(); ctx.translate(cx, hy); ctx.rotate(p.ang);
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = col.ink; ctx.lineWidth = 9;
+      [-1, 1].forEach((s) => { ctx.beginPath(); ctx.moveTo(s * 6, 0); ctx.lineTo(s * lerp(11, 6, a), lerp(31, 34, a)); ctx.stroke(); });
+      ctx.fillStyle = '#fff';
+      [-1, 1].forEach((s) => { ctx.beginPath(); ctx.arc(s * lerp(11, 6, a), lerp(33, 36, a), 5, 0, 6.3); ctx.fill(); });
+      ctx.strokeStyle = col.gold; ctx.lineWidth = 8;
+      [-1, 1].forEach((s) => {
+        const ex = lerp(s * 29, s * 9, a), ey = lerp(-9, -62, a);
+        ctx.beginPath(); ctx.moveTo(s * 14, -31); ctx.lineTo(ex, ey); ctx.stroke();
+      });
+      ctx.fillStyle = col.gold; ctx.strokeStyle = col.ink; ctx.lineWidth = 2.5;
+      rr(-15, -37, 30, 40, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = col.ink; ctx.font = '700 15px "Dela Gothic One", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('1', 0, -16);
+      [-1, 1].forEach((s) => {
+        const ex = lerp(s * 29, s * 9, a), ey = lerp(-9, -62, a);
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ex, ey, 6.5, 0, 6.3); ctx.fill(); ctx.stroke();
+      });
+      ctx.fillStyle = '#f2c9a4'; ctx.beginPath(); ctx.arc(0, -48, 10, 0, 6.3); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = col.ink; ctx.beginPath(); ctx.arc(0, -50, 10.5, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
+      ctx.restore();
+    }
+
+    function drawBall(b) {
+      ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.beginPath(); ctx.ellipse(b.x, b.gy, b.r * 0.95, b.r * 0.32, 0, 0, 6.3); ctx.fill();
+      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.spin);
+      ctx.fillStyle = '#fff'; ctx.strokeStyle = col.ink; ctx.lineWidth = Math.max(1.2, b.r * 0.12);
+      ctx.beginPath(); ctx.arc(0, 0, b.r, 0, 6.3); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = col.ink; ctx.beginPath();
+      for (let i = 0; i < 5; i++) { const an = i * 1.2566 - 1.5708; ctx.lineTo(Math.cos(an) * b.r * 0.42, Math.sin(an) * b.r * 0.42); }
+      ctx.closePath(); ctx.fill();
+      ctx.lineWidth = Math.max(1, b.r * 0.09); ctx.beginPath();
+      for (let i = 0; i < 5; i++) { const an = i * 1.2566 - 1.5708; ctx.moveTo(Math.cos(an) * b.r * 0.42, Math.sin(an) * b.r * 0.42); ctx.lineTo(Math.cos(an) * b.r * 0.9, Math.sin(an) * b.r * 0.9); }
+      ctx.stroke(); ctx.restore();
+    }
+
+    function mesh(x0, y0, x1, y1, step, alpha) {
+      ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')'; ctx.lineWidth = 1; ctx.beginPath();
+      for (let x = x0; x <= x1; x += step) { ctx.moveTo(x, y0); ctx.lineTo(x, y1); }
+      for (let y = y0; y <= y1; y += step) { ctx.moveTo(x0, y); ctx.lineTo(x1, y); }
+      ctx.stroke();
+    }
+
+    function draw() {
+      ctx.setTransform(sc, 0, 0, sc, 0, 0); ctx.clearRect(0, 0, W, H);
+      const g = ctx.createLinearGradient(0, 0, 0, 70); g.addColorStop(0, col.sky); g.addColorStop(1, '#d9eff9');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, 70);
+      ctx.fillStyle = col.stand; ctx.fillRect(0, 62, W, 90);
+      crowd.forEach((c, i) => {
+        const yy = c.y - jump * 7 * Math.abs(Math.sin(now / 110 + c.p));
+        ctx.fillStyle = c.c; ctx.beginPath(); ctx.arc(c.x, yy, 4.4, 0, 6.3); ctx.fill();
+      });
+      const boards = [col.signal, col.ink, col.gold, '#ffffff'];
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '12px "Dela Gothic One", sans-serif';
+      for (let i = 0; i < 5; i++) {
+        ctx.fillStyle = boards[i % 4]; ctx.fillRect(i * 160, 150, 160, 20);
+        ctx.fillStyle = (i % 4 === 2 || i % 4 === 3) ? col.ink : '#fff'; ctx.fillText('漢字キック', i * 160 + 80, 160.5);
+      }
+      const ys = [170, 190, 212, 238, 268, 302, 342, 388, 440];
+      for (let i = 0; i < ys.length - 1; i++) { ctx.fillStyle = i % 2 ? col.turf2 : col.turf; ctx.fillRect(0, ys[i], W, ys[i + 1] - ys[i]); }
+      ctx.strokeStyle = 'rgba(255,255,255,.92)'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(0, 272); ctx.lineTo(W, 272);
+      ctx.moveTo(222, 272); ctx.lineTo(196, 306); ctx.lineTo(604, 306); ctx.lineTo(578, 272);
+      ctx.moveTo(96, 272); ctx.lineTo(20, 394); ctx.lineTo(780, 394); ctx.lineTo(704, 272);
+      ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(400, 382, 6, 2.6, 0, 0, 6.3); ctx.fill();
+
+      // net behind
+      ctx.fillStyle = 'rgba(22,35,59,.16)'; ctx.fillRect(292, 198, 216, 64);
+      mesh(292, 198, 508, 262, 12, 0.4);
+      ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.beginPath();
+      ctx.moveTo(280, 188); ctx.lineTo(292, 198); ctx.moveTo(520, 188); ctx.lineTo(508, 198);
+      ctx.moveTo(280, 272); ctx.lineTo(292, 262); ctx.moveTo(520, 272); ctx.lineTo(508, 262);
+      for (let x = 292; x <= 508; x += 24) { ctx.moveTo(lerp(280, 520, (x - 292) / 216), 188); ctx.lineTo(x, 198); }
+      ctx.stroke();
+
+      let kp = { dx: 0, dy: 0, ang: 0, arms: 0 }, b = { x: S.x, y: S.y, r: S.r, gy: S.gy, spin: 0 }, sway = true;
+      if (kick) {
+        const el = Math.max(0, now - kick.t0); b = ballAt(kick, el);
+        const p = eo3(clamp01((el - kick.kd) / kick.kdur));
+        kp = { dx: kick.kp.dx * p, dy: kick.kp.dy * p, ang: kick.kp.ang * p, arms: p };
+        sway = el < kick.kd;
+      }
+      drawKeeper(kp, sway);
+      drawBall(b);
+      mesh(280, 188, 520, 272, 10, 0.13);
+
+      ctx.fillStyle = '#fff'; ctx.strokeStyle = col.ink; ctx.lineWidth = 1.6;
+      ctx.fillRect(277, 186, 6, 86); ctx.strokeRect(277, 186, 6, 86);
+      ctx.fillRect(517, 186, 6, 86); ctx.strokeRect(517, 186, 6, 86);
+      ctx.fillRect(277, 184, 246, 6); ctx.strokeRect(277, 184, 246, 6);
+
+      parts.forEach((p) => {
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c;
+        ctx.globalAlpha = p.k === 's' ? Math.max(0, p.life / 0.45) : 1; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+      });
+    }
+
+    function frame(ts) {
+      now = ts; const dt = Math.min(0.05, (ts - last) / 1000); last = ts;
+      update(dt); draw(); requestAnimationFrame(frame);
+    }
+
+    fit();
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(cv); else window.addEventListener('resize', fit);
+    requestAnimationFrame(frame);
+    if (document.fonts && document.fonts.load) { try { document.fonts.load('12px "Dela Gothic One"', '漢字キック1'); } catch (e) {} }
+
+    return {
+      reset: function () { kick = null; parts = []; jump = 0; },
+      kick: function (outcome, cb) {
+        const p = plan(outcome);
+        kick = { t0: performance.now(), dur: reduce ? 240 : 1000, kd: reduce ? 0 : 220, kdur: reduce ? 120 : 480, hold: reduce ? 100 : 350, segs: p.segs, kp: p.kp, fxAt: p.fxAt, outcome: outcome, cb: cb, spin: Math.random() < 0.5 ? -1 : 1, fx: false, goalFx: false, done: false };
+      }
+    };
+  })();
+
+  /* ---------- game ---------- */
+  const store = {
+    load: function () { try { return +localStorage.getItem('kanjikick.best') || 0; } catch (e) { return 0; } },
+    save: function (n) { try { localStorage.setItem('kanjikick.best', String(n)); } catch (e) {} }
+  };
+  let best = store.load(); $('bestN').textContent = best;
+  let G = null;
+
+  function showPanel(name) { ['setup', 'quiz', 'result'].forEach((n) => { $(n).hidden = n !== name; }); }
+  function renderTracker(total, results, cur) {
+    const ol = $('pks'); ol.textContent = '';
+    for (let i = 0; i < total; i++) {
+      const li = document.createElement('li');
+      const r = results[i];
+      li.className = r === 'g' ? 'g' : r === 'm' ? 'm' : i === cur ? 'cur' : '';
+      li.title = (i + 1) + '本目' + (r === 'g' ? ' ゴール' : r === 'm' ? ' 失敗' : '');
+      ol.appendChild(li);
+    }
+  }
+  function setStats() { $('goals').textContent = G ? G.goals : 0; $('streak').textContent = G ? G.streak : 0; }
+  function hideBanner() { $('banner').hidden = true; }
+  function getCfg() {
+    const v = (n) => document.querySelector('input[name="' + n + '"]:checked').value;
+    return { scope: v('scope'), mode: v('mode'), total: +v('total'), hint: $('hint').checked };
+  }
+
+  function startGame(cfg) {
+    let pool = WORDS.filter((w) => cfg.scope === 'all' || w.g === cfg.scope);
+    let q = [];
+    while (q.length < cfg.total) {
+      const s = shuffle(pool);
+      if (q.length && s[0] === q[q.length - 1]) s.push(s.shift());
+      q = q.concat(s);
+    }
+    G = { cfg: cfg, mode: cfg.mode, total: cfg.total, hint: cfg.hint, queue: q.slice(0, cfg.total), idx: 0, goals: 0, streak: 0, results: [], misses: [], busy: false, cur: null };
+    setStats(); showPanel('quiz'); render();
+  }
+
+  function render() {
+    const q = G.queue[G.idx]; G.cur = q; G.busy = false;
+    $('qno').textContent = 'キック ' + (G.idx + 1) + ' / ' + G.total;
+    $('qscope').textContent = q.g === 'n' ? '新出漢字' : '本文の語';
+    $('kanji').textContent = q.k;
+    $('meaning').textContent = q.m; $('meaning').hidden = !G.hint;
+    $('feedback').hidden = true; hideBanner(); Scene.reset();
+    renderTracker(G.total, G.results, G.idx);
+    const box = $('choices'), form = $('typeForm');
+    if (G.mode === 'choose') {
+      form.hidden = true; box.hidden = false; box.textContent = '';
+      buildChoices(q).forEach((r, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'choice'; b.dataset.r = r;
+        b.setAttribute('aria-keyshortcuts', String(i + 1));
+        const k = document.createElement('span'); k.className = 'key'; k.textContent = i + 1;
+        const t = document.createElement('span'); t.className = 'kana'; t.textContent = r;
+        b.appendChild(k); b.appendChild(t);
+        b.addEventListener('click', () => onChoose(b));
+        box.appendChild(b);
+      });
+    } else {
+      box.hidden = true; form.hidden = false;
+      const inp = $('typeInput'); inp.value = ''; inp.disabled = false; $('shoot').disabled = false;
+      try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); }
+    }
+  }
+
+  const accepts = (q) => q.r.map(norm);
+
+  function onChoose(btn) {
+    if (!G || G.busy) return;
+    G.busy = true;
+    const q = G.cur, ok = accepts(q).indexOf(norm(btn.dataset.r)) >= 0;
+    document.querySelectorAll('#choices .choice').forEach((b) => {
+      b.disabled = true;
+      if (accepts(q).indexOf(norm(b.dataset.r)) >= 0) b.classList.add('is-right');
+    });
+    if (!ok) btn.classList.add('is-wrong');
+    resolve(ok, btn.dataset.r);
+  }
+
+  let composing = false;
+  $('typeInput').addEventListener('compositionstart', () => { composing = true; });
+  $('typeInput').addEventListener('compositionend', () => { composing = false; });
+  $('typeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!G || G.busy || composing) return;
+    const raw = $('typeInput').value, v = norm(raw);
+    if (!v) return;
+    G.busy = true; $('typeInput').disabled = true; $('shoot').disabled = true;
+    resolve(accepts(G.cur).indexOf(v) >= 0, raw.trim());
+  });
+
+  const MISS_TEXT = { wide: 'シュートははずれた', post: 'ポストに当たった', save: 'キーパーに止められた' };
+  function resolve(ok, given) {
+    const outcome = ok ? 'goal' : pick(['wide', 'post', 'save']);
+    Scene.kick(outcome, () => finishKick(ok, given, outcome));
+  }
+
+  function finishKick(ok, given, outcome) {
+    const q = G.cur, reading = q.r.join(' / ');
+    G.results.push(ok ? 'g' : 'm');
+    if (ok) { G.goals++; G.streak++; if (G.streak > best) { best = G.streak; store.save(best); $('bestN').textContent = best; } }
+    else { G.streak = 0; if (!G.misses.some((m) => m.k === q.k)) G.misses.push({ k: q.k, r: reading, m: q.m }); }
+    setStats(); renderTracker(G.total, G.results, -1);
+    const bn = $('banner');
+    bn.className = 'banner ' + (ok ? 'is-goal' : 'is-miss');
+    $('bmain').textContent = ok ? 'ゴール！' : 'ゴール失敗…';
+    $('bsub').textContent = ok ? 'せいかい' : MISS_TEXT[outcome]; $('bsub').hidden = false;
+    bn.hidden = false;
+    const fb = $('feedback'); fb.className = 'feedback ' + (ok ? 'ok' : 'ng');
+    $('fbMain').textContent = ok ? q.k + '（' + reading + '）' : 'ただしい読み方：' + reading;
+    $('fbSub').textContent = ok ? q.m : (given ? 'あなたの答え：' + given + '　／　' : '') + q.k + ' ' + q.m;
+    $('nextBtn').textContent = G.idx + 1 >= G.total ? 'けっかを見る' : 'つぎのキック';
+    fb.hidden = false; $('nextBtn').focus({ preventScroll: true });
+  }
+
+  $('nextBtn').addEventListener('click', () => {
+    G.idx++;
+    if (G.idx >= G.total) showResult(); else render();
+  });
+
+  function showResult() {
+    hideBanner(); Scene.reset(); showPanel('result');
+    $('rGoals').textContent = G.goals; $('rTotal').textContent = G.total;
+    const p = G.goals / G.total;
+    $('rRank').textContent = p === 1 ? 'パーフェクト！ぜんぶゴール' : p >= 0.8 ? 'ナイスシュート！' : p >= 0.5 ? 'あと少し！' : 'ミスした漢字を見なおそう';
+    const ul = $('rMiss'); ul.textContent = '';
+    G.misses.forEach((m) => {
+      const li = document.createElement('li');
+      const k = document.createElement('span'); k.className = 'mk'; k.textContent = m.k;
+      const r = document.createElement('span'); r.className = 'mr';
+      const b = document.createElement('b'); b.textContent = m.r;
+      const s = document.createElement('small'); s.textContent = m.m;
+      r.appendChild(b); r.appendChild(s); li.appendChild(k); li.appendChild(r); ul.appendChild(li);
+    });
+    $('rMissWrap').hidden = G.misses.length === 0;
+  }
+
+  $('setupForm').addEventListener('submit', (e) => { e.preventDefault(); startGame(getCfg()); });
+  $('again').addEventListener('click', () => startGame(G.cfg));
+  $('toSetup').addEventListener('click', () => { G = null; setStats(); hideBanner(); Scene.reset(); renderTracker(getCfg().total, [], -1); showPanel('setup'); });
+  document.querySelectorAll('input[name="total"]').forEach((r) => r.addEventListener('change', () => { if (!G) renderTracker(getCfg().total, [], -1); }));
+  document.addEventListener('keydown', (e) => {
+    if (!G || G.busy || G.mode !== 'choose' || $('quiz').hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (/^[1-4]$/.test(e.key)) { const b = document.querySelectorAll('#choices .choice')[+e.key - 1]; if (b) b.click(); }
+  });
+
+  renderTracker(getCfg().total, [], -1);
+})();
+</script>
+
+</body></html>

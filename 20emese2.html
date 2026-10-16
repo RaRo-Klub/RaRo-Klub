@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="hu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L22 – 桜の日記 · Gyakorlófeladatok</title>
+<style>
+:root{--y:#FFEB70;--card:#FFFBE0;--ink:#3b2f00;--ok:#2e9e4f;--bad:#c0392b;--pk:#e8809f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--y);color:var(--ink);font-family:"Yu Gothic","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;line-height:1.6}
+header{padding:20px 16px 8px;text-align:center}
+h1{margin:0;font-size:1.6rem}h2{margin:0 0 8px;font-size:1.25rem;border-bottom:3px solid var(--pk);padding-bottom:4px}
+main{max-width:820px;margin:auto;padding:8px 14px 60px}
+section{background:var(--card);border-radius:14px;padding:16px;margin:16px 0;box-shadow:0 2px 6px #0002}
+.bar{position:sticky;top:0;z-index:5;background:#fff8b8;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;font-weight:700;border-bottom:2px solid var(--pk)}
+button{font:inherit;cursor:pointer;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:8px;padding:4px 12px;margin:3px}
+button:hover{background:#ffe3ec}button:disabled{cursor:default;opacity:.85}
+.q{margin:12px 0;padding:8px;border-left:5px solid #e6d24a;background:#fffef2;border-radius:6px}
+.q.ok{border-color:var(--ok)}.q.bad{border-color:var(--bad)}
+.jp{font-size:1.25rem}.fb{font-size:.92rem;margin-top:4px}
+button.right{background:#c9f2d3;border-color:var(--ok)}button.wrong{background:#f8d0cb;border-color:var(--bad)}
+input[type=text],textarea{font:inherit;padding:5px;border:2px solid var(--ink);border-radius:6px;width:220px;max-width:100%}
+textarea{width:100%;height:70px}
+details{margin:6px 0}summary{cursor:pointer;font-weight:700}
+.diary{font-size:1.1rem;line-height:2.1;white-space:pre-line}
+ruby rt{font-size:.55em}
+#rain{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+#rain span{position:absolute;top:-50px;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--r))}}
+</style></head><body>
+<div class="bar"><span>✅ <span id="sc">0</span> / <span id="tot">0</span></span><button id="snd">🔊 Hang: be</button></div>
+<div id="rain"></div>
+<header><h1>🌸 L22 · 桜の日記 · Gyakorlófeladatok</h1><div>Szavak · Partikulák · Ragozás · Szövegértés</div></header>
+<main>
+<section><details open><summary>📖 A szöveg / 桜さんの日記（kattints a be- és kicsukáshoz）</summary><div class="diary" id="diary"></div></details></section>
+<section><h2>1. 単語 – Szavak</h2><div>Válaszd ki a helyes magyar jelentést!</div><div id="vocab"></div></section>
+<section><h2>2. 助詞 – Partikulák</h2><div>Melyik partikula illik a <b>（　）</b> helyére?</div><div id="part"></div></section>
+<section><h2>3. 活用 – Ragozás</h2><div>Írd be a kért alakot (kanjival vagy hiraganával). Enter = ellenőrzés.</div><div id="conj"></div></section>
+<section><h2>4. 〇か×か – Igaz vagy hamis?</h2><div id="tf"></div></section>
+<section><h2>5. 質問 – Kifejtős kérdések</h2><div>Írd meg a válaszod japánul, majd nézd meg a mintát!</div><div id="open"></div></section>
+</main>
+<script>
+const D={
+vocab:[["日記","にっき","napló"],["就職","しゅうしょく","elhelyezkedés (munkába állás)"],["紹介","しょうかい","bemutatás"],["同僚","どうりょう","munkatárs, kolléga"],["用事","ようじ","elintéznivaló"],["返事","へんじ","válasz"],["出張","しゅっちょう","szolgálati út"],["残業","ざんぎょう","túlóra"],["親友","しんゆう","legjobb barát"],["逃げる","にげる","elmenekül"],["説明","せつめい","magyarázat"],["案内","あんない","kalauzolás, vezetés"]],
+part:[["涼＿会いに東京に行った。","に"],["彼が東京の銀行＿就職した。","に"],["東京＿会いに行くのは大変だ。","まで"],["今日は涼が大阪＿来た。","に"],["夕方、お酒＿飲みに行った。","を"],["涼＿同僚の黒木さんに会った。","の"],["黒木さん＿彼女を探している。","が"],["涼＿紹介してもらった。","に"],["駅のホーム＿夏菜を見た。","で"],["今日、涼＿手紙が来た。","から"],["夏菜さんが東京＿来た時、黒木さんは来られなかった。","に"],["週末は大阪＿会える。","で"],["夜、涼にメッセージ＿送った。","を"]],
+conj:[["書く","ない形","書かない|かかない"],["会う","て形","会って|あって"],["行く","可能形（できる）","行ける|いける"],["飲む","〜たり","飲んだり|のんだり"],["来る","ない形","来ない|こない"],["忘れる","可能ない形（〜られない）","忘れられない|わすれられない"],["話す","〜たがる","話したがる|はなしたがる"],["帰る","〜てほしい","帰ってほしい|かえってほしい"],["紹介する","〜てもらった","紹介してもらった|しょうかいしてもらった"],["案内する","〜てあげた","案内してあげた|あんないしてあげた"],["逃げる","〜ていた","逃げていた|にげていた"],["会わせる","意向形（〜よう）","会わせよう|あわせよう"],["守る","可能ない形","守れない|まもれない"],["探す","〜ている","探している|さがしている"]],
+tf:[["桜は三月二十一日に東京へ行った。",1,"Igaz: 涼に会いに東京に行った。"],["涼は大阪の銀行で働いている。",0,"Hamis: 東京の銀行に就職した。"],["桜と涼は一か月に一回ぐらいしか会えない。",1,"Igaz: 一か月に一回ぐらいしか会えない。"],["夏菜は桜と涼のことをうらやましがっている。",1,"Igaz: うらやましがっている。"],["黒木さんは彼女を探している。",1,"Igaz: 彼女を探していると聞いた。"],["五月十四日、桜は駅で夏菜と黒木さんを見た。",0,"Hamis: 夏菜と背が高い男の人を見たが、顔は見えなかった。"],["涼は夏菜に東京を案内した。",1,"Igaz: 二日間東京を案内してあげた。"],["黒木さんは東京で夏菜に会った。",0,"Hamis: 急に用事ができて、来られなくなった。"],["涼は本当に出張に行っていた。",0,"Hamis: 本当は大阪で夏菜さんに会っていた。"],["桜は涼の手紙を読む前に、涼を疑っていた。",0,"Hamis: 桜は夏菜に彼氏ができたと思っていた（涼は疑っていない）。"]],
+open:[["夏菜はどうして桜に東京のことをあまり話したがらなかったのですか。","涼と二日間、東京で一緒に過ごしたので、桜に言いにくかったからです。 (Mert két napot töltött Rjóval Tokióban, és nehéz volt ezt elmondania Szakurának.)"],["涼は桜にどんなうそをつきましたか。どうしてうそをついたのですか。","出張で大阪に行けないと言いましたが、本当は大阪で夏菜に会っていました。夏菜のことが忘れられなかったからです。 (Azt mondta, üzleti úton van, de valójában Oszakában találkozott Kanával, mert nem tudta elfelejteni.)"],["五月十四日、桜はどうして落ち込みましたか。","涼が出張で大阪に来られなくなったし、駅で夏菜が男の人といるのを見たのに、夏菜が何も言ってくれなかったからです。"],["桜は黒木さんについてどう思っていますか。","すごくおもしろくていい人だと思っています。夏菜のように静かな人がタイプかもしれないので、二人を会わせようと思っています。"],["あなたが涼／桜／夏菜だったら、どうしますか。","（自由回答 – szabad válasz。例：私が桜だったら、涼と夏菜にはっきり話を聞きます。〜と思います。）"]],
+diary:"<b>三月二十一日（日）</b>\n涼[りょう]に会[あ]いに東京[とうきょう]に行[い]った。彼[かれ]が東京の銀行[ぎんこう]に就職[しゅうしょく]してからもう二年[にねん]がたつ。\n大学の時[とき]は毎日[まいにち]会っていたのに、今[いま]は私[わたし]が東京に行ったり、彼が大阪[おおさか]に来[き]たりして、一か月[いっかげつ]に一回[いっかい]ぐらいしか会えない。夏菜[かな]はいつも私たちのことをうらやましがっているけど、東京まで会いに行くのは大変[たいへん]。\n早[はや]く大阪に帰[かえ]ってきてほしい。\n<b>四月二十三日（金）</b>\n今日[きょう]は涼が大阪に来て、夕方[ゆうがた]お酒[さけ]を飲[の]みに行った。涼は相変[あいか]わらず仕事[しごと]が忙[いそが]しそうだ。\n涼の同僚[どうりょう]の黒木[くろき]さんが彼女[かのじょ]を探[さが]していると聞[き]いた。東京に行った時、涼に紹介[しょうかい]してもらったけど、すごくおもしろくていい人[ひと]だ。\n黒木さんは夏菜のように静[しず]かな人がタイプかもしれない。今度[こんど]二人[ふたり]を会[あ]わせようと思[おも]う。夏菜が東京に行った時、涼が黒木さんを紹介する予定[よてい]。うまくいくといいけど。\n<b>五月十二日（水）</b>\n今日の夏菜はちょっと変[へん]だった。東京のことを聞いてみたが、あまり話[はな]してくれなかった。\n黒木さんに急[きゅう]に用事[ようじ]ができて、会えなかったと言[い]っただけで、後[あと]は話したくなさそうだった。夜[よる]、涼にメッセージを送[おく]ったけど、返事[へんじ]がなかった。\n涼ならいろいろ教[おし]えてくれると思ったのに、残念[ざんねん]。仕事が忙しいんだろう。でも、週末[しゅうまつ]は大阪で会える。今から待[ま]ち遠[どお]しい。\n<b>五月十四日（金）</b>\n今日も残業[ざんぎょう]で疲[つか]れた。それに「急に出張[しゅっちょう]が入[はい]って大阪に行けなくなった」という涼のメッセージが携帯[けいたい]に入っていた。なんだか落[お]ち込[こ]んでしまった。仕事だからしかたがないけど。\n帰る時、駅[えき]のホームで夏菜を見[み]た。男[おとこ]の人と一緒[いっしょ]に楽[たの]しそうに話していた。顔[かお]は見えなかったけど、背[せ]が高[たか]い男の人だった。彼氏[かれし]ができたのかな。どうして私に言ってくれないんだろう。一番[いちばん]の親友[しんゆう]なのに。\n<b>五月二十一日（土）</b>\n今日、涼から手紙[てがみ]が来た。……\n桜[さくら]へ\n桜に手紙を書[か]くのは本当[ほんとう]にひさしぶりだね。ぼくは桜にうそをついていた。ずっと言わなきゃいけないと思っていたんだけど、勇気[ゆうき]がなくて今まで逃[に]げていた。うまく説明[せつめい]できるといいんだけど……。\n夏菜さんが東京に来た時、黒木は急に用事ができて、来[こ]られなくなってしまった。それで、ぼくが代[か]わりに二日間[ふつかかん]東京を案内[あんない]してあげたんだ。美術館[びじゅつかん]に行ったり、東京ディズニーランドに行ったりして、楽しかった。\n彼女が大阪に帰った後も、彼女のことが忘[わす]れられなかった。先週[せんしゅう]の週末、「出張で大阪に行けない」と言ったけど、本当は大阪で夏菜さんに会っていたんだ。約束[やくそく]を守[まも]れなくてごめん。",
+test:{
+vocab:[["約束","やくそく","ígéret, megbeszélés"],["勇気","ゆうき","bátorság"],["携帯","けいたい","mobiltelefon"],["落ち込む","おちこむ","lehangolódik"],["待ち遠しい","まちどおしい","alig várja"],["探す","さがす","keres"],["忘れる","わすれる","elfelejt"],["相変わらず","あいかわらず","mint mindig"]],
+part:[["桜は夏菜＿東京のことを聞いた。","に"],["涼はうそ＿ついた。","を"],["二人は大阪＿会った。","で"],["夏菜は涼＿黒木さんを紹介してもらった。","に"],["涼は桜＿手紙を書いた。","に"],["大阪＿東京まで新幹線で行く。","から"]],
+conj:[["言う","ない形","言わない"],["待つ","て形","待って"],["見る","可能ない形","見られない"],["来る","〜たり","来たり"],["教える","〜てもらった","教えてもらった"]],
+tf:[["涼と桜は大学の時、毎日会っていた。",1],["夏菜は東京に住んでいる。",0],["桜は手紙を読む前に、夏菜に彼氏ができたと思っていた。",1],["涼は夏菜のことを忘れられなかった。",1]],
+open:[["五月十四日、桜はどうして落ち込みましたか。","涼が出張で来られなくなったし、駅で夏菜が男の人といたのに、夏菜が何も言わなかったから。"],["涼は手紙で何を謝りましたか。","うそをついたこと（本当は大阪で夏菜に会っていたこと）と、約束を守れなかったこと。"]]
+}};
+
+const $=id=>document.getElementById(id);
+let score=0,total=0,soundOn=true,AC=null;
+const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+const ruby=s=>s.replace(/([\u4e00-\u9fff]+)\[([^\]]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>').replace(/\n/g,'\n');
+$('diary').innerHTML=ruby(D.diary);
+$('snd').onclick=()=>{soundOn=!soundOn;$('snd').textContent=soundOn?'🔊 Hang: be':'🔇 Hang: ki'};
+function tone(f,t,d,type,v){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.05)}
+function sound(ok){if(!soundOn)return;AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;
+ if(ok){[523,659,784,1047,784,880,1047,1319].forEach((f,i)=>tone(f,t+i*.11,.22,'triangle',.25))}
+ else{[[392,0],[370,.45],[349,.9],[311,1.35]].forEach(([f,o])=>{tone(f,t+o,.55,'sawtooth',.13);tone(f/2,t+o,.55,'sine',.15)})}}
+function rain(ok){const r=$('rain'),e=ok?'🌸':'🦝';
+ for(let i=0;i<(ok?36:24);i++){const s=document.createElement('span');s.textContent=e;
+  s.style.left=Math.random()*100+'%';s.style.fontSize=(18+Math.random()*22)+'px';
+  s.style.animationDuration=(ok?2.5:3.5)+Math.random()*2+'s';s.style.animationDelay=Math.random()*1.2+'s';
+  s.style.setProperty('--dx',(Math.random()*160-80)+'px');s.style.setProperty('--r',(Math.random()*720-360)+'deg');
+  r.appendChild(s);setTimeout(()=>s.remove(),7000)}}
+function verdict(box,ok,msg){box.classList.add(ok?'ok':'bad');if(ok)score++;$('sc').textContent=score;
+ box.querySelector('.fb').innerHTML=(ok?'🌸 Helyes! ':'🦝 Nem egészen. ')+(msg||'');sound(ok);rain(ok)}
+function add(id,n){total+=n;$('tot').textContent=total}
+// 1 vocab
+const vp=$('vocab');add('',D.vocab.length);
+D.vocab.forEach(([jp,rd,hu],i)=>{const others=shuffle(D.vocab.filter((_,j)=>j!=i)).slice(0,3).map(x=>x[2]);
+ const box=document.createElement('div');box.className='q';box.innerHTML=`<span class="jp">${i+1}. ${jp}</span> <small>（${rd}）</small><div class="opts"></div><div class="fb"></div>`;
+ shuffle([hu,...others]).forEach(o=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{
+  box.querySelectorAll('button').forEach(x=>{x.disabled=true;if(x.textContent==hu)x.classList.add('right')});
+  if(o!=hu)b.classList.add('wrong');verdict(box,o==hu,o==hu?'':`Helyes: ${hu}`)};box.querySelector('.opts').appendChild(b)});vp.appendChild(box)});
+// 2 particles
+const P=['は','が','を','に','で','と','から','まで','の','も'];add('',D.part.length);
+D.part.forEach(([s,a],i)=>{const box=document.createElement('div');box.className='q';
+ box.innerHTML=`<span class="jp">${i+1}. ${s.replace('＿','<b>（　）</b>')}</span><div class="opts"></div><div class="fb"></div>`;
+ P.forEach(p=>{const b=document.createElement('button');b.textContent=p;b.onclick=()=>{
+  box.querySelectorAll('button').forEach(x=>{x.disabled=true;if(x.textContent==a)x.classList.add('right')});
+  if(p!=a)b.classList.add('wrong');verdict(box,p==a,p==a?s.replace('＿',a):`Helyes: ${a} → ${s.replace('＿',a)}`)};box.querySelector('.opts').appendChild(b)});$('part').appendChild(box)});
+// 3 conjugation
+add('',D.conj.length);
+D.conj.forEach(([w,f,ans],i)=>{const box=document.createElement('div');box.className='q';const A=ans.split('|');
+ box.innerHTML=`<span class="jp">${i+1}. ${w}</span> → <b>${f}</b><br><input type="text" autocomplete="off"> <button>Ellenőrzés</button><div class="fb"></div>`;
+ const inp=box.querySelector('input'),btn=box.querySelector('button');
+ const chk=()=>{if(btn.disabled||!inp.value.trim())return;btn.disabled=inp.disabled=true;const v=inp.value.replace(/\s/g,'');const ok=A.includes(v);verdict(box,ok,ok?'':`Helyes: ${A[0]}（${A[A.length-1]}）`)};
+ btn.onclick=chk;inp.onkeydown=e=>{if(e.key=='Enter')chk()};$('conj').appendChild(box)});
+// 4 true/false
+add('',D.tf.length);
+D.tf.forEach(([s,t,ex],i)=>{const box=document.createElement('div');box.className='q';
+ box.innerHTML=`<span class="jp">${i+1}. ${s}</span><div class="opts"><button data-v="1">〇</button><button data-v="0">×</button></div><div class="fb"></div>`;
+ box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const v=+b.dataset.v;box.querySelectorAll('button').forEach(x=>{x.disabled=true;if(+x.dataset.v==t)x.classList.add('right')});
+  if(v!=t)b.classList.add('wrong');verdict(box,v==t,ex)});$('tf').appendChild(box)});
+// 5 open
+D.open.forEach(([q,m],i)=>{const box=document.createElement('div');box.className='q';
+ box.innerHTML=`<span class="jp">${i+1}. ${q}</span><textarea placeholder="日本語で書いてください…"></textarea><br><button>📝 Minta válasz</button><div class="fb" style="display:none"></div>`;
+ box.querySelector('button').onclick=e=>{const f=box.querySelector('.fb');f.style.display='block';f.innerHTML='<b>Minta / 模範解答:</b> '+m;e.target.disabled=true};$('open').appendChild(box)});
+</script></body></html>

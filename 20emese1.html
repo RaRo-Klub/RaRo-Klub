@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語 L22 練習問題 - Japán Gyakorló Feladatsor</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Canvas Confetti for Sakura & Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Noto+Sans+JP:wght@400;500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Kosugi Maru', sans-serif;
+            background-color: #FEF3C7; /* Meleg sárga háttér */
+            background-image: radial-gradient(#FDE68A 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+
+        .japanese-font {
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+        }
+
+        /* Tanuki & Sakura raining overlay elements */
+        .falling-element {
+            position: fixed;
+            top: -50px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        /* Glassmorphism cards */
+        .card-box {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            border: 2px solid #FCD34D;
+            box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.15);
+        }
+
+        .tab-btn.active {
+            background-color: #D97706;
+            color: #FFFFFF;
+            border-color: #B45309;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-amber-600 text-white shadow-lg border-b-4 border-amber-800 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-2">
+            <div>
+                <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2.5 py-0.5 rounded border border-amber-400 uppercase tracking-wider">中級日本語・第22課</span>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mt-1">桜さんの日記・演習問題 (L22)</h1>
+            </div>
+            <div class="text-right text-xs md:text-sm text-amber-100 flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-2xl text-amber-200"></i>
+                <div>
+                    <p class="font-semibold">Gimnáziumi / Egyetemi Japán Nyelvtanár</p>
+                    <p class="opacity-80">Interaktív Feladatsor & Ellenőrzés</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-5xl mx-auto px-4 mt-6">
+
+        <!-- Sensei Welcome Message -->
+        <div class="card-box rounded-2xl p-5 mb-6 flex items-start gap-4 border-l-8 border-l-amber-500">
+            <div class="w-14 h-14 rounded-full bg-amber-100 border-2 border-amber-400 flex-shrink-0 flex items-center justify-center text-amber-800 text-2xl">
+                👨‍🏫
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-amber-900">みなさん、こんにちは！(Sziasztok!)</h2>
+                <p class="text-sm text-gray-700 mt-1 leading-relaxed">
+                    Üdvözöllek benneteket a 22. lecke (Sakura naplója) interaktív gyakorlófelületén! Dolgozzátok fel a szókincset, partikulákat, ragozást, és válaszoljátok meg a megértési kérdéseket. 
+                    Minden helyes válasznál **szakura eső** 🌸 és vidám dallam vár rátok, míg a hibás válaszoknál **tanuki eső** 🍃 és szomorú hangjelzés figyelmeztet. 頑張ってください！(Sok sikert!)
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-amber-300 pb-3">
+            <button onclick="switchTab('vocab')" id="tab-vocab" class="tab-btn active px-4 py-2 rounded-lg font-bold text-sm bg-white border border-amber-300 text-amber-800 hover:bg-amber-100 transition shadow-sm">
+                1. 語彙 (Szókincs)
+            </button>
+            <button onclick="switchTab('grammar')" id="tab-grammar" class="tab-btn px-4 py-2 rounded-lg font-bold text-sm bg-white border border-amber-300 text-amber-800 hover:bg-amber-100 transition shadow-sm">
+                2. 助詞・文法 (Partikulák & Ragozás)
+            </button>
+            <button onclick="switchTab('tf')" id="tab-tf" class="tab-btn px-4 py-2 rounded-lg font-bold text-sm bg-white border border-amber-300 text-amber-800 hover:bg-amber-100 transition shadow-sm">
+                3. ○×クイズ (Igaz-Hamis)
+            </button>
+            <button onclick="switchTab('open')" id="tab-open" class="tab-btn px-4 py-2 rounded-lg font-bold text-sm bg-white border border-amber-300 text-amber-800 hover:bg-amber-100 transition shadow-sm">
+                4. 読解質問 (Kifejtős)
+            </button>
+            <button onclick="switchTab('test')" id="tab-test" class="tab-btn px-4 py-2 rounded-lg font-bold text-sm bg-rose-600 border border-rose-700 text-white hover:bg-rose-700 transition shadow-sm">
+                5. 確認テスト (Ellenőrző Teszt)
+            </button>
+        </div>
+
+        <!-- SECTION 1: VOCABULARY -->
+        <div id="sec-vocab" class="tab-content space-y-6">
+            <div class="card-box rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-amber-900 mb-4 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-amber-600"></i> A. Szókincs & Kanji Olvasat (単語と読み方)
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">Válaszd ki a megadott Kanji helyes olvasatát (Furigana)!</p>
+
+                <div class="space-y-4">
+                    <!-- Vocab Q1 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <p class="font-bold text-lg text-gray-800">1. 羨ましい</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">なつかしい</button>
+                            <button onclick="checkAnswer(this, true)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">うらやましい</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">はずかしい</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">まちどおしい</button>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Q2 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <p class="font-bold text-lg text-gray-800">2. 残業</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">しゅっちょう</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">しょうかい</button>
+                            <button onclick="checkAnswer(this, true)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">ざんぎょう</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">約束</button>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Q3 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <p class="font-bold text-lg text-gray-800">3. 案内する</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+                            <button onclick="checkAnswer(this, true)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">あんないする</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">れんらくする</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">しょうかいする</button>
+                            <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm font-semibold">せつめいする</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: GRAMMAR & PARTICLES -->
+        <div id="sec-grammar" class="tab-content hidden space-y-6">
+            <div class="card-box rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-amber-900 mb-4 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-ruler text-amber-600"></i> B. Partikulák és Igéragozás (助詞と活用)
+                </h3>
+
+                <!-- Particles -->
+                <div class="mb-6">
+                    <h4 class="font-bold text-amber-800 mb-3">1. Válassz megfelelő partikulát a mondatba!</h4>
+                    <div class="space-y-3">
+                        <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                            <p class="text-base text-gray-800 font-medium">① 兄が東京に引っ越しをして ( &nbsp;?&nbsp; ) もう一年がたつ。</p>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="checkAnswer(this, false)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">に</button>
+                                <button onclick="checkAnswer(this, true)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">から</button>
+                                <button onclick="checkAnswer(this, false)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">まで</button>
+                                <button onclick="checkAnswer(this, false)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">で</button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                            <p class="text-base text-gray-800 font-medium">② ふたり ( &nbsp;?&nbsp; ) 会わせようと思う。</p>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="checkAnswer(this, true)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">を</button>
+                                <button onclick="checkAnswer(this, false)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">に</button>
+                                <button onclick="checkAnswer(this, false)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">と</button>
+                                <button onclick="checkAnswer(this, false)" class="px-4 py-1.5 bg-white border border-amber-300 rounded hover:bg-amber-100">で</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conjugation -->
+                <div>
+                    <h4 class="font-bold text-amber-800 mb-3">2. Igék és Kifejezések Ragozása</h4>
+                    <div class="space-y-3">
+                        <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                            <p class="text-base text-gray-800 font-medium">「早くおおさかにかえってきて ( &nbsp;?&nbsp; )。」(Azt akarja, hogy Ryo visszatérjen)</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                                <button onclick="checkAnswer(this, true)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm">ほしい</button>
+                                <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm">あげたい</button>
+                                <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm">もらう</button>
+                                <button onclick="checkAnswer(this, false)" class="py-2 px-3 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-sm">くれる</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 3: TRUE / FALSE -->
+        <div id="sec-tf" class="tab-content hidden space-y-6">
+            <div class="card-box rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-amber-900 mb-4 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-amber-600"></i> C. 正しいものに〇、間違っているものに×をつけてください (Igaz-Hamis)
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">A szöveg alapján döntsd el, hogy az alábbi állítások Igazak (〇) vagy Hamisak (×)!</p>
+
+                <div class="space-y-4">
+                    <!-- TF 1 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <p class="text-gray-800 font-medium">1. 涼は、今大阪に住んでいる。(Ryo jelenleg Oszakában él.)</p>
+                        <div class="flex gap-2">
+                            <button onclick="checkAnswer(this, false)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100">〇 (Igaz)</button>
+                            <button onclick="checkAnswer(this, true)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100 text-rose-600">× (Hamis)</button>
+                        </div>
+                    </div>
+
+                    <!-- TF 2 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <p class="text-gray-800 font-medium">2. いつも涼と桜は電話で話していた。(Ryo és Sakura mindig telefonon beszéltek egymással.)</p>
+                        <div class="flex gap-2">
+                            <button onclick="checkAnswer(this, false)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100">〇 (Igaz)</button>
+                            <button onclick="checkAnswer(this, true)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100 text-rose-600">× (Hamis)</button>
+                        </div>
+                    </div>
+
+                    <!-- TF 3 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <p class="text-gray-800 font-medium">3. 涼は仕事のために大阪に行けなくなった。(Ryo valóban a munkája miatt nem tudott Oszakába menni.)</p>
+                        <div class="flex gap-2">
+                            <button onclick="checkAnswer(this, false)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100">〇 (Igaz)</button>
+                            <button onclick="checkAnswer(this, true)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg hover:bg-amber-100 text-rose-600 font-bold">× (Hamis)</button>
+                        </div>
+                    </div>
+
+                    <!-- TF 4 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <p class="text-gray-800 font-medium">4. 涼は二日間かなを東京で案内した。(Ryo két napig kalauzolta Kanát Tokióban.)</p>
+                        <div class="flex gap-2">
+                            <button onclick="checkAnswer(this, true)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100 text-emerald-600">〇 (Igaz)</button>
+                            <button onclick="checkAnswer(this, false)" class="px-5 py-2 bg-white border border-amber-300 rounded-lg font-bold hover:bg-amber-100">× (Hamis)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: OPEN QUESTIONS -->
+        <div id="sec-open" class="tab-content hidden space-y-6">
+            <div class="card-box rounded-2xl p-6">
+                <h3 class="text-xl font-bold text-amber-900 mb-4 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-amber-600"></i> D. 質問に答えてください (Kifejtős kérdések)
+                </h3>
+                <p class="text-sm text-gray-600 mb-6">Fogalmazd meg válaszaidat japánul vagy magyarul a naplóbejegyzések alapján!</p>
+
+                <div class="space-y-6">
+                    <!-- Q1 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <label class="block font-bold text-gray-800 mb-2">1. さくらがかなにとうきょうのことを聞いた時、かなはどうしてあまり話したがらなかったのですか。</label>
+                        <textarea class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" rows="3" placeholder="Írd ide a válaszodat..."></textarea>
+                        <button onclick="toggleHint('hint1')" class="mt-2 text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Mintamegoldás megtekintése
+                        </button>
+                        <div id="hint1" class="hidden mt-2 p-3 bg-white rounded border border-amber-200 text-xs text-gray-700">
+                            <strong>Minta válasz:</strong> かなは東京で涼と緒にいて、美術館やディズニーランドに行っていたが、それをさくらに隠していたため、気まずくて話したくなかった。(Kana Tokióban Ryóval töltötte az időt, de ezt eltitkolta Sakura előtt, ezért feszélyezve érezte magát.)
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                        <label class="block font-bold text-gray-800 mb-2">2. 涼はさくらにどんなうそをつきましたか。どうしてうそをついたのですか。</label>
+                        <textarea class="w-full p-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" rows="3" placeholder="Írd ide a válaszodat..."></textarea>
+                        <button onclick="toggleHint('hint2')" class="mt-2 text-xs font-bold text-amber-700 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Mintamegoldás megtekintése
+                        </button>
+                        <div id="hint2" class="hidden mt-2 p-3 bg-white rounded border border-amber-200 text-xs text-gray-700">
+                            <strong>Minta válasz:</strong> 「急に出張が入って大阪に行けなくなった」とうそをついた。本当は東京でかなを案内して遊んでいたから。(Azt hazudta, hogy sürgős üzleti útja lett, mert valójában Tokióban maradt Kanával.)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: FINAL CHECK TEST -->
+        <div id="sec-test" class="tab-content hidden space-y-6">
+            <div class="card-box rounded-2xl p-6 border-2 border-rose-300">
+                <div class="flex items-center justify-between border-b pb-3 mb-4">
+                    <h3 class="text-xl font-bold text-rose-900 flex items-center gap-2">
+                        <i class="fa-solid fa-file-pen text-rose-600"></i> 確認テスト (Mini Ellenőrző Teszt)
+                    </h3>
+                    <span class="text-xs bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full border border-rose-300">Összesen: 30 pont</span>
+                </div>
+
+                <form id="quiz-form" onsubmit="gradeTest(event)" class="space-y-6">
+                    <!-- Test Q1 -->
+                    <div class="p-4 bg-rose-50/50 rounded-xl border border-rose-200">
+                        <p class="font-bold text-gray-800">Q1. 涼と黒木さんは誰ですか。(Ryo és Kuroki kicsodák?)</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-rose-100/50 cursor-pointer">
+                                <input type="radio" name="tq1" value="a" class="text-rose-600 focus:ring-rose-500"> 涼は桜の兄で、黒木さんはその友達。
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-rose-100/50 cursor-pointer">
+                                <input type="radio" name="tq1" value="b" class="text-rose-600 focus:ring-rose-500"> 涼は桜の彼氏で、黒木さんは父親。
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Test Q2 -->
+                    <div class="p-4 bg-rose-50/50 rounded-xl border border-rose-200">
+                        <p class="font-bold text-gray-800">Q2. 五月二十一日に涼から届いた手紙の主な内容は何ですか。</p>
+                        <div class="mt-2 space-y-1 text-sm">
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-rose-100/50 cursor-pointer">
+                                <input type="radio" name="tq2" value="a" class="text-rose-600 focus:ring-rose-500"> 大阪へ引っ越しをするという連絡。
+                            </label>
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-rose-100/50 cursor-pointer">
+                                <input type="radio" name="tq2" value="b" class="text-rose-600 focus:ring-rose-500"> うそをついていたことについての謝罪と説明。
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 shadow-md transition">
+                        Teszt Kiértékelése és Beküldés
+                    </button>
+                </form>
+
+                <div id="test-result" class="hidden mt-6 p-4 rounded-xl border text-center font-bold"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Tab switching logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        function toggleHint(id) {
+            const hint = document.getElementById(id);
+            hint.classList.toggle('hidden');
+        }
+
+        // --- AUDIO GENERATION USING WEB AUDIO API ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Happy Sound (Sakura victory)
+        function playHappySound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const now = audioCtx.currentTime;
+            
+            // Arpeggio notes: C5, E5, G5, C6
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                
+                gain.gain.setValueAtTime(0.2, now + i * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now + i * 0.08);
+                osc.stop(now + i * 0.08 + 0.3);
+            });
+        }
+
+        // Sad Sound (Tanuki wrong answer)
+        function playSadSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const now = audioCtx.currentTime;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sawtooth';
+            // Frequency drop
+            osc.frequency.setValueAtTime(220, now); // A3
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.4); // A2
+            
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start(now);
+            osc.stop(now + 0.4);
+        }
+
+        // --- EFFECT ANIMATIONS ---
+        
+        // Sakura Blossom Rain (Confetti)
+        function triggerSakuraRain() {
+            playHappySound();
+            
+            // Confetti configured with pink/sakura colors
+            confetti({
+                particleCount: 70,
+                spread: 100,
+                origin: { y: 0.2 },
+                colors: ['#FFB7C5', '#FFC0CB', '#FF69B4', '#FFFFFF'],
+                shapes: ['circle'],
+                scalar: 1.2
+            });
+        }
+
+        // Tanuki Rain (Falling raccoon dog icons/elements)
+        function triggerTanukiRain() {
+            playSadSound();
+
+            const tanukiEmojis = ['🦝', '🍃', '🐾'];
+            for (let i = 0; i < 20; i++) {
+                const el = document.createElement('div');
+                el.className = 'falling-element';
+                el.innerText = tanukiEmojis[Math.floor(Math.random() * tanukiEmojis.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 20 + 24) + 'px';
+                el.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+                
+                document.body.appendChild(el);
+
+                setTimeout(() => el.remove(), 3000);
+            }
+        }
+
+        // Answer checking wrapper
+        function checkAnswer(btn, isCorrect) {
+            const parent = btn.parentElement;
+            // Disable siblings in same group
+            Array.from(parent.children).forEach(child => {
+                child.classList.remove('bg-emerald-500', 'bg-rose-500', 'text-white');
+                child.disabled = true;
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+                triggerSakuraRain();
+            } else {
+                btn.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+                triggerTanukiRain();
+            }
+        }
+
+        // Test grading logic
+        function gradeTest(e) {
+            e.preventDefault();
+            const form = e.target;
+            const q1 = form.tq1.value;
+            const q2 = form.tq2.value;
+            const resultBox = document.getElementById('test-result');
+
+            if (!q1 || !q2) {
+                alert("Kérjük, válaszolj minden tesztkérdésre!");
+                return;
+            }
+
+            let score = 0;
+            if (q1 === 'a') score += 15;
+            if (q2 === 'b') score += 15;
+
+            resultBox.classList.remove('hidden', 'bg-emerald-100', 'border-emerald-400', 'text-emerald-800', 'bg-rose-100', 'border-rose-400', 'text-rose-800');
+
+            if (score === 30) {
+                resultBox.classList.add('bg-emerald-100', 'border-emerald-400', 'text-emerald-800');
+                resultBox.innerHTML = `🎉 Kiváló eredmény! Pontszám: 30 / 30 (100%) <br> 大変よくできました！(Szép munka!)`;
+                triggerSakuraRain();
+            } else {
+                resultBox.classList.add('bg-rose-100', 'border-rose-400', 'text-rose-800');
+                resultBox.innerHTML = `Pontszám: ${score} / 30. Nézd át újra a naplóbejegyzést és próbáld újra! 再チャレンジしてみましょう！`;
+                triggerTanukiRain();
+            }
+        }
+    </script>
+</body>
+</html>

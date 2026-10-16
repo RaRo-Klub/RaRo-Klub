@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L22 – Japán nyelvi gyakorló</title>
+<style>
+body{font-family:"Yu Gothic","Meiryo",Arial,sans-serif;background:#fff7a8;margin:0;color:#3d3040}
+header{background:#ffe36e;padding:22px;text-align:center;border-bottom:4px solid #f4b942}
+h1{margin:0;font-size:30px} h2{color:#8b3a62}
+.container{max-width:1000px;margin:20px auto;padding:0 18px}
+.card{background:#fffdf0;border:2px solid #f3c96b;border-radius:18px;padding:20px;margin:18px 0;box-shadow:0 5px 12px #0001}
+button{background:#e978a4;border:0;color:white;padding:10px 16px;border-radius:12px;font-weight:bold;cursor:pointer;margin:5px}
+button:hover{transform:translateY(-1px)}
+.option{display:block;background:#fff;padding:9px;border-radius:10px;margin:6px 0;border:1px solid #ddd}
+input[type=text]{padding:8px;border-radius:8px;border:1px solid #bbb;width:220px}
+.result{font-weight:bold;margin-top:8px}
+#effects{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:10}
+.petal,.tanuki{position:absolute;top:-50px;animation:fall linear forwards}
+.petal{font-size:28px}.tanuki{font-size:34px}
+@keyframes fall{to{transform:translateY(110vh) rotate(500deg);opacity:.85}}
+.good{color:#168447}.bad{color:#b33b52}
+details{background:#fff7d0;padding:10px;border-radius:10px}
+</style>
+</head>
+<body>
+<header><h1>🌸 L22 – Japán nyelvi gyakorló 🌸</h1>
+<p>Szókincs • partikula • ragozás • szövegértés • igaz/hamis</p>
+<button onclick="enableAudio()">🔊 Hang bekapcsolása</button></header>
+<div class="container">
+<div class="card"><h2>1. Szókincs – párosítás</h2>
+<p>Párosítsd a japán szót a jelentésével!</p>
+<div id="vocab"></div><button onclick="checkVocab()">Ellenőrzés</button><div id="vocabResult" class="result"></div></div>
+
+<div class="card"><h2>2. Partikulák</h2>
+<p>Válaszd ki a mondatba illő partikulát!</p>
+<div id="particles"></div><button onclick="checkParticles()">Ellenőrzés</button><div id="partResult" class="result"></div></div>
+
+<div class="card"><h2>3. Ragozás és mondatkiegészítés</h2>
+<div id="conj"></div><button onclick="checkConj()">Ellenőrzés</button><div id="conjResult" class="result"></div></div>
+
+<div class="card"><h2>4. Igaz – hamis</h2>
+<p>Az L22 története alapján jelöld meg, hogy igaz vagy hamis!</p>
+<div id="tf"></div><button onclick="checkTF()">Ellenőrzés</button><div id="tfResult" class="result"></div></div>
+
+<div class="card"><h2>5. Szövegértés – kifejtős</h2>
+<ol>
+<li>Miért nem tudott 涼 elmenni 大阪-ba május 14-én?</li>
+<li>Mit látott 桜 a pályaudvaron / aホームon?</li>
+<li>Mit vallott be 涼 a május 21-i levélben?</li>
+<li>Miért mondta 涼, hogy „守れなくてごめん”?</li>
+</ol>
+<textarea id="open" rows="8" style="width:100%;border-radius:10px;border:1px solid #bbb;padding:8px" placeholder="Írd le a válaszaidat japánul vagy magyarul!"></textarea>
+</div>
+
+<div class="card"><h2>6. Mini ellenőrző teszt</h2>
+<p>Ez csak gyakorlás; a nyomtatható ellenőrző teszt külön Word-dokumentumban található.</p>
+<div id="mini"></div><button onclick="checkMini()">Ellenőrzés</button><div id="miniResult" class="result"></div></div>
+</div>
+<div id="effects"></div>
+<script>
+let audioCtx;
+function enableAudio(){audioCtx=new (window.AudioContext||window.webkitAudioContext)(); playHappy(); alert("A hang bekapcsolva. 🌸");}
+function tone(freq,dur,type="sine",delay=0){
+ if(!audioCtx)return;
+ const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+ o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.0001,audioCtx.currentTime+delay);
+ g.gain.exponentialRampToValueAtTime(.16,audioCtx.currentTime+delay+.02);
+ g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+delay+dur);
+ o.connect(g);g.connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+dur+.03);
+}
+function playHappy(){[523,659,784,1046].forEach((n,i)=>tone(n,.22,"sine",i*.13))}
+function playSad(){tone(220,.3,"sawtooth");tone(165,.45,"sawtooth",.22)}
+function effect(ok){
+ const box=document.getElementById("effects");
+ for(let i=0;i<18;i++){let s=document.createElement("span");s.className=ok?"petal":"tanuki";s.textContent=ok?"🌸":"🦝";s.style.left=Math.random()*100+"%";s.style.animationDuration=(2+Math.random()*2)+"s";s.style.animationDelay=Math.random()*.4+"s";box.appendChild(s);setTimeout(()=>s.remove(),4500)}
+ if(ok)playHappy();else playSad();
+}
+const vocab=[
+["日記","napló"],["大学","egyetem"],["親友","legjobb barát"],["手紙","levél"],["出張","üzleti út"],["残業","túlóra"],["予定","terv / program"],["紹介する","bemutatni"],["案内する","körbevezetni / kalauzolni"],["守る","megtartani / betartani"]
+];
+let shuffled=[...vocab].sort(()=>Math.random()-.5);
+document.getElementById("vocab").innerHTML=shuffled.map((x,i)=>`<p><b>${x[0]}</b> → <select id="v${i}"><option value="">--</option>${vocab.map(y=>`<option value="${y[1]}">${y[1]}</option>`).join("")}</select></p>`).join("");
+function checkVocab(){let score=0;shuffled.forEach((x,i)=>{if(document.getElementById("v"+i).value===x[1])score++});document.getElementById("vocabResult").textContent=`Eredmény: ${score}/${shuffled.length}`;effect(score===shuffled.length)}
+
+const ps=[
+["大阪___帰ってきてほしい。","に",["に","を","が","で"]],
+["友だち___メッセージを送った。","に",["に","を","へ","が"]],
+["美術館___行ったり、東京ディズニーランドに行ったりした。","に",["に","を","が","と"]],
+["仕事___しかたがない。","だから",["だから","なのに","ので","まで"]],
+["東京___二日間案内した。","を",["を","に","が","で"]]
+];
+document.getElementById("particles").innerHTML=ps.map((x,i)=>`<p>${x[0].replace("___",`<select id="p${i}">${x[2].map(a=>`<option>${a}</option>`).join("")}</select>`)}</p>`).join("");
+function checkParticles(){let score=ps.filter((x,i)=>document.getElementById("p"+i).value===x[1]).length;document.getElementById("partResult").textContent=`Eredmény: ${score}/${ps.length}`;effect(score===ps.length)}
+
+const cs=[
+["行く → 可能形","行ける",["行ける","行った","行かない","行って"]],
+["入る → なくなる","入れなくなった",["入れなくなった","入らなかった","入っていた","入れる"]],
+["思う → と思っていた","思っていた",["思っていた","思わなかった","思える","思ったり"]],
+["守る → なくて","守れなくて",["守れなくて","守らないで","守ったり","守れる"]]
+];
+document.getElementById("conj").innerHTML=cs.map((x,i)=>`<p>${x[0]}: <select id="c${i}">${x[2].map(a=>`<option>${a}</option>`).join("")}</select></p>`).join("");
+function checkConj(){let score=cs.filter((x,i)=>document.getElementById("c"+i).value===x[1]).length;document.getElementById("conjResult").textContent=`Eredmény: ${score}/${cs.length}`;effect(score===cs.length)}
+
+const tf=[
+["Május 14-én 涼 azt írta, hogy hirtelen üzleti útja lett.","I"],
+["桜 biztosan látta a férfi arcát a pályaudvaron.","H"],
+["涼 a levélben elmondta, hogy hazudott 桜-nak.","I"],
+["涼 két napig Tokiót mutatta meg a másik személynek.","I"],
+["涼 a levélben azt írta, hogy be tudta tartani az ígéretét.","H"]
+];
+document.getElementById("tf").innerHTML=tf.map((x,i)=>`<p>${x[0]} <select id="t${i}"><option value="">--</option><option>I">Igaz</option><option value="H">Hamis</option></select></p>`).join("");
+function checkTF(){let score=tf.filter((x,i)=>document.getElementById("t"+i).value===x[1]).length;document.getElementById("tfResult").textContent=`Eredmény: ${score}/${tf.length}`;effect(score===tf.length)}
+
+const mini=[
+["Melyik jelentése: 出張?","üzleti út",["egyetem","üzleti út","levél","túlóra"]],
+["Melyik alak jelenti: „nem tudott elmenni”?","行けなくなった",["行きたい","行った","行けなくなった","行ける"]],
+["Ki írta a május 21-i levelet?","涼",["桜","夏菜","涼","黒木"]]
+];
+document.getElementById("mini").innerHTML=mini.map((x,i)=>`<p><b>${i+1}. ${x[0]}</b><br>${x[2].map((a,j)=>`<label class="option"><input type="radio" name="m${i}" value="${a}"> ${a}</label>`).join("")}</p>`).join("");
+function checkMini(){let score=mini.filter((x,i)=>document.querySelector(`input[name=m${i}]:checked`)?.value===x[1]).length;document.getElementById("miniResult").textContent=`Eredmény: ${score}/${mini.length}`;effect(score===mini.length)}
+</script>
+</body></html>

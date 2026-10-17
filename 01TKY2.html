@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>桜さんの日記 ＋ 漢字 総合練習（第22課・第23課）</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;900&display=swap">
+<style>
+:root{--bg:#ffe45c;--ink:#3b2a14;--card:#fffbe6;--ok:#d6336c;--ng:#2f6f4f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#ffe45c;--ink:#3b2a14;--card:#fffbe6}}
+*{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif}
+main{max-width:1200px;margin:0 auto;padding:8px 10px 14px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+h1{font-size:1.05rem;margin:0;font-weight:900}
+.sc{font-weight:900;font-size:.9rem}
+.sc button,.tabs button{font:inherit;cursor:pointer;color:var(--ink)}
+.sc button{font-size:.8rem;margin-left:8px;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:transparent}
+.tabs{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.tabs button{font-weight:900;font-size:.9rem;padding:4px 14px;border:2px solid var(--ink);border-radius:999px;background:#fff8}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.grid{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.grid.w{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.t{position:relative;background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:6px 8px;min-height:96px;overflow:hidden;display:flex;gap:8px}
+.t.ok{border-color:var(--ok);background:#fff0f5}.t.ng{border-color:var(--ng);background:#eef6ec}
+.k{font-size:2.3rem;font-weight:900;line-height:1;align-self:center;min-width:2.4rem;text-align:center}
+.k.s{font-size:1.2rem;min-width:4.5rem}
+.b{flex:1;min-width:0}
+.q{font-size:.78rem;line-height:1.4;margin:0 0 4px}
+.o{display:flex;gap:4px;flex-wrap:wrap}
+.o button{font:inherit;font-weight:900;font-size:.78rem;padding:3px 8px;min-height:30px;border:2px solid var(--ink);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+.o button.m{min-width:46px;font-size:1.2rem;padding:0}
+.o button:disabled{opacity:.45;cursor:default}.o button.pick{opacity:1;background:var(--ink);color:#fff}
+.fb{font-size:.7rem;line-height:1.3;margin-top:4px}.fb b{font-size:.8rem;margin-right:4px}
+textarea{width:100%;height:52px;font:inherit;font-size:.8rem;border:2px solid var(--ink);border-radius:8px;padding:4px;background:#fff;color:var(--ink);resize:vertical}
+.st{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.p{position:absolute;top:-24px;font-size:1.1rem;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(160px) rotate(300deg);opacity:.1}}
+.tn{position:absolute;right:4px;bottom:-70px;width:62px;animation:pop 1.6s ease forwards}
+@keyframes pop{0%{bottom:-70px}25%,70%{bottom:2px}100%{bottom:-70px}}
+.src{background:#fff8;border:2px solid var(--ink);border-radius:10px;padding:4px 8px;margin-bottom:6px;font-size:.7rem;line-height:1.85}.src h4{margin:4px 0 0;font-size:.75rem;text-decoration:underline}.src rt{font-size:.5rem}.src summary{font-weight:900;cursor:pointer;font-size:.8rem}.src .c{columns:3 240px;column-gap:14px;margin-top:3px}.src p{margin:0 0 3px;break-inside:avoid}.src textarea{height:56px;margin-top:4px}
+@media (prefers-reduced-motion:reduce){.p,.tn{animation-duration:.01s;animation-delay:0s}}
+@media (max-width:520px){.grid,.grid.w{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>桜さんの日記 ＋ 漢字 総合練習<small>（第22課・第23課）</small></h1><div class="sc"><span id="sc"></span><button id="rs">やり直す</button></div></header>
+<div class="tabs" id="tabs" role="tablist"></div>
+<details class="src" open><summary>本文：桜さんの日記（第22課）</summary><div class="c"><h4><ruby>三月<rt>さんがつ</rt></ruby><ruby>二十一日<rt>にじゅういちにち</rt></ruby>（<ruby>日<rt>にち</rt></ruby>）</h4><p><ruby>涼<rt>りょう</rt></ruby>に<ruby>会<rt>あ</rt></ruby>いに<ruby>東京<rt>とうきょう</rt></ruby>に<ruby>行<rt>い</rt></ruby>った。<ruby>彼<rt>かれ</rt></ruby>が東京の<ruby>銀行<rt>ぎんこう</rt></ruby>に<ruby>就職<rt>しゅうしょく</rt></ruby>してからもう<ruby>二年<rt>にねん</rt></ruby>がたつ。</p><p><ruby>大学<rt>だいがく</rt></ruby>の<ruby>時<rt>とき</rt></ruby>は<ruby>毎日<rt>まいにち</rt></ruby><ruby>会<rt>あ</rt></ruby>っていたのに、<ruby>今<rt>いま</rt></ruby>は<ruby>私<rt>わたし</rt></ruby>が東京に<ruby>行<rt>い</rt></ruby>ったり、彼が<ruby>大阪<rt>おおさか</rt></ruby>に<ruby>来<rt>き</rt></ruby>たりして、<ruby>一<rt>いっ</rt></ruby>か<ruby>月<rt>げつ</rt></ruby>に<ruby>一回<rt>いっかい</rt></ruby>ぐらいしか<ruby>会<rt>あ</rt></ruby>えない。<ruby>夏菜<rt>かな</rt></ruby>はいつも<ruby>私<rt>わたし</rt></ruby>たちのことをうらやましがっているけど、東京まで<ruby>会<rt>あ</rt></ruby>いに<ruby>行<rt>い</rt></ruby>くのは<ruby>大変<rt>たいへん</rt></ruby>。</p><p><ruby>早<rt>はや</rt></ruby>く大阪に<ruby>帰<rt>かえ</rt></ruby>ってきてほしい。</p><h4><ruby>四月<rt>しがつ</rt></ruby><ruby>二十三日<rt>にじゅうさんにち</rt></ruby>（<ruby>金<rt>きん</rt></ruby>）</h4><p><ruby>今日<rt>きょう</rt></ruby>は涼が大阪に<ruby>来<rt>き</rt></ruby>て、<ruby>夕方<rt>ゆうがた</rt></ruby>お<ruby>酒<rt>さけ</rt></ruby>を<ruby>飲<rt>の</rt></ruby>みに<ruby>行<rt>い</rt></ruby>った。涼は<ruby>相変<rt>あいか</rt></ruby>わらず<ruby>仕事<rt>しごと</rt></ruby>が<ruby>忙<rt>いそが</rt></ruby>しそうだ。</p><p>涼の<ruby>同僚<rt>どうりょう</rt></ruby>の<ruby>黒木<rt>くろき</rt></ruby>さんが<ruby>彼女<rt>かのじょ</rt></ruby>を<ruby>探<rt>さが</rt></ruby>していると<ruby>聞<rt>き</rt></ruby>いた。東京に行った時、涼に<ruby>紹介<rt>しょうかい</rt></ruby>してもらったけど、すごくおもしろくていい<ruby>人<rt>ひと</rt></ruby>だ。</p><p>黒木さんは夏菜のように<ruby>静<rt>しず</rt></ruby>かな人がタイプかもしれない。<ruby>今度<rt>こんど</rt></ruby><ruby>二人<rt>ふたり</rt></ruby>を<ruby>会<rt>あ</rt></ruby>わせようと<ruby>思<rt>おも</rt></ruby>う。夏菜が東京に行った時、涼が黒木さんを紹介する<ruby>予定<rt>よてい</rt></ruby>。うまくいくといいけど。</p><h4><ruby>五月<rt>ごがつ</rt></ruby><ruby>十二日<rt>じゅうににち</rt></ruby>（<ruby>水<rt>すい</rt></ruby>）</h4><p>今日の夏菜はちょっと<ruby>変<rt>へん</rt></ruby>だった。東京のことを<ruby>聞<rt>き</rt></ruby>いてみたが、あまり<ruby>話<rt>はな</rt></ruby>してくれなかった。</p><p>黒木さんに<ruby>急<rt>きゅう</rt></ruby>に<ruby>用事<rt>ようじ</rt></ruby>ができて、<ruby>会<rt>あ</rt></ruby>えなかったと<ruby>言<rt>い</rt></ruby>っただけで、<ruby>後<rt>あと</rt></ruby>は話したくなさそうだった。<ruby>夜<rt>よる</rt></ruby>、涼にメッセージを<ruby>送<rt>おく</rt></ruby>ったけど、<ruby>返事<rt>へんじ</rt></ruby>がなかった。</p><p>涼ならいろいろ<ruby>教<rt>おし</rt></ruby>えてくれると思ったのに、<ruby>残念<rt>ざんねん</rt></ruby>。仕事が忙しいんだろう。でも、<ruby>週末<rt>しゅうまつ</rt></ruby>は大阪で会える。今から<ruby>待<rt>ま</rt></ruby>ち<ruby>遠<rt>どお</rt></ruby>しい。</p><h4><ruby>五月十四日<rt>じゅうよっか</rt></ruby>（金）</h4><p>今日も<ruby>残業<rt>ざんぎょう</rt></ruby>で<ruby>疲<rt>つか</rt></ruby>れた。それに「急に<ruby>出張<rt>しゅっちょう</rt></ruby>が<ruby>入<rt>はい</rt></ruby>って大阪に<ruby>行<rt>い</rt></ruby>けなくなった」という涼のメッセージが<ruby>携帯<rt>けいたい</rt></ruby>に<ruby>入<rt>はい</rt></ruby>っていた。なんだか<ruby>落<rt>お</rt></ruby>ち<ruby>込<rt>こ</rt></ruby>んでしまった。仕事だからしかたがないけど。</p><p><ruby>帰<rt>かえ</rt></ruby>る時、<ruby>駅<rt>えき</rt></ruby>のホームで夏菜を<ruby>見<rt>み</rt></ruby>た。<ruby>男<rt>おとこ</rt></ruby>の人と<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>楽<rt>たの</rt></ruby>しそうに話していた。<ruby>顔<rt>かお</rt></ruby>は見えなかったけど、<ruby>背<rt>せ</rt></ruby>が<ruby>高<rt>たか</rt></ruby>い男の人だった。<ruby>彼氏<rt>かれし</rt></ruby>ができたのかな。どうして私に言ってくれないんだろう。<ruby>一番<rt>いちばん</rt></ruby>の<ruby>親友<rt>しんゆう</rt></ruby>なのに。</p><h4><ruby>五月二十一日<rt>にじゅういちにち</rt></ruby>（<ruby>土<rt>ど</rt></ruby>）</h4><p>今日、涼から<ruby>手紙<rt>てがみ</rt></ruby>が<ruby>来<rt>き</rt></ruby>た。……</p><p><ruby>桜<rt>さくら</rt></ruby>へ</p><p>桜に手紙を<ruby>書<rt>か</rt></ruby>くのは<ruby>本当<rt>ほんとう</rt></ruby>にひさしぶりだね。ぼくは桜にうそをついていた。ずっと<ruby>言<rt>い</rt></ruby>わなきゃいけないと思っていたんだけど、<ruby>勇気<rt>ゆうき</rt></ruby>がなくて<ruby>今<rt>いま</rt></ruby>まで<ruby>逃<rt>に</rt></ruby>げていた。うまく<ruby>説明<rt>せつめい</rt></ruby>できるといいんだけど……。</p><p>夏菜さんが東京に来た時、黒木は急に用事ができて、<ruby>来<rt>こ</rt></ruby>られなくなってしまった。それで、ぼくが<ruby>代<rt>か</rt></ruby>わりに<ruby>二日間<rt>ふつかかん</rt></ruby>東京を<ruby>案内<rt>あんない</rt></ruby>してあげたんだ。<ruby>美術館<rt>びじゅつかん</rt></ruby>に<ruby>行<rt>い</rt></ruby>ったり、東京ディズニーランドに行ったりして、楽しかった。</p><p>彼女が大阪に帰った後も、彼女のことが<ruby>忘<rt>わす</rt></ruby>れられなかった。<ruby>先週<rt>せんしゅう</rt></ruby>の週末、「出張で大阪に行けない」と言ったけど、本当は大阪で夏菜さんに<ruby>会<rt>あ</rt></ruby>っていたんだ。<ruby>約束<rt>やくそく</rt></ruby>を<ruby>守<rt>まも</rt></ruby>れなくてごめん。</p></div></details>
+<div class="grid" id="g"></div>
+</main>
+<script>
+const KJ=[
+["記","「日記」は「にっき」と読む。",1,"日記 = diary"],
+["銀","「銀行」は「ぎんこう」と読む。",1,"銀行 = bank"],
+["夕","「夕方」は「ゆうがた」と読む。",1,"夕方 = evening"],
+["黒","「黒板」は「くろばん」と読む。",0,"正しくは「こくばん」"],
+["待","「待つ」は「まつ」と読む。",1,"待つ = to wait"],
+["残","「残念」は「ざんねん」と読む。",1,"残念 = regrettable"],
+["駅","「駅」は「えき」と読む。",1,"駅 = station"],
+["説","「説明」は「せつめい」と読む。",1,"説明 = explain"],
+["内","「案内」は「あんない」と読む。",1,"案内 = guide"],
+["忘","「忘れる」は to keep a promise の意味。",0,"忘れる = to forget"],
+["守","「守る」は「まもる」と読む。",1,"守る = to keep; protect"],
+["顔","「顔文字」は「かおもじ」と読む。",1,"顔 = face"],
+["悲","「悲しい」は happy の意味。",0,"悲しい = sad"],
+["怒","「怒る」は「おこる」と読む。",1,"怒る = to get angry"],
+["違","「違う」は「ちかう」と読む。",0,"正しくは「ちがう」"],
+["変","「大変な」は「たいへんな」と読む。",1,"大変な = tough; hectic"],
+["比","「比べる」は to compare の意味。",1,"比べる = to compare"],
+["情","「感情」は「かんじょう」と読む。",1,"感情 = emotion"],
+["調","「調査」は「ちょうさ」と読む。",1,"調査 = survey"],
+["果","「結果」は「けっか」と読む。",1,"結果 = result"],
+["横","「横」は「たて」と読む。",0,"「横」は「よこ」"],
+["相","「相手」は「あいて」と読む。",1,"相手 = partner"],
+["答","「答え」は「こたえ」と読む。",1,"答え = answer"]
+];
+const TN=`<svg class="tn" viewBox="0 0 150 150" role="img" aria-label="タヌキ"><circle cx="30" cy="38" r="20" fill="#7a5230"/><circle cx="120" cy="38" r="20" fill="#7a5230"/><circle cx="75" cy="85" r="60" fill="#9b6b3c"/><ellipse cx="50" cy="78" rx="19" ry="25" fill="#3b2a14" transform="rotate(20 50 78)"/><ellipse cx="100" cy="78" rx="19" ry="25" fill="#3b2a14" transform="rotate(-20 100 78)"/><circle cx="52" cy="78" r="6" fill="#fff"/><circle cx="98" cy="78" r="6" fill="#fff"/><ellipse cx="75" cy="108" rx="30" ry="22" fill="#f4e3c4"/><ellipse cx="75" cy="98" rx="9" ry="6" fill="#3b2a14"/><path d="M62 116q13 -8 26 0" stroke="#3b2a14" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+
+const sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+// [語, 正解, 誤1, 誤2]
+const V=[["うらやましがる","(somebody is) envious","to wait eagerly for","to run away"],["相変わらず","as usual","somehow","instead"],["うまくいく","to go well","cannot be helped","to forget"],["待ち遠しい","to wait eagerly for","envious","joyfully"],["なんだか","somehow","as usual","courage"],["しかたがない","cannot be helped","to go well","platform"],["ホーム","platform","type","message"],["楽しそうに","joyfully","skillfully","instead"],["親友","best friend","courage","type"],["勇気","courage","best friend","message"],["逃げる","to run away","to guide","to forget"],["代わりに","instead","as usual","somehow"],["二日間","for two days","two months","two people"],["タイプ","type","platform","diary"],["メッセージ","message","invitation","courage"]];
+const PO=["に","を","が","で","と","の"];
+const P=[["涼（　）会いに東京に行った。","に"],["彼が東京の銀行（　）就職してからもう二年がたつ。","に"],["一か月（　）一回ぐらいしか会えない。","に"],["夏菜はいつも私たちのこと（　）うらやましがっている。","を"],["東京まで会いに行く（　）は大変。","の"],["東京に行った時、涼（　）紹介してもらった。","に"],["涼が黒木さん（　）紹介する予定。","を"],["黒木さんに急に用事（　）できて、会えなかった。","が"],["夜、涼（　）メッセージを送った。","に"],["男の人（　）一緒に楽しそうに話していた。","と"],["駅のホーム（　）夏菜を見た。","で"],["ぼくが代わり（　）二日間東京を案内してあげた。","に"]];
+// [問, 正解, 誤1, 誤2, 解説]
+const R=[["涼は今、どこに住んでいますか。","東京","大阪","京都","東京の銀行に就職した。"],["大学の時、涼と桜はどうでしたか。","毎日会っていた","一か月に一回会っていた","ほとんど会わなかった","大学の時は毎日会っていた。"],["黒木さんはだれですか。","涼の同僚","桜の同僚","夏菜の彼氏","涼の同僚で、彼女を探している。"],["夏菜は東京で黒木さんに会いましたか。","会えなかった","会った","会う予定はなかった","黒木さんに急に用事ができた。"],["五月十四日、涼のメッセージは何でしたか。","急に出張が入って大阪に行けなくなった","仕事を辞めた","東京に来てほしい","携帯にメッセージが入っていた。"],["駅のホームで夏菜はだれと話していましたか。","背が高い男の人","桜","黒木さん","手紙を読むと、涼だとわかる。"],["涼のうそは何ですか。","出張で行けないと言ったが、本当は大阪で夏菜に会っていた","銀行をやめていた","黒木さんを知らなかった","手紙の内容。"],["夏菜があまり話したがらなかった理由は？","涼と二日間東京で過ごしたことを言いにくかったから","東京が嫌いだから","桜が嫌いだから","手紙から推測できる。"]];
+// [問, 正誤(1=○), 解説]
+const C=[["涼は東京の銀行で働いている。",1,"就職して二年。"],["桜と涼は大学の時、毎日会っていた。",1,"今は一か月に一回ぐらい。"],["夏菜は東京で黒木さんに会った。",0,"急な用事で会えなかった。"],["涼は出張に行っていたから桜に会えなかった。",0,"本当は大阪で夏菜に会っていた。"],["涼が東京を案内したのは夏菜だ。",1,"二日間案内した。"],["黒木さんは涼の彼女だ。",0,"涼の同僚。"],["涼と夏菜は美術館に行った。",1,"ディズニーランドにも行った。"],["桜は日記を書く前からうそを知っていた。",0,"手紙で初めて知った。"],["涼は勇気がなくて、本当のことを桜に言えなかった。",1,"勇気がなくて今まで逃げていた。"],["駅で夏菜は男の人と楽しそうに話していた。",1,"背が高い人。"]];
+// [問, 例]
+const W=[["夏菜はどうしてあまり話したがらなかったのですか。","涼と二日間東京で楽しく過ごしたことを、桜に言いにくかったからだと思います。"],["涼は桜にどんなうそをつきましたか。どうしてですか。","「出張で大阪に行けない」とうそをつきました。本当は大阪で夏菜に会っていたのに、桜に言う勇気がなかったからです。"],["あなたが涼／桜／夏菜だったら、どうしますか。","私が桜だったら、涼と夏菜に正直に話してもらいます。そして自分の気持ちを伝えます。"],["二か月後の桜さんの日記を書きましょう。","七月二十日（月）今日、涼と話した。悲しかったけど、本当のことがわかってよかった。夏菜とは親友だから、これからも仲よくしたい。"],["自分の日記を書きましょう。","十月十七日（土）今日は友だちと映画を見に行った。とても楽しかった。映画の後でカフェに行ったりした。"]];
+const mc=(a,b)=>{const o=sh(a.slice(1)); return {o,a:o.indexOf(a[1])}};
+const T=[
+ {n:"語彙",f:()=>V.map(v=>({k:v[0],ks:1,q:"意味はどれ？",...mc(v),note:v[0]+" = "+v[1]}))},
+ {n:"助詞",f:()=>P.map((p,i)=>{const o=sh([p[1],...sh(PO.filter(x=>x!==p[1])).slice(0,3)]);return{q:(i+1)+". "+p[0],o,a:o.indexOf(p[1]),note:"答え：「"+p[1]+"」"}})},
+ {n:"読解",f:()=>R.map((r,i)=>({q:(i+1)+". "+r[0],...mc(r),note:r[4]}))},
+ {n:"記述",w:1,f:()=>W.map((w,i)=>({q:(i+1)+". "+w[0],m:w[1]}))},
+ {n:"○×",m:1,f:()=>[...C.map((c,i)=>({k:"📖",q:(i+1)+". "+c[0],o:["○","×"],a:c[1]?0:1,note:c[2]})),...KJ.map(c=>({k:c[0],q:c[1],o:["○","×"],a:c[2]?0:1,note:c[3]}))]}
+];
+const g=document.getElementById("g"),sc=document.getElementById("sc"),tb=document.getElementById("tabs");
+let cur=0,sco=0,n=0,tot=0;
+const upd=()=>{sc.textContent=T[cur].w?"自己チェック "+sco+" / "+n+"（全"+tot+"問）":sco+" / "+n+"（全"+tot+"問）"};
+function fx(t,st,ok){if(ok){for(let j=0;j<9;j++){const p=document.createElement("span");p.className="p";p.textContent="🌸";p.style.left=Math.random()*90+"%";p.style.animationDuration=(1+Math.random()*.9)+"s";p.style.animationDelay=Math.random()*.4+"s";st.appendChild(p)}}else st.innerHTML=TN;t.classList.add(ok?"ok":"ng")}
+function build(){
+  const d=T[cur],it=d.f();g.innerHTML="";g.className="grid"+(d.w?" w":"");sco=n=0;tot=it.length;upd();
+  tb.querySelectorAll("button").forEach((b,i)=>b.setAttribute("aria-selected",i===cur));
+  it.forEach(x=>{
+    const t=document.createElement("div");t.className="t";
+    const kh=x.k?`<div class="k${x.ks?" s":""}">${x.k}</div>`:"";
+    if(d.w){
+      t.innerHTML=`<div class="b"><p class="q">${x.q}</p><textarea aria-label="答え"></textarea><div class="o"><button class="s1">例を見る</button></div><div class="fb"></div></div><div class="st"></div>`;
+      const fb=t.querySelector(".fb"),o=t.querySelector(".o"),st=t.querySelector(".st");
+      t.querySelector(".s1").onclick=e=>{e.target.remove();fb.innerHTML="<b>例</b>"+x.m;
+        o.innerHTML='<button>できた</button><button>もう一度</button>';
+        o.querySelectorAll("button").forEach((b,j)=>b.onclick=()=>{o.querySelectorAll("button").forEach(z=>z.disabled=true);b.classList.add("pick");n++;if(!j)sco++;upd();fx(t,st,!j)})};
+    }else{
+      t.innerHTML=`${kh}<div class="b"><p class="q">${x.q}</p><div class="o${d.m?"":""}">${x.o.map(s=>`<button class="${d.m?"m":""}">${s}</button>`).join("")}</div><div class="fb"></div></div><div class="st"></div>`;
+      const bs=t.querySelectorAll(".o button"),fb=t.querySelector(".fb"),st=t.querySelector(".st");
+      bs.forEach((b,j)=>b.onclick=()=>{const ok=j===x.a;bs.forEach(z=>z.disabled=true);b.classList.add("pick");n++;if(ok)sco++;upd();fb.innerHTML=`<b>${ok?"正解！":"不正解"}</b>${x.note}`;fx(t,st,ok)});
+    }
+    g.appendChild(t);
+  });
+}
+T.forEach((d,i)=>{const b=document.createElement("button");b.textContent=d.n;b.setAttribute("role","tab");b.onclick=()=>{cur=i;build()};tb.appendChild(b)});
+document.getElementById("rs").onclick=build;
+build();
+</script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>げんき 第16課 漢字・語彙 練習</title>
+<style>
+:root{--ink:#17324d;--blue:#176b87;--foam:#e9f8f8;--paper:#fffdf7;--gold:#e6b85c}
+*{box-sizing:border-box} body{margin:0;color:var(--ink);font-family:"Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.65;
+background-color:#dff3f5;
+background-image:linear-gradient(rgba(235,248,250,.62),rgba(235,248,250,.62)),url('https://commons.wikimedia.org/wiki/Special:FilePath/Great_Wave_off_Kanagawa.jpg');
+background-size:cover;background-position:center;background-attachment:fixed}
+header{padding:2.2rem 1rem 1.5rem;text-align:center;background:linear-gradient(180deg,rgba(9,67,97,.92),rgba(17,105,132,.84));color:white;border-bottom:5px solid var(--gold)}
+header h1{margin:.1rem;font-size:clamp(1.7rem,5vw,2.6rem)} header p{margin:.4rem auto;max-width:760px}
+main{max-width:980px;margin:1.2rem auto;padding:0 1rem 3rem}
+.panel{background:rgba(255,253,247,.96);border:1px solid #b6d8db;border-radius:18px;padding:1.2rem;margin:1rem 0;box-shadow:0 8px 24px #17445b18}
+h2{margin-top:0;color:#105b78;border-bottom:2px solid #c8e5e7;padding-bottom:.45rem}
+h3{color:#176b87}.tag{display:inline-block;background:#e0f1f3;border-radius:999px;padding:.15rem .65rem;font-size:.85rem;margin:.1rem}
+.question{padding:1rem 0;border-bottom:1px dashed #b7d3d6}.question:last-child{border:0}
+.options{display:flex;flex-wrap:wrap;gap:.55rem;margin:.7rem 0}
+button,.btn{font:inherit;cursor:pointer;border:1px solid #80b8c4;border-radius:10px;padding:.55rem .9rem;background:#f4fbfb;color:var(--ink)}
+button:hover,.btn:hover{background:#d9f0f2}button:focus-visible,input:focus-visible{outline:3px solid var(--gold)}
+input[type=text]{font:inherit;padding:.5rem;border:1px solid #8dbbc2;border-radius:8px;max-width:100%}
+.feedback{font-weight:700;min-height:1.5em}.good{color:#08764c}.bad{color:#a33b24}
+.primary{background:#176b87;color:white;border-color:#176b87}.primary:hover{background:#10536a;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.8rem}
+.card{background:#f2fbfa;border:1px solid #c5e2e3;border-radius:12px;padding:.8rem}
+#score{font-size:1.2rem;font-weight:700}.small{font-size:.9rem;color:#42616c}
+.reaction{font-size:2.2rem;letter-spacing:.2rem;min-height:2.8rem;margin:.35rem 0;position:relative}
+.falling-emoji{position:fixed;top:-4rem;z-index:9999;pointer-events:none;font-size:clamp(1.8rem,4vw,3rem);animation:emojiFall var(--duration,2.2s) linear forwards;filter:drop-shadow(0 2px 2px #17324d44)}
+@keyframes emojiFall{0%{transform:translateY(-5vh) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(110vh) rotate(540deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.falling-emoji{animation-duration:1ms}}
+.answer{display:none;background:#e8f6ed;border-left:4px solid #30976c;padding:.8rem;border-radius:8px;margin-top:.7rem}
+footer{text-align:center;padding:1rem;color:#234d60}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">GENKI I・第16課</div>
+  <h1>まんが「ドラえもん」</h1>
+  <p>漢字・語彙・助詞・活用・読解・記述・○× 確認テスト</p>
+  <p class="small" style="color:#e9f8f8">波をイメージした背景で、楽しく復習しましょう。</p>
+</header>
+<main>
+<section class="panel" id="kanji-match">
+<h2>学習する漢字</h2>
+<p>教材に出てくる漢字を中心に練習します。漢字を含む言葉と、正しいふりがなを選んで組み合わせましょう。</p>
+<div class="grid">
+<div class="card question" data-answer="こども"><b>子供</b><select aria-label="子供の読み方"><option value="">読み方を選ぶ</option><option>あんぜん</option><option>こども</option><option>せかい</option><option>うんどう</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="せかい"><b>世界</b><select aria-label="世界の読み方"><option value="">読み方を選ぶ</option><option>せかい</option><option>へや</option><option>いじょう</option><option>ほんや</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="ぜんぶ"><b>全部</b><select aria-label="全部の読み方"><option value="">読み方を選ぶ</option><option>ぜんぶ</option><option>あける</option><option>まいしゅう</option><option>きょうしつ</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="へや"><b>部屋</b><select aria-label="部屋の読み方"><option value="">読み方を選ぶ</option><option>へや</option><option>ほうほう</option><option>どうぶつ</option><option>こども</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="はじまる"><b>始まる</b><select aria-label="始まるの読み方"><option value="">読み方を選ぶ</option><option>けんきゅうしつ</option><option>はじまる</option><option>せかい</option><option>ぜんぶ</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="まいしゅう"><b>毎週</b><select aria-label="毎週の読み方"><option value="">読み方を選ぶ</option><option>まいしゅう</option><option>あんぜん</option><option>あける</option><option>いじょう</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="かんがえる"><b>考える</b><select aria-label="考えるの読み方"><option value="">読み方を選ぶ</option><option>うんどう</option><option>かんがえる</option><option>ほんや</option><option>へや</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="あける"><b>開ける</b><select aria-label="開けるの読み方"><option value="">読み方を選ぶ</option><option>きょうしつ</option><option>あける</option><option>まいしゅう</option><option>ほうほう</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="ほんや"><b>本屋</b><select aria-label="本屋の読み方"><option value="">読み方を選ぶ</option><option>ほんや</option><option>どうぶつ</option><option>ぜんぶ</option><option>はじまる</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="ほうほう"><b>方法</b><select aria-label="方法の読み方"><option value="">読み方を選ぶ</option><option>いじょう</option><option>ほうほう</option><option>せかい</option><option>こども</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="うんどう"><b>運動</b><select aria-label="運動の読み方"><option value="">読み方を選ぶ</option><option>うんどう</option><option>けんきゅうしつ</option><option>へや</option><option>あんぜん</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="どうぶつ"><b>動物</b><select aria-label="動物の読み方"><option value="">読み方を選ぶ</option><option>まいしゅう</option><option>どうぶつ</option><option>あける</option><option>きょうしつ</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="きょうしつ"><b>教室</b><select aria-label="教室の読み方"><option value="">読み方を選ぶ</option><option>きょうしつ</option><option>かんがえる</option><option>ぜんぶ</option><option>ほんや</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="けんきゅうしつ"><b>研究室</b><select aria-label="研究室の読み方"><option value="">読み方を選ぶ</option><option>ほうほう</option><option>けんきゅうしつ</option><option>はじまる</option><option>せかい</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="いじょう"><b>以上</b><select aria-label="以上の読み方"><option value="">読み方を選ぶ</option><option>いじょう</option><option>うんどう</option><option>こども</option><option>まいしゅう</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+<div class="card question" data-answer="あんぜん"><b>安全</b><select aria-label="安全の読み方"><option value="">読み方を選ぶ</option><option>あんぜん</option><option>どうぶつ</option><option>あける</option><option>かんがえる</option></select><button class="check-match">答え合わせ</button><div class="feedback"></div></div>
+</div>
+</section>
+
+<section class="panel" id="vocab">
+<h2>1. 語彙練習 <span class="tag">選択問題</span></h2>
+<div class="question" data-answer="B">
+<p>1. Choose the correct reading: (world)</p>
+<div class="options">
+<button data-value="A">せか</button><button data-value="B">せかい</button><button data-value="C">せいかい</button><button data-value="D">せっかい</button>
+</div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="C">
+<p>2. 「毎週」の読み方はどれですか。</p>
+<div class="options">
+<button data-value="A">まいにち</button><button data-value="B">まいげつ</button><button data-value="C">まいしゅう</button><button data-value="D">せんしゅう</button>
+</div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="A">
+<p>3. 「考える」の読み方はどれですか。</p>
+<div class="options">
+<button data-value="A">かんがえる</button><button data-value="B">おしえる</button><button data-value="C">はじめる</button><button data-value="D">うごく</button>
+</div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="D">
+<p>4. 「部屋」の読み方はどれですか。</p>
+<div class="options">
+<button data-value="A">ぶや</button><button data-value="B">へやあ</button><button data-value="C">べや</button><button data-value="D">へや</button>
+</div><div class="feedback"></div>
+</div>
+</section>
+
+<section class="panel" id="particles">
+<h2>2. 助詞・活用練習</h2>
+<div class="question" data-answer="に">
+<p>1. 毎週、日本語のクラス（　）行きます。</p>
+<input type="text" aria-label="助詞1" data-text-answer="に" placeholder="助詞を入力">
+<button class="check-text">答え合わせ</button><div class="feedback"></div>
+</div>
+<div class="question" data-answer="を">
+<p>2. 部屋（　）掃除します。</p>
+<input type="text" aria-label="助詞2" data-text-answer="を" placeholder="助詞を入力">
+<button class="check-text">答え合わせ</button><div class="feedback"></div>
+</div>
+<div class="question" data-answer="始まります">
+<p>3. 映画は七時に（始まる → 丁寧形）。</p>
+<input type="text" aria-label="活用1" data-text-answer="始まります" placeholder="活用形を入力">
+<button class="check-text">答え合わせ</button><div class="feedback"></div>
+</div>
+<div class="question" data-answer="考えて">
+<p>4. よく（考える → て形）から、答えを書いてください。</p>
+<input type="text" aria-label="活用2" data-text-answer="考えて" placeholder="活用形を入力">
+<button class="check-text">答え合わせ</button><div class="feedback"></div>
+</div>
+<div class="question" data-answer="開けました">
+<p>5. 窓を（開ける → 過去の丁寧形）。</p>
+<input type="text" aria-label="活用3" data-text-answer="開けました" placeholder="活用形を入力">
+<button class="check-text">答え合わせ</button><div class="feedback"></div>
+</div>
+</section>
+
+<section class="panel" id="reading">
+<h2>3. 読解問題</h2>
+<div class="card">
+<p>たけしさんは毎週土曜日に日本語を勉強します。勉強は午前十時に始まります。たけしさんは図書館の部屋で友達と勉強します。分からない漢字があると、辞書で調べて、意味をよく考えます。勉強が終わった後、友達と運動します。</p>
+<p class="small">※ この短い文章は、教材の語彙を使って作った練習用の文章です。</p>
+</div>
+<div class="question" data-answer="A">
+<p>1. たけしさんはいつ日本語を勉強しますか。</p>
+<div class="options"><button data-value="A">毎週土曜日</button><button data-value="B">毎週日曜日</button><button data-value="C">毎日</button><button data-value="D">先週だけ</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="C">
+<p>2. 勉強は何時に始まりますか。</p>
+<div class="options"><button data-value="A">午前九時</button><button data-value="B">午後十時</button><button data-value="C">午前十時</button><button data-value="D">正午</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="D">
+<p>3. 分からない漢字があると、たけしさんは何をしますか。</p>
+<div class="options"><button data-value="A">すぐに帰ります</button><button data-value="B">運動を始めます</button><button data-value="C">友達に本をあげます</button><button data-value="D">辞書で調べて、意味を考えます</button></div><div class="feedback"></div>
+</div>
+</section>
+
+<section class="panel" id="writing">
+<h2>4. 記述問題</h2>
+<p>日本語で答えてください。入力後、「確認」を押すと、回答例を見られます。</p>
+<div class="question">
+<p>1. 毎週、何をしますか。（一文で書きましょう）</p>
+<input type="text" id="write1" style="width:min(100%,600px)" placeholder="例：毎週、＿＿＿＿。">
+<button class="show-example" data-target="ex1">回答例を見る</button>
+<div class="answer" id="ex1">回答例：毎週、日本語を勉強します。<br><span class="small">自分の生活に合わせて書いてもいいです。</span></div>
+</div>
+<div class="question">
+<p>2. 最近、何について考えましたか。</p>
+<input type="text" id="write2" style="width:min(100%,600px)" placeholder="自分の答えを書いてください">
+<button class="show-example" data-target="ex2">回答例を見る</button>
+<div class="answer" id="ex2">回答例：来週の予定について考えました。</div>
+</div>
+<div class="question">
+<p>3. 好きな部屋・場所について、二文で説明してください。</p>
+<textarea id="write3" rows="3" style="width:min(100%,600px);font:inherit;border:1px solid #8dbbc2;border-radius:8px;padding:.5rem" placeholder="二文で書いてください"></textarea><br>
+<button class="show-example" data-target="ex3">回答例を見る</button>
+<div class="answer" id="ex3">回答例：私の好きな場所は図書館です。静かな部屋で本を読むことができます。</div>
+</div>
+</section>
+
+<section class="panel" id="truefalse">
+<h2>5. ○×問題（読解内容の確認）</h2>
+<p>文章をもう一度読んで、内容が正しければ○、違っていれば×を選んでください。</p>
+<div class="question" data-answer="○">
+<p>1. たけしさんは毎週土曜日に日本語を勉強します。</p>
+<div class="options"><button data-value="○">○</button><button data-value="×">×</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="×">
+<p>2. たけしさんの勉強は午後十時に始まります。</p>
+<div class="options"><button data-value="○">○</button><button data-value="×">×</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="○">
+<p>3. たけしさんは図書館の部屋で友達と勉強します。</p>
+<div class="options"><button data-value="○">○</button><button data-value="×">×</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="×">
+<p>4. 分からない漢字があると、たけしさんは辞書を使わずに、すぐ運動します。</p>
+<div class="options"><button data-value="○">○</button><button data-value="×">×</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="○">
+<p>5. 勉強が終わった後、たけしさんは友達と運動します。</p>
+<div class="options"><button data-value="○">○</button><button data-value="×">×</button></div><div class="feedback"></div>
+</div>
+</section>
+
+<section class="panel" id="test">
+<h2>6. 確認テスト</h2>
+<p>最後のミニテストです。全部答えたら得点を確認しましょう。</p>
+<div class="question" data-answer="B">
+<p>1. 「全国」の読み方は？</p><div class="options"><button data-value="A">ぜんこ</button><button data-value="B">ぜんこく</button><button data-value="C">ぜんごく</button><button data-value="D">ぜんくに</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="C">
+<p>2. 「教室」の意味は？</p><div class="options"><button data-value="A">department</button><button data-value="B">roof</button><button data-value="C">classroom</button><button data-value="D">weekend</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="A">
+<p>3. 「運動する」の意味は？</p><div class="options"><button data-value="A">to exercise</button><button data-value="B">to offer</button><button data-value="C">to open</button><button data-value="D">to return</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="D">
+<p>4. 「部長」はどんな人ですか。</p><div class="options"><button data-value="A">本を読む人</button><button data-value="B">部屋を掃除する人</button><button data-value="C">授業を受ける人</button><button data-value="D">部・部署の長</button></div><div class="feedback"></div>
+</div>
+<div class="question" data-answer="に">
+<p>5. 日本語の勉強は来週（　）始まります。</p><input type="text" data-text-answer="に" aria-label="確認テスト助詞" placeholder="助詞"><button class="check-text">答え合わせ</button><div class="feedback"></div>
+</div>
+<button class="primary" id="scoreBtn">選択問題・入力問題の得点を集計</button>
+<p id="score" aria-live="polite"></p>
+<button id="showAnswers">答えをすべて表示</button>
+<div class="answer" id="allAnswers">
+<b>答え一覧</b><br>
+語彙：1. せかい（world）　2. まいしゅう　3. かんがえる　4. へや<br>
+助詞・活用：1. に　2. を　3. 始まります　4. 考えて　5. 開けました<br>
+読解：1. 毎週土曜日　2. 午前十時　3. 辞書で調べて、意味を考える<br>
+○×（読解）：1. ○　2. ×　3. ○　4. ×　5. ○<br>
+確認テスト：1. ぜんこく　2. classroom　3. to exercise　4. 部・部署の長　5. に
+</div>
+</section>
+<footer>学習のポイント：漢字の読み方を声に出し、例文を自分で作ってみましょう。</footer>
+</main>
+<script>
+let points=0, answered=new Set();
+function sound(correct){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    if(correct){
+      // 明るい短い「wave」風の二音チャイム
+      [523.25,659.25,783.99].forEach((f,i)=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,now+i*.11);
+        g.gain.exponentialRampToValueAtTime(.12,now+i*.11+.025);
+        g.gain.exponentialRampToValueAtTime(.0001,now+i*.11+.22);
+        o.connect(g);g.connect(ctx.destination);o.start(now+i*.11);o.stop(now+i*.11+.24);
+      });
+    }else{
+      // oni風の短いコミカルな効果音（音量控えめ）
+      [180,130,95].forEach((f,i)=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='triangle';o.frequency.setValueAtTime(f,now+i*.09);
+        g.gain.setValueAtTime(.0001,now+i*.09);g.gain.exponentialRampToValueAtTime(.09,now+i*.09+.02);
+        g.gain.exponentialRampToValueAtTime(.0001,now+i*.09+.13);
+        o.connect(g);g.connect(ctx.destination);o.start(now+i*.09);o.stop(now+i*.09+.15);
+      });
+    }
+    setTimeout(()=>ctx.close(),1000);
+  }catch(e){}
+}
+function mark(q,correct,msg){
+ const f=q.querySelector('.feedback'); f.textContent=msg; f.className='feedback '+(correct?'good':'bad');
+ let reaction=q.querySelector('.reaction'); if(!reaction){reaction=document.createElement('div');reaction.className='reaction';reaction.setAttribute('aria-live','polite');f.insertAdjacentElement('afterend',reaction)}
+ reaction.textContent=correct?'🌊 🌊 🌊':'👹 👹 👹'; reaction.setAttribute('aria-label',correct?'Helyes válasz':'Helytelen válasz');
+ // Válasz után hullám- vagy oni-emojik hullanak végig a képernyőn.
+ const symbols=correct?['🌊','🌊','🌊','🌊','🌊','🌊']:['👹','👹','👹','👹','👹','👹'];
+ symbols.forEach((symbol,i)=>{const drop=document.createElement('span');drop.className='falling-emoji';drop.textContent=symbol;
+ drop.style.left=(5+Math.random()*90)+'vw';drop.style.setProperty('--duration',(1.8+Math.random()*1.4)+'s');drop.style.animationDelay=(i*.12)+'s';
+ document.body.appendChild(drop);drop.addEventListener('animationend',()=>drop.remove(),{once:true});});
+ if(!answered.has(q)){answered.add(q);if(correct)points++;}
+ sound(correct);
+}
+document.querySelectorAll('.question[data-answer] .options button').forEach(b=>b.addEventListener('click',()=>{
+ const q=b.closest('.question'),correct=b.dataset.value===q.dataset.answer;
+ mark(q,correct,correct?'正解！ いいですね。':'もう一度考えてみましょう。');
+}));
+document.querySelectorAll('.check-text').forEach(b=>b.addEventListener('click',()=>{
+ const q=b.closest('.question'),input=q.querySelector('input'),val=(input.value||'').trim().replace(/\s/g,'');
+ const correct=val===input.dataset.textAnswer;
+ mark(q,correct,correct?'正解！':'不正解。もう一度確認しましょう。');
+}));
+document.querySelectorAll('.check-match').forEach(b=>b.addEventListener('click',()=>{
+ const q=b.closest('.question'),select=q.querySelector('select'),val=select.value;
+ const correct=val===q.dataset.answer;
+ mark(q,correct,correct?'正解！ いいですね。':'もう一度考えてみましょう。');
+}));
+document.querySelectorAll('.show-example').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.target).style.display='block'));
+document.getElementById('scoreBtn').addEventListener('click',()=>{
+ document.getElementById('score').textContent=`採点済みの問題：${answered.size}問 ／ 正解：${points}問`;
+});
+document.getElementById('showAnswers').addEventListener('click',()=>document.getElementById('allAnswers').style.display='block');
+</script>
+</body></html>

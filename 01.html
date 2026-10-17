@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>日本のハロウィーン 単語テスト</title>
+<style>
+:root{--bg:#fff7ef;--card:#fff;--tx:#2b2230;--mut:#7a6d80;--ac:#f07c1d;--bd:#f1d9c3;--ok:#e63977;--ng:#555;--okbg:#ffe3ee;--ngbg:#ececec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1622;--card:#2a2132;--tx:#f5eef8;--mut:#b6a8bd;--bd:#443652;--okbg:#4a1f35;--ngbg:#3a3540;--ng:#ddd}}
+:root[data-theme="dark"]{--bg:#1c1622;--card:#2a2132;--tx:#f5eef8;--mut:#b6a8bd;--bd:#443652;--okbg:#4a1f35;--ngbg:#3a3540;--ng:#ddd}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;display:flex;justify-content:center;padding:16px}
+.wrap{width:100%;max-width:560px}
+h1{font-size:1.4rem;text-align:center;margin:8px 0 4px}
+.sub{text-align:center;color:var(--mut);font-size:.9rem;margin-bottom:16px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:16px;padding:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+.mode{display:block;width:100%;margin:8px 0;padding:14px;border-radius:12px;border:2px solid var(--bd);background:var(--card);text-align:left;font-size:1rem}
+.mode:hover{border-color:var(--ac)}
+.mode small{display:block;color:var(--mut)}
+.top{display:flex;justify-content:space-between;color:var(--mut);font-size:.9rem;margin-bottom:8px}
+.bar{height:8px;background:var(--bd);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .3s}
+.q{font-size:1.9rem;font-weight:700;text-align:center;margin:12px 0 4px;word-break:keep-all}
+.hint{text-align:center;color:var(--mut);font-size:.85rem;margin-bottom:14px}
+.opt{display:block;width:100%;margin:8px 0;padding:12px 14px;border-radius:12px;border:2px solid var(--bd);background:var(--card);text-align:left;font-size:1.05rem}
+.opt:not(:disabled):hover{border-color:var(--ac)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.ng{background:var(--ngbg);border-color:var(--ng)}
+.mark{text-align:center;font-size:4rem;height:84px;line-height:84px;margin-top:6px}
+.mark.ok{color:var(--ok)}.mark.ng{color:var(--ng)}
+.pop{animation:pop .45s}
+.fly{position:fixed;pointer-events:none;z-index:99;animation:fly 1.1s ease-out forwards}
+@keyframes fly{from{transform:translate(-50%,-50%) scale(.4) rotate(0);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.5) rotate(var(--r));opacity:0}}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+.next,.main{display:block;margin:10px auto 0;padding:12px 28px;border:0;border-radius:24px;background:var(--ac);color:#fff;font-weight:700;font-size:1rem}
+.score{font-size:2.4rem;text-align:center;font-weight:700;margin:6px 0}
+.hearts{text-align:center;font-size:1.5rem;letter-spacing:2px;margin:8px 0;word-break:break-all}
+.msg{text-align:center;margin-bottom:8px}
+.rev{margin-top:14px;font-size:.9rem;color:var(--mut)}
+.rev div{padding:4px 0;border-top:1px solid var(--bd)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🎃 日本のハロウィーン 単語テスト</h1>
+<div class="sub">Japán Halloween – szókvíz</div>
+<div id="app" class="card"></div>
+</div>
+<script>
+// [表記, よみ, ハンガリー語]
+var W=[
+["祝う","いわう","ünnepelni"],["特別な","とくべつな","sajátos/különleges"],["カラフルな","カラフルな","színes"],
+["祝祭","しゅくさい","ünnep"],["年代","ねんだい","évek"],["有名な","ゆうめいな","híres"],
+["〜になる","〜になる","válik valamivé / lett"],["初めて","はじめて","első/először"],["いろいろな","いろいろな","sok különböző"],
+["キャラ","キャラ","karakter (anime/film stb.)"],["仮装する","かそうする","jelmezbe öltözni"],
+["狼男","おおかみおとこ","vérfarkas"],["悪魔","あくま","ördög, démon"],["天使","てんし","angyal"],
+["死神","しにがみ","halálisten"],["ドラキュラ","ドラキュラ","Drakula"],["フランケンシュタイン","フランケンシュタイン","Frankenstein"],
+["妖怪","ようかい","japán természetfeletti lény"],["かぼちゃのおばけ","かぼちゃのおばけ","tökszellem"],
+["黒猫","くろねこ","fekete macska"],["妖精","ようせい","tündér"],["魔女","まじょ","boszorkány"],
+["吸血鬼","きゅうけつき","vámpír"],["おばけ","おばけ","szellem, kísértet"],["ガイコツ","ガイコツ","csontváz"],["ゾンビ","ゾンビ","zombi"]
+];
+var N=10,app=document.getElementById("app"),mode,qs,i,score,log;
+function lab(w){return w[0]===w[1]?w[0]:w[0]+"（"+w[1]+"）"}
+function sh(a){a=a.slice();for(var k=a.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=a[k];a[k]=a[j];a[j]=t}return a}
+function home(){
+ app.innerHTML='<p class="msg"><b>テストのしゅるいをえらんでください</b><br><span style="color:var(--mut)">10もん・4つのこたえからえらびます</span></p>'+
+ '<button class="mode" data-m="jh">日本語 → ハンガリー語<small>Japán szó → magyar jelentés</small></button>'+
+ '<button class="mode" data-m="hj">ハンガリー語 → 日本語<small>Magyar szó → japán szó</small></button>'+
+ '<button class="mode" data-m="read">漢字のよみかた<small>Kanji → olvasat (hiragana)</small></button>'+
+ '<button class="mode" data-m="mix">ミックス<small>Vegyes feladatok</small></button>';
+ [].forEach.call(app.querySelectorAll(".mode"),function(b){b.onclick=function(){start(b.dataset.m)}});
+}
+function start(m){
+ mode=m;score=0;i=0;log=[];
+ var kanji=W.filter(function(w){return /[\u4e00-\u9faf]/.test(w[0])});
+ var pool=m==="read"?kanji:W;
+ qs=sh(pool).slice(0,N).map(function(w){
+  var t=m==="mix"?(kanji.indexOf(w)>=0?["jh","hj","read"][Math.floor(Math.random()*3)]:["jh","hj"][Math.floor(Math.random()*2)]):m;
+  return mk(w,t);
+ });
+ show();
+}
+function mk(w,t){
+ var others=sh(W.filter(function(x){return x!==w})),q,a,d;
+ if(t==="jh"){q=w[0];a=w[2];d=others.map(function(x){return x[2]});}
+ else if(t==="hj"){q=w[2];a=lab(w);d=others.map(lab);}
+ else{q=w[0];a=w[1];d=others.map(function(x){return x[1]}).filter(function(r){return r!==a});}
+ d=d.filter(function(v,k){return d.indexOf(v)===k&&v!==a}).slice(0,3);
+ return{q:q,a:a,o:sh(d.concat([a])),t:t};
+}
+function show(){
+ var c=qs[i],h={jh:"ハンガリー語のいみは？ (Mit jelent?)",hj:"日本語は？ (Hogy mondjuk japánul?)",read:"よみかたは？ (Hogy kell olvasni?)"}[c.t];
+ app.innerHTML='<div class="top"><span>'+(i+1)+' / '+qs.length+'</span><span>🎃 '+score+'</span></div><div class="bar"><i style="width:'+(i/qs.length*100)+'%"></i></div>'+
+ '<div class="q">'+c.q+'</div><div class="hint">'+h+'</div><div id="os"></div><div class="mark" id="mk"></div><div id="nx"></div>';
+ var os=document.getElementById("os");
+ c.o.forEach(function(o){var b=document.createElement("button");b.className="opt";b.textContent=o;b.onclick=function(){pick(b,o)};os.appendChild(b)});
+}
+function pick(b,o){
+ var c=qs[i],ok=o===c.a,m=document.getElementById("mk");
+ [].forEach.call(document.querySelectorAll(".opt"),function(x){x.disabled=true;if(x.textContent===c.a)x.classList.add("ok")});
+ if(ok){score++;m.textContent="🎃";m.className="mark ok pop"}else{b.classList.add("ng");m.textContent="👻";m.className="mark ng pop"}
+ burst(ok?"🎃":"👻",m);log.push({ok:ok,q:c.q,a:c.a});
+ var n=document.createElement("button");n.className="next";n.textContent=i+1<qs.length?"つぎへ →":"けっか";
+ n.onclick=function(){i++;i<qs.length?show():end()};
+ document.getElementById("nx").appendChild(n);
+}
+function burst(e,el){var r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;for(var k=0;k<16;k++){var s=document.createElement("span"),a=Math.random()*6.283,d=120+Math.random()*180;s.className="fly";s.textContent=e;s.style.left=x+"px";s.style.top=y+"px";s.style.fontSize=(1.2+Math.random()*1.6)+"rem";s.style.setProperty("--dx",Math.cos(a)*d+"px");s.style.setProperty("--dy",Math.sin(a)*d+"px");s.style.setProperty("--r",(Math.random()*720-360)+"deg");document.body.appendChild(s);setTimeout(function(n){return function(){n.remove()}}(s),1150)}}
+function end(){
+ var hs="";log.forEach(function(l){hs+=l.ok?"🎃":"👻"});
+ var msg=score>=9?"すごい！ かんぺき！ 🎉":score>=7?"よくできました！":score>=5?"もう少し！ もういちど！":"がんばろう！ ふくしゅうしましょう";
+ var rv=log.filter(function(l){return!l.ok}).map(function(l){return"<div>👻 "+l.q+" → <b>"+l.a+"</b></div>"}).join("");
+ app.innerHTML='<div class="msg">けっか</div><div class="score">'+score+' / '+qs.length+'</div><div class="hearts">'+hs+'</div><div class="msg"><b>'+msg+'</b></div>'+
+ (rv?'<div class="rev"><b>まちがえた もんだい (Hibás válaszok)</b>'+rv+'</div>':'')+
+ '<button class="main" id="r">もういちど</button><button class="next" id="h" style="background:transparent;color:var(--mut);border:2px solid var(--bd)">メニューへ</button>';
+ document.getElementById("r").onclick=function(){start(mode)};
+ document.getElementById("h").onclick=home;
+}
+home();
+</script>
+</body>
+</html>
